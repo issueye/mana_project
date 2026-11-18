@@ -347,6 +347,112 @@ func TestProjectRepoTab(t *testing.T) {
 	saveShot(t, tt, "repo-after")
 }
 
+// The todo tab adds, toggles, filters and deletes checklist items, and
+// the record card keeps the counts in step.
+func TestProjectTodosTab(t *testing.T) {
+	a := demoApp(t)
+	tt := ui.NewTester(a.View, 1440, 900)
+	tt.Frame()
+	p := a.projects[0]
+	a.openProject(p.ID)
+	tt.Frame()
+
+	if err := tt.Click("待办 00"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if a.projectView != 3 {
+		t.Fatalf("projectView = %d, want the todo tab", a.projectView)
+	}
+
+	// Add two items through the form.
+	a.todoInput = "写发版说明"
+	a.addTodo(nil, p)
+	a.todoInput = "回归上传流程"
+	a.addTodo(nil, p)
+	tt.Frame()
+	if _, ok := tt.Find("写发版说明"); !ok {
+		t.Fatal("first todo missing")
+	}
+	if _, ok := tt.Find("回归上传流程"); !ok {
+		t.Fatal("second todo missing")
+	}
+	if _, ok := tt.Find("待办 02"); !ok {
+		t.Fatal("tab count did not reach 02")
+	}
+
+	// Toggle the first one done by clicking its row.
+	if err := tt.Click("未完成：写发版说明"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if _, ok := tt.Find("待办 01"); !ok {
+		t.Fatal("tab count did not drop to 01")
+	}
+	if _, ok := tt.Find("清理已完成 (1)"); !ok {
+		t.Fatal("clear affordance missing after a completion")
+	}
+
+	// The done filter hides the open item.
+	a.todoFilter = 2
+	tt.Frame()
+	if _, ok := tt.Find("回归上传流程"); ok {
+		t.Fatal("done filter still shows the open item")
+	}
+	a.todoFilter = 0
+
+	// Delete the remaining open item through its trash button.
+	a.todoFilter = 1
+	tt.Frame()
+	if err := tt.Click("删除待办 回归上传流程"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if _, ok := tt.Find("回归上传流程"); ok {
+		t.Fatal("deleted todo is still listed")
+	}
+	if _, ok := tt.Find("待办 00"); !ok {
+		t.Fatal("tab count should be empty again")
+	}
+	saveShot(t, tt, "todos")
+}
+
+// The record card edits the project note in place.
+func TestProjectNoteInlineEdit(t *testing.T) {
+	a := demoApp(t)
+	tt := ui.NewTester(a.View, 1440, 900)
+	tt.Frame()
+	p := a.projects[0]
+	a.openProject(p.ID)
+	tt.Frame()
+
+	if _, ok := tt.Find("编辑备注"); !ok {
+		t.Fatal("record card lost the note editor")
+	}
+	if err := tt.Click("编辑备注"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if !a.noteEditing {
+		t.Fatal("note editor did not open")
+	}
+	a.noteDraft = "就地更新：v0.9.3 聚焦待办与备注。"
+	if err := tt.Click("保存备注"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if a.noteEditing {
+		t.Fatal("note editor stayed open after saving")
+	}
+	fresh, _ := a.projectByID(p.ID)
+	if fresh.Description != "就地更新：v0.9.3 聚焦待办与备注。" {
+		t.Fatalf("description = %q", fresh.Description)
+	}
+	if _, ok := tt.Find("就地更新：v0.9.3 聚焦待办与备注。"); !ok {
+		t.Fatal("record card does not show the saved note")
+	}
+}
+
 // The statistics page reuses the home ledger and adds the distributions.
 func TestStatsPage(t *testing.T) {
 	a := demoApp(t)

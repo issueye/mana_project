@@ -40,7 +40,7 @@ type App struct {
 	page        Page
 	groupFilter int64 // 0 all, -1 ungrouped, >0 group ID
 	groupTab    int   // 0 projects, 1 documents
-	projectView int   // 0 documents, 1 files, 2 repository
+	projectView int   // 0 documents, 1 files, 2 repository, 3 todos
 	projectID   int64
 	docID       int64
 	editorFrom  Page
@@ -49,6 +49,7 @@ type App struct {
 	groups   []model.Group
 	projects []model.Project
 	docs     []model.Document
+	todos    []model.Todo
 
 	currentProject model.Project
 	currentDoc     model.Document
@@ -88,6 +89,12 @@ type App struct {
 	groupListQuery string
 	tagFilter      string
 	sortMode       string
+
+	// The project page's todo checklist (F17) and its note editor (F16).
+	todoInput   string
+	todoFilter  int // 0 all, 1 undone, 2 done
+	noteEditing bool
+	noteDraft   string
 
 	// The command palette (CTRL K) and its debounced search.
 	paletteOpen     bool
@@ -218,6 +225,7 @@ func (a *App) applySnapshot(snap model.Snapshot) {
 	a.groups = snap.Groups
 	a.projects = snap.Projects
 	a.docs = snap.Docs
+	a.todos = snap.Todos
 	a.err = ""
 	a.ensureSelection()
 }

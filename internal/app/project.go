@@ -33,6 +33,8 @@ func (a *App) projectPage(c *ui.Context) {
 				a.filesView(c, p)
 			case 2:
 				a.repoView(c, p)
+			case 3:
+				a.todosView(c, p)
 			default:
 				a.projectDocsColumn(c, p)
 			}
@@ -41,13 +43,15 @@ func (a *App) projectPage(c *ui.Context) {
 	})
 }
 
-// projectViewTabs is the 文档 / 文件 / 仓库 switch of the main column.
+// projectViewTabs is the 文档 / 文件 / 仓库 / 待办 switch of the main
+// column; the todo tab carries the open count.
 func (a *App) projectViewTabs(c *ui.Context, p model.Project) {
 	ui.Column(c).Padding(0, 24).Children(func() {
 		hairline(c)
 		ui.Row(c).Height(42).AlignItems(ui.Center).Children(func() {
 			ui.Tabs(c, &a.projectView,
-				fmt.Sprintf("文档 %02d", p.DocumentCount), "文件", "仓库")
+				fmt.Sprintf("文档 %02d", p.DocumentCount), "文件", "仓库",
+				fmt.Sprintf("待办 %02d", a.undoneTodos(p.ID)))
 			ui.Spacer(c)
 		})
 		hairline(c)
@@ -375,10 +379,16 @@ func (a *App) recordCard(c *ui.Context, p model.Project, width float32) {
 				monoText(c, model.DateTime(p.UpdatedAt), 9.5).TextColor(colInk2)
 			})
 			a.recordRow(c, "标签", func() { tagsText(c, p.Tags, 0) })
-			hairline(c)
-			ui.Column(c).Padding(8, 0, 4, 0).Gap(4).Children(func() {
-				ui.Text(c, p.Description).FontSize(10.5).TextColor(colInk2)
+			a.recordRow(c, "待办", func() {
+				todos := a.projectTodos(p.ID)
+				done := len(todos) - a.undoneTodos(p.ID)
+				ui.Row(c).Gap(5).AlignItems(ui.Center).Children(func() {
+					ui.Text(c, fmt.Sprintf("%d 项未完成 · %d 项已完成", a.undoneTodos(p.ID), done)).
+						FontSize(10.5).TextColor(colInk2)
+				})
 			})
+			hairline(c)
+			a.noteSection(c, p)
 			hairline(c)
 			ui.Column(c).Padding(10, 0, 0, 0).Gap(6).Children(func() {
 				microLabel(c, "文档分布 · " + itoaPad(len(docs)))

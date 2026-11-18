@@ -282,6 +282,44 @@ func (s *Service) Backup(ctx context.Context, dest string) error {
 	return nil
 }
 
+// Todos lists one project's action items.
+func (s *Service) Todos(ctx context.Context, projectID int64) ([]model.Todo, error) {
+	if _, err := s.store.GetProject(ctx, projectID); err != nil {
+		return nil, &FieldError{Field: "owner", Message: "所属项目不存在"}
+	}
+	return s.store.ListTodos(ctx, projectID)
+}
+
+// CreateTodo validates and inserts an action item.
+func (s *Service) CreateTodo(ctx context.Context, projectID int64, content string) (model.Todo, error) {
+	content = strings.TrimSpace(content)
+	if content == "" {
+		return model.Todo{}, &FieldError{Field: "content", Message: "请输入待办内容"}
+	}
+	if n := utf8.RuneCountInString(content); n > 200 {
+		return model.Todo{}, &FieldError{Field: "content", Message: "待办内容最多 200 个字符"}
+	}
+	if _, err := s.store.GetProject(ctx, projectID); err != nil {
+		return model.Todo{}, &FieldError{Field: "owner", Message: "所属项目不存在"}
+	}
+	return s.store.CreateTodo(ctx, projectID, content)
+}
+
+// SetTodoDone toggles an item.
+func (s *Service) SetTodoDone(ctx context.Context, id int64, done bool) (model.Todo, error) {
+	return s.store.SetTodoDone(ctx, id, done)
+}
+
+// DeleteTodo removes an item.
+func (s *Service) DeleteTodo(ctx context.Context, id int64) error {
+	return s.store.DeleteTodo(ctx, id)
+}
+
+// ClearDoneTodos removes a project's finished items.
+func (s *Service) ClearDoneTodos(ctx context.Context, projectID int64) (int64, error) {
+	return s.store.ClearDoneTodos(ctx, projectID)
+}
+
 func validateGroup(in model.GroupInput) (model.GroupInput, error) {
 	in.Name = strings.TrimSpace(in.Name)
 	in.Description = strings.TrimSpace(in.Description)

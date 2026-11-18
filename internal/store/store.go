@@ -169,7 +169,11 @@ func (s *Store) Snapshot(ctx context.Context) (model.Snapshot, error) {
 	if err != nil {
 		return model.Snapshot{}, err
 	}
-	return model.Snapshot{Groups: groups, Projects: projects, Docs: docs}, nil
+	todos, err := s.ListAllTodos(ctx)
+	if err != nil {
+		return model.Snapshot{}, err
+	}
+	return model.Snapshot{Groups: groups, Projects: projects, Docs: docs, Todos: todos}, nil
 }
 
 // ListGroups returns all groups with their project and document counts.

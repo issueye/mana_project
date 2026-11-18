@@ -44,6 +44,8 @@
 | F13 | **附件上传与查看（PDF / Word / Excel / PPT / 图片 / Markdown）** | **P0（2026-11-19 追加）** | 文档不止 Markdown：登记产物与资料原件，应用内可看，系统程序可打开 | 1.5 人日 |
 | F14 | **项目文件系统（文件浏览器）** | **P0（2026-11-19 追加）** | 项目登记的是磁盘路径；不看代码文件，索引就只有元数据 | 1 人日 |
 | F15 | **代码仓库检测与管理（Git）** | **P0（2026-11-19 追加）** | 状态、暂存、提交、历史、标签发版、推送——把「项目管理」落到工作区 | 1.5 人日 |
+| F16 | **项目备注就地编辑** | **P0（2026-11-19 追加）** | 备注已存在于模型（description），但只能进完整编辑弹窗；记录卡上就地可改才是「随手记」 | 0.25 人日 |
+| F17 | **项目待办列表** | **P0（2026-11-19 追加）** | 项目需要行动项：添加、勾选完成、删除、清理已完成，随快照进全局视图 | 0.75 人日 |
 | F6 | 文档全文搜索（正文 LIKE / FTS5） | P1 | FR-04-8 的正文部分；数据量大后需要 FTS | 1 人日 |
 | F7 | 项目置顶与排序记忆 | P1 | 手动 `sort_order` 列 + 拖拽或快捷操作 | 1 人日 |
 | F8 | 导入导出（JSON 快照导出 / 导入） | P1 | 换机、分享模板；与备份互补 | 1 人日 |
@@ -176,6 +178,45 @@ func (s *Store) Search(ctx context.Context, q string) (model.SearchResult, error
 
 ---
 
+### 4.7 F16 项目备注就地编辑 + F17 项目待办列表
+
+#### F16 备注就地编辑
+
+- 存储沿用 `projects.description`（上限 1000 字不变），不新增表。
+- 记录卡「备注」区：只读态显示正文 + 「编辑」小按钮；编辑态变 `TextArea` + 保存/取消。保存走 `UpdateProject`（其余字段原样带回），成功 toast、失败就近提示。
+- 记录卡 meta 行新增「待办」摘要（未完成数）。
+
+#### F17 待办列表
+
+**数据层**（迁移 `003_todos.sql`）：
+
+```sql
+CREATE TABLE todos (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    content    TEXT    NOT NULL,
+    done       INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
+CREATE INDEX ix_todos_project ON todos(project_id, done, updated_at DESC);
+```
+
+- `model.Todo` + `Snapshot.Todos`（全局快照带上待办，供页签计数与记录卡摘要）。
+- store：`ListTodos`（未完成在前、其余按更新时间倒序）/ `CreateTodo` / `SetTodoDone` / `DeleteTodo` / `ClearDoneTodos`；项目删除经外键级联。
+- service：内容 1–200 rune 校验；其余透传。
+
+**UI**：项目详情主列第 4 个页签「待办 NN」（NN=未完成数）：
+
+- 添加行：输入框（ENTER 或「添加」按钮提交）；
+- 行：勾选方块（完成 → 朱砂底勾 + 删除线灰字）+ 内容 + 相对时间 + 删除；
+- 过滤：全部 / 未完成 / 已完成；底部「清理已完成」（有完成项时出现）；
+- 记录卡摘要行联动；所有写操作同步执行 + reload（本地 SQLite 毫秒级）。
+
+**验收**：添加/勾选/删除/清理即时生效且计数联动；项目删除后待办级联消失；空内容/超长内容被校验拦截；页签计数与筛选正确。
+
+---
+
 ### 4.6 F14 项目文件系统 + F15 Git 仓库管理
 
 两个功能共用一个入口：**项目详情页主列改为页签**「文档 / 文件 / 仓库」（`ui.Tabs`，`a.projectView`）；右栏记录卡不变。
@@ -291,6 +332,8 @@ ALTER TABLE documents ADD COLUMN file_size INTEGER NOT NULL DEFAULT 0;
 | F13 附件上传与查看 | ✅ | 迁移 `002_attachments.sql`、`store.SaveFile/RemoveAttachment/AttachmentFile`、`internal/extract`（docx/pptx/xlsx/pdf/md，纯 Go）、`service.SaveDocumentFile`、`app/attachments.go`（上传流程 + 文件查看器） | extract 5 件、store 3 件、service 2 件、`TestFileDocumentViewer` |
 | F14 项目文件系统 | ✅ | `app/files.go`（异步目录读取 + 代际防陈旧 + 越界防护 + 面包屑）；入口：项目详情页「文件」页签 | `TestProjectFilesTab`（列根/进目录/返回） |
 | F15 Git 仓库管理 | ✅ | `internal/gitcmd`（系统 git CLI，argv 传参 + 超时 + quotepath=false）、`app/repo.go`（检测/状态/暂存/提交/历史/标签/推送/初始化，离帧执行）；入口：「仓库」页签 | gitcmd 集成测试 5 件、`TestProjectRepoTab`（检测→暂存→提交→打标签全链路） |
+| F16 备注就地编辑 | ✅ | `app/todos.go noteSection/saveNote`（记录卡内 TextArea + 保存/取消，走 `UpdateProject` 原样带回其余字段） | `TestProjectNoteInlineEdit` |
+| F17 待办列表 | ✅ | 迁移 `003_todos.sql`（外键级联）、`store/todos.go`、`service` 校验（1–200 rune）、`app/todos.go`（第 4 页签「待办 NN」：添加/勾选/删除/筛选/清理，记录卡摘要行联动） | store 2 件（生命周期+级联）、`TestProjectTodosTab`（添加 2 条→勾选→筛选→删除→计数联动） |
 
 实现备注：
 - 命令面板的 Enter 经输入框 `OnSubmit`、方向键经面板 `OnShortcut`——`Context.Shortcut` 会被焦点输入框先消费，这是 mygo 的按键路由约定。
@@ -318,3 +361,14 @@ ALTER TABLE documents ADD COLUMN file_size INTEGER NOT NULL DEFAULT 0;
 - 项目详情主列改为 `文档 / 文件 / 仓库` 三个 `ui.Tabs`；切换项目时视图复位到文档页。
 - git 命令一律 argv 传参 + `core.quotepath=false`（保中文文件名）；**goroutine 只取数，所有 `a.repo` 写入都在 UI 线程**，代际计数防陈旧。
 - 测试教训：断言用的项目对象要在 `reload()` 后重新按 ID 取（旧对象 Path 为空会让 git 落到进程当前目录）。
+
+### §6 追加（F16/F17，2026-11-19 实测）
+
+- [x] store：`TestTodosLifecycle`（未完成置顶排序/勾选/删除/清理计数）、`TestTodosCascadeWithProject`（项目删除级联清待办）
+- [x] UI：`TestProjectTodosTab`（页签计数 00→02→01→00、添加、行点击勾选、清理按钮出现、已完成筛选、删除）、`TestProjectNoteInlineEdit`（编辑→保存→description 持久化→记录卡回显）
+- [x] 截图 `testdata/screens/todos.png`；`go build` / `go vet` / `go test ./...` / `CGO_ENABLED=0 go test ./...` 全绿
+
+实现备注（F16/F17）：
+- 备注沿用 `projects.description`，不新增表；编辑走 `UpdateProject` 带回全部字段。
+- 待办随 `Snapshot.Todos` 进内存快照，页签计数与记录卡摘要零额外查询；排序「未完成在前、各按更新时间倒序」。
+- 待办写操作在处理器内同步执行 + `reload()`（本地 SQLite 毫秒级），沿用删除确认等既有模式。

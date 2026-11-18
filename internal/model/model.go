@@ -75,11 +75,22 @@ type DocumentInput struct {
 	Link      string
 }
 
+// Todo is one action item of a project.
+type Todo struct {
+	ID        int64
+	ProjectID int64
+	Content   string
+	Done      bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 // Snapshot is the complete in-memory view of the database.
 type Snapshot struct {
 	Groups   []Group
 	Projects []Project
 	Docs     []Document
+	Todos    []Todo
 }
 
 // SearchResult is the outcome of a global search, one capped section per
