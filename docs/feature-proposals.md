@@ -46,6 +46,7 @@
 | F15 | **代码仓库检测与管理（Git）** | **P0（2026-11-19 追加）** | 状态、暂存、提交、历史、标签发版、推送——把「项目管理」落到工作区 | 1.5 人日 |
 | F16 | **项目备注就地编辑** | **P0（2026-11-19 追加）** | 备注已存在于模型（description），但只能进完整编辑弹窗；记录卡上就地可改才是「随手记」 | 0.25 人日 |
 | F17 | **项目待办列表** | **P0（2026-11-19 追加）** | 项目需要行动项：添加、勾选完成、删除、清理已完成，随快照进全局视图 | 0.75 人日 |
+| F18 | **评论功能** | **P0（2026-11-19 追加）** | 记录项目的进展、决定与结论：时间线式评论，记录卡常驻可看可写 | 0.5 人日 |
 | F6 | 文档全文搜索（正文 LIKE / FTS5） | P1 | FR-04-8 的正文部分；数据量大后需要 FTS | 1 人日 |
 | F7 | 项目置顶与排序记忆 | P1 | 手动 `sort_order` 列 + 拖拽或快捷操作 | 1 人日 |
 | F8 | 导入导出（JSON 快照导出 / 导入） | P1 | 换机、分享模板；与备份互补 | 1 人日 |
@@ -217,6 +218,36 @@ CREATE INDEX ix_todos_project ON todos(project_id, done, updated_at DESC);
 
 ---
 
+### 4.8 F18 评论功能
+
+**数据层**（迁移 `004_comments.sql`）：通用评论表，一次到位支持三类宿主，后续给文档/组加 UI 零成本：
+
+```sql
+CREATE TABLE comments (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    owner_type TEXT    NOT NULL CHECK (owner_type IN ('project','group','document')),
+    owner_id   INTEGER NOT NULL,
+    content    TEXT    NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
+CREATE INDEX ix_comments_owner ON comments(owner_type, owner_id, created_at DESC);
+```
+
+- 级联清理在宿主删除事务里补齐：删项目/组/文档时同事务删对应评论（通用表不能挂多宿主外键，改在删除路径保证）。
+- `model.Comment` + `Snapshot.Comments`（随快照进内存，记录卡零额外查询）。
+- service：内容 1–500 rune 校验 + 宿主存在性校验；`ListComments/CreateComment/DeleteComment`。
+
+**UI**（项目记录卡新增「评论 · COMMENT」区，三页签常驻）：
+
+- 输入行：单行输入（ENTER 或「评论」按钮提交）+ 头部计数；
+- 列表：最新在前，每条 = 内容（自动换行）+ 相对时间 + 悬停删除；限高 240px 内部滚动；
+- 空态提示「记录一条进展或决定」；写操作同步 + reload（沿用待办模式）。
+
+**验收**：添加/删除即时生效、计数正确；评论随宿主删除级联清理；空/超长内容被校验拦截；三页签下评论区始终可见。
+
+---
+
 ### 4.6 F14 项目文件系统 + F15 Git 仓库管理
 
 两个功能共用一个入口：**项目详情页主列改为页签**「文档 / 文件 / 仓库」（`ui.Tabs`，`a.projectView`）；右栏记录卡不变。
@@ -334,6 +365,7 @@ ALTER TABLE documents ADD COLUMN file_size INTEGER NOT NULL DEFAULT 0;
 | F15 Git 仓库管理 | ✅ | `internal/gitcmd`（系统 git CLI，argv 传参 + 超时 + quotepath=false）、`app/repo.go`（检测/状态/暂存/提交/历史/标签/推送/初始化，离帧执行）；入口：「仓库」页签 | gitcmd 集成测试 5 件、`TestProjectRepoTab`（检测→暂存→提交→打标签全链路） |
 | F16 备注就地编辑 | ✅ | `app/todos.go noteSection/saveNote`（记录卡内 TextArea + 保存/取消，走 `UpdateProject` 原样带回其余字段） | `TestProjectNoteInlineEdit` |
 | F17 待办列表 | ✅ | 迁移 `003_todos.sql`（外键级联）、`store/todos.go`、`service` 校验（1–200 rune）、`app/todos.go`（第 4 页签「待办 NN」：添加/勾选/删除/筛选/清理，记录卡摘要行联动） | store 2 件（生命周期+级联）、`TestProjectTodosTab`（添加 2 条→勾选→筛选→删除→计数联动） |
+| F18 评论功能 | ✅ | 迁移 `004_comments.sql`（通用 owner_type 表）、`store/comments.go`、宿主删除事务补级联（项目/组/文档）、`service` 校验（1–500 rune + 宿主存在性）、`app/todos.go commentSection`（记录卡常驻：输入/回车发布、最新在前、悬停删除、限高 240 滚动） | store 2 件（生命周期 + 三类宿主级联）、`TestProjectComments`（发布 2 条→计数→空提交拒绝→删除） |
 
 实现备注：
 - 命令面板的 Enter 经输入框 `OnSubmit`、方向键经面板 `OnShortcut`——`Context.Shortcut` 会被焦点输入框先消费，这是 mygo 的按键路由约定。
@@ -372,3 +404,14 @@ ALTER TABLE documents ADD COLUMN file_size INTEGER NOT NULL DEFAULT 0;
 - 备注沿用 `projects.description`，不新增表；编辑走 `UpdateProject` 带回全部字段。
 - 待办随 `Snapshot.Todos` 进内存快照，页签计数与记录卡摘要零额外查询；排序「未完成在前、各按更新时间倒序」。
 - 待办写操作在处理器内同步执行 + `reload()`（本地 SQLite 毫秒级），沿用删除确认等既有模式。
+
+### §6 追加（F18，2026-11-19 实测）
+
+- [x] store：`TestCommentsLifecycle`（最新在前排序/删除）、`TestCommentsCascadeWithHost`（删文档/项目/组分别只清对应评论）
+- [x] UI：`TestProjectComments`（发布 2 条 → 计数与列表 → 空白提交拒绝 → 删除最新一条 → 计数回落）
+- [x] 截图 `testdata/screens/comments.png`；`go build` / `go vet` / `go test ./...` / `CGO_ENABLED=0 go test ./...` 全绿
+
+实现备注（F18）：
+- 通用表不挂多宿主外键，级联改在宿主删除**事务**里补一条 `DELETE FROM comments WHERE owner_type=? AND owner_id=?`（删组本就有事务，删项目/文档顺势改成事务）。
+- `Snapshot.Comments` 随快照进内存；记录卡评论区在文档/文件/仓库/待办四个页签下常驻可见。
+- 后续给文档或组加评论区只需要调 `CreateComment/Comments` 换 owner 参数，数据层零改动。

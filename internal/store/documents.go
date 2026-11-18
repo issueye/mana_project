@@ -110,16 +110,24 @@ func (s *Store) UpdateDocument(ctx context.Context, id int64, in model.DocumentI
 	return s.GetDocument(ctx, id)
 }
 
-// DeleteDocument removes one document.
+// DeleteDocument removes one document and its comments.
 func (s *Store) DeleteDocument(ctx context.Context, id int64) error {
-	res, err := s.db.ExecContext(ctx, `DELETE FROM documents WHERE id = ?`, id)
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("begin delete document: %w", err)
+	}
+	defer tx.Rollback()
+	if err := deleteCommentsFor(tx, "document", id); err != nil {
+		return fmt.Errorf("delete document comments: %w", err)
+	}
+	res, err := tx.ExecContext(ctx, `DELETE FROM documents WHERE id = ?`, id)
 	if err != nil {
 		return fmt.Errorf("delete document: %w", err)
 	}
 	if n, _ := res.RowsAffected(); n == 0 {
 		return ErrNotFound
 	}
-	return nil
+	return tx.Commit()
 }
 
 // CountDocuments counts a given owner's documents.

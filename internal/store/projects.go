@@ -160,6 +160,9 @@ func (s *Store) DeleteProject(ctx context.Context, id int64) error {
 		`DELETE FROM documents WHERE owner_type = 'project' AND owner_id = ?`, id); err != nil {
 		return fmt.Errorf("delete project docs: %w", err)
 	}
+	if err := deleteCommentsFor(tx, "project", id); err != nil {
+		return fmt.Errorf("delete project comments: %w", err)
+	}
 	res, err := tx.ExecContext(ctx, `DELETE FROM projects WHERE id = ?`, id)
 	if err != nil {
 		return fmt.Errorf("delete project: %w", err)

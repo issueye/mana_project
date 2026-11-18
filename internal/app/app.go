@@ -50,6 +50,7 @@ type App struct {
 	projects []model.Project
 	docs     []model.Document
 	todos    []model.Todo
+	comments []model.Comment
 
 	currentProject model.Project
 	currentDoc     model.Document
@@ -95,6 +96,9 @@ type App struct {
 	todoFilter  int // 0 all, 1 undone, 2 done
 	noteEditing bool
 	noteDraft   string
+
+	// The comment box of the record card (F18).
+	commentInput string
 
 	// The command palette (CTRL K) and its debounced search.
 	paletteOpen     bool
@@ -226,6 +230,7 @@ func (a *App) applySnapshot(snap model.Snapshot) {
 	a.projects = snap.Projects
 	a.docs = snap.Docs
 	a.todos = snap.Todos
+	a.comments = snap.Comments
 	a.err = ""
 	a.ensureSelection()
 }

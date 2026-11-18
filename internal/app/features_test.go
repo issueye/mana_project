@@ -453,6 +453,57 @@ func TestProjectNoteInlineEdit(t *testing.T) {
 	}
 }
 
+// The record card's comment stream posts, counts and deletes remarks.
+func TestProjectComments(t *testing.T) {
+	a := demoApp(t)
+	tt := ui.NewTester(a.View, 1440, 900)
+	tt.Frame()
+	p := a.projects[0]
+	a.openProject(p.ID)
+	tt.Frame()
+
+	if _, ok := tt.Find("评论 · COMMENT"); !ok {
+		t.Fatal("record card lost the comment section")
+	}
+
+	// Post two comments through the form.
+	a.commentInput = "确定用 SQLite 存储"
+	a.addComment(nil, p)
+	a.commentInput = "v0.9.3 聚焦待办与备注"
+	a.addComment(nil, p)
+	tt.Frame()
+	if _, ok := tt.Find("v0.9.3 聚焦待办与备注"); !ok {
+		t.Fatal("newest comment missing")
+	}
+	if _, ok := tt.Find("确定用 SQLite 存储"); !ok {
+		t.Fatal("older comment missing")
+	}
+	if n := len(a.projectComments(p.ID)); n != 2 {
+		t.Fatalf("stream = %d comments, want 2", n)
+	}
+
+	// An empty submit is rejected and keeps the stream intact.
+	before := len(a.comments)
+	a.commentInput = "   "
+	a.addComment(nil, p)
+	if len(a.comments) != before {
+		t.Fatal("empty comment went through")
+	}
+
+	// Delete the newest one through its trash button.
+	if err := tt.Click("删除评论"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if _, ok := tt.Find("v0.9.3 聚焦待办与备注"); ok {
+		t.Fatal("deleted comment is still listed")
+	}
+	if n := len(a.projectComments(p.ID)); n != 1 {
+		t.Fatalf("stream = %d comments after delete, want 1", n)
+	}
+	saveShot(t, tt, "comments")
+}
+
 // The statistics page reuses the home ledger and adds the distributions.
 func TestStatsPage(t *testing.T) {
 	a := demoApp(t)

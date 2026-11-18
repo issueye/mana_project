@@ -262,6 +262,113 @@ func (a *App) noteSection(c *ui.Context, p model.Project) {
 	})
 }
 
+// projectComments filters the snapshot's comments for the project.
+func (a *App) projectComments(projectID int64) []model.Comment {
+	out := make([]model.Comment, 0, 4)
+	for _, cm := range a.comments {
+		if cm.OwnerType == model.OwnerProject && cm.OwnerID == projectID {
+			out = append(out, cm)
+		}
+	}
+	return out
+}
+
+// addComment posts the input box content to the project.
+func (a *App) addComment(c *ui.Context, p model.Project) {
+	content := strings.TrimSpace(a.commentInput)
+	if content == "" {
+		c.Toast("请输入评论内容")
+		return
+	}
+	if _, err := a.svc.CreateComment(context.Background(), model.OwnerProject, p.ID, content); err != nil {
+		c.Toast(service.FormatError(err))
+		return
+	}
+	a.commentInput = ""
+	a.reloadSnapshot()
+}
+
+// deleteComment removes one remark.
+func (a *App) deleteComment(p model.Project, cm model.Comment) {
+	if err := a.svc.DeleteComment(context.Background(), cm.ID); err != nil {
+		a.notice = service.FormatError(err)
+		return
+	}
+	a.reloadSnapshot()
+}
+
+// commentSection is the comment stream at the foot of the record card:
+// an input line and the newest-first list, visible on every view tab.
+func (a *App) commentSection(c *ui.Context, p model.Project) {
+	comments := a.projectComments(p.ID)
+	ui.Column(c).Padding(6, 0, 8, 0).Gap(6).Children(func() {
+		ui.Row(c).Height(20).AlignItems(ui.Center).Children(func() {
+			microLabel(c, "评论 · COMMENT")
+			ui.Spacer(c)
+			monoText(c, itoaPad(len(comments)), 9).TextColor(colInk4)
+		})
+		ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
+			ui.TextInput(c, &a.commentInput).Grow(1).Height(26).
+				Placeholder("记录一条进展或决定…").
+				OnSubmit(func() { a.addComment(c, p) })
+			post := ui.Row(c).Height(26).Padding(0, 10).Radius(2).
+				Background(colSeal).AlignItems(ui.Center).
+				Focusable().Role(ui.RoleButton).Label("发布评论")
+			if post.Hovered() {
+				post.Background(ui.Hex("#C14F30"))
+			}
+			post.OnClick(func() { a.addComment(c, p) })
+			post.Children(func() {
+				ui.Text(c, "评论").FontSize(10).TextColor(colSheet)
+			})
+		})
+		if len(comments) == 0 {
+			ui.Text(c, "还没有评论；进展、决定与结论都值得留下来。").FontSize(10).TextColor(colInk4)
+			return
+		}
+		ui.Scroll(c).Height(listHeight(len(comments))).Children(func() {
+			ui.Column(c).Gap(2).Children(func() {
+				for i, cm := range comments {
+					comment := cm
+					idx := i
+					row := ui.Row(c).MinHeight(34).Padding(4, 8).Gap(8).AlignItems(ui.Start)
+					if idx%2 == 1 {
+						row.Background(colPaper)
+					}
+					row.Children(func() {
+						ui.Box(c).Size(3, 3).Radius(2).Background(colInk4).Margin(6, 0, 0, 0)
+						ui.Column(c).Grow(1).Gap(1).Children(func() {
+							ui.Text(c, comment.Content).FontSize(10.5).TextColor(colInk)
+						})
+						ui.Spacer(c)
+						ui.Column(c).Gap(2).AlignItems(ui.End).Children(func() {
+							ui.Text(c, model.Relative(comment.CreatedAt)).FontSize(9).TextColor(colInk4)
+							del := ui.Box(c).Size(18, 18).Radius(2).Center().
+								Focusable().Role(ui.RoleButton).Label("删除评论").Tooltip("删除")
+							if del.Hovered() {
+								del.Background(colSealSoft)
+							}
+							del.OnClick(func() { a.deleteComment(p, comment) })
+							del.Children(func() {
+								ui.Icon(c, icons.trash).FontSize(10).TextColor(colInk4)
+							})
+						})
+					})
+				}
+			})
+		})
+	})
+}
+
+// listHeight caps the comment stream's scroll height.
+func listHeight(n int) float32 {
+	h := float32(n)*40 + 8
+	if h > 240 {
+		h = 240
+	}
+	return h
+}
+
 // saveNote writes the draft back through UpdateProject, keeping every
 // other field as it is.
 func (a *App) saveNote(c *ui.Context, p model.Project) {

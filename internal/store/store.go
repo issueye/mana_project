@@ -173,7 +173,11 @@ func (s *Store) Snapshot(ctx context.Context) (model.Snapshot, error) {
 	if err != nil {
 		return model.Snapshot{}, err
 	}
-	return model.Snapshot{Groups: groups, Projects: projects, Docs: docs, Todos: todos}, nil
+	comments, err := s.ListAllComments(ctx)
+	if err != nil {
+		return model.Snapshot{}, err
+	}
+	return model.Snapshot{Groups: groups, Projects: projects, Docs: docs, Todos: todos, Comments: comments}, nil
 }
 
 // ListGroups returns all groups with their project and document counts.
@@ -263,6 +267,9 @@ func (s *Store) DeleteGroup(ctx context.Context, id int64) error {
 	if _, err := tx.ExecContext(ctx,
 		`DELETE FROM documents WHERE owner_type = 'group' AND owner_id = ?`, id); err != nil {
 		return fmt.Errorf("delete group docs: %w", err)
+	}
+	if err := deleteCommentsFor(tx, "group", id); err != nil {
+		return fmt.Errorf("delete group comments: %w", err)
 	}
 	res, err := tx.ExecContext(ctx, `DELETE FROM project_groups WHERE id = ?`, id)
 	if err != nil {

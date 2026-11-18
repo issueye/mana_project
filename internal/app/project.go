@@ -390,6 +390,8 @@ func (a *App) recordCard(c *ui.Context, p model.Project, width float32) {
 			hairline(c)
 			a.noteSection(c, p)
 			hairline(c)
+			a.commentSection(c, p)
+			hairline(c)
 			ui.Column(c).Padding(10, 0, 0, 0).Gap(6).Children(func() {
 				microLabel(c, "文档分布 · " + itoaPad(len(docs)))
 				a.docDistribution(c, docs)

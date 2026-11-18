@@ -320,6 +320,55 @@ func (s *Service) ClearDoneTodos(ctx context.Context, projectID int64) (int64, e
 	return s.store.ClearDoneTodos(ctx, projectID)
 }
 
+// Comments lists one owner's remarks.
+func (s *Service) Comments(ctx context.Context, ownerType string, ownerID int64) ([]model.Comment, error) {
+	if err := s.checkCommentOwner(ctx, ownerType, ownerID); err != nil {
+		return nil, err
+	}
+	return s.store.ListComments(ctx, ownerType, ownerID)
+}
+
+// CreateComment validates and inserts a remark.
+func (s *Service) CreateComment(ctx context.Context, ownerType string, ownerID int64, content string) (model.Comment, error) {
+	content = strings.TrimSpace(content)
+	if content == "" {
+		return model.Comment{}, &FieldError{Field: "content", Message: "请输入评论内容"}
+	}
+	if n := utf8.RuneCountInString(content); n > 500 {
+		return model.Comment{}, &FieldError{Field: "content", Message: "评论最多 500 个字符"}
+	}
+	if err := s.checkCommentOwner(ctx, ownerType, ownerID); err != nil {
+		return model.Comment{}, err
+	}
+	return s.store.CreateComment(ctx, ownerType, ownerID, content)
+}
+
+// DeleteComment removes a remark.
+func (s *Service) DeleteComment(ctx context.Context, id int64) error {
+	return s.store.DeleteComment(ctx, id)
+}
+
+// checkCommentOwner verifies the comment's host exists.
+func (s *Service) checkCommentOwner(ctx context.Context, ownerType string, ownerID int64) error {
+	switch ownerType {
+	case model.OwnerProject:
+		if _, err := s.store.GetProject(ctx, ownerID); err != nil {
+			return &FieldError{Field: "owner", Message: "所属项目不存在"}
+		}
+	case model.OwnerGroup:
+		if _, err := s.store.GetGroup(ctx, ownerID); err != nil {
+			return &FieldError{Field: "owner", Message: "所属项目组不存在"}
+		}
+	case "document":
+		if _, err := s.store.GetDocument(ctx, ownerID); err != nil {
+			return &FieldError{Field: "owner", Message: "所属文档不存在"}
+		}
+	default:
+		return &FieldError{Field: "owner", Message: "评论归属无效"}
+	}
+	return nil
+}
+
 func validateGroup(in model.GroupInput) (model.GroupInput, error) {
 	in.Name = strings.TrimSpace(in.Name)
 	in.Description = strings.TrimSpace(in.Description)

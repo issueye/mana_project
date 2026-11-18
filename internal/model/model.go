@@ -85,12 +85,24 @@ type Todo struct {
 	UpdatedAt time.Time
 }
 
+// Comment is a timestamped remark attached to a project, a group or a
+// document.
+type Comment struct {
+	ID        int64
+	OwnerType string // "project", "group" or "document"
+	OwnerID   int64
+	Content   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 // Snapshot is the complete in-memory view of the database.
 type Snapshot struct {
 	Groups   []Group
 	Projects []Project
 	Docs     []Document
 	Todos    []Todo
+	Comments []Comment
 }
 
 // SearchResult is the outcome of a global search, one capped section per
