@@ -272,6 +272,43 @@ func Push(ctx context.Context, dir, tag string) error {
 	return nil
 }
 
+// fetchTimeout covers a remote round trip; the credential helper gets
+// its own window when it needs one.
+const fetchTimeout = 60 * time.Second
+
+// Fetch updates the remote-tracking branches from origin.
+func Fetch(ctx context.Context, dir string) error {
+	if !HasRemote(dir) {
+		return errors.New("没有配置远端 origin")
+	}
+	ctx, cancel := context.WithTimeout(ctx, fetchTimeout)
+	defer cancel()
+	_, err := run(ctx, dir, fetchTimeout, "fetch", "origin", "--prune", "--quiet")
+	return err
+}
+
+// AheadBehind counts, after a Fetch, how many commits the local branch
+// is ahead of and behind its counterpart on origin.
+func AheadBehind(ctx context.Context, dir, branch string) (ahead, behind int, err error) {
+	if branch == "" {
+		return 0, 0, errors.New("当前分支未知")
+	}
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
+	out, err := run(ctx, dir, defaultTimeout,
+		"rev-list", "--left-right", "--count", "HEAD...origin/"+branch)
+	if err != nil {
+		return 0, 0, err
+	}
+	fields := strings.Fields(strings.TrimSpace(out))
+	if len(fields) != 2 {
+		return 0, 0, fmt.Errorf("无法解析 ahead/behind：%q", out)
+	}
+	ahead, _ = strconv.Atoi(fields[0])
+	behind, _ = strconv.Atoi(fields[1])
+	return ahead, behind, nil
+}
+
 // SortDirsFirst orders directory entries the way a file manager does.
 func SortDirsFirst(entries []os.DirEntry) {
 	sort.SliceStable(entries, func(i, j int) bool {

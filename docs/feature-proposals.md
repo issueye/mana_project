@@ -47,6 +47,7 @@
 | F16 | **项目备注就地编辑** | **P0（2026-11-19 追加）** | 备注已存在于模型（description），但只能进完整编辑弹窗；记录卡上就地可改才是「随手记」 | 0.25 人日 |
 | F17 | **项目待办列表** | **P0（2026-11-19 追加）** | 项目需要行动项：添加、勾选完成、删除、清理已完成，随快照进全局视图 | 0.75 人日 |
 | F18 | **评论功能** | **P0（2026-11-19 追加）** | 记录项目的进展、决定与结论：时间线式评论，记录卡常驻可看可写 | 0.5 人日 |
+| F19 | **远程更新检查 + 桌面通知** | **P0（2026-11-19 追加）** | 定期 git fetch 检查 origin 是否领先，右上角横幅通知，一键跳到仓库面板 | 0.75 人日 |
 | F6 | 文档全文搜索（正文 LIKE / FTS5） | P1 | FR-04-8 的正文部分；数据量大后需要 FTS | 1 人日 |
 | F7 | 项目置顶与排序记忆 | P1 | 手动 `sort_order` 列 + 拖拽或快捷操作 | 1 人日 |
 | F8 | 导入导出（JSON 快照导出 / 导入） | P1 | 换机、分享模板；与备份互补 | 1 人日 |
@@ -248,6 +249,20 @@ CREATE INDEX ix_comments_owner ON comments(owner_type, owner_id, created_at DESC
 
 ---
 
+### 4.9 F19 远程更新检查 + 桌面通知
+
+**检查**：应用启动 20 秒后开始，每 5 分钟一轮（常量可调）。每轮在 UI 线程收集目标（有路径的项目），每项目一个 worker：`IsRepo` → `git fetch origin --prune`（60s 超时）→ `rev-list --left-right --count HEAD…origin/<branch>` 得 ahead/behind。worker 只取数，结果统一 `win.Update` 合并（沿用 F15 的并发模型）。
+
+**通知**：behind > 0 时产生横幅（key = 项目ID:落后数 去重；同一项目旧横幅被替换；`behind==0` 清除该项目的横幅；用户关掉的 key 记入 seen，不再重复打扰）。
+
+**横幅**：`ui.Overlay` + Absolute 定位在**窗口右上角**（标题栏下方），朱砂顶条 + 阴影 + 索引卡样式；内容 = 刷新图标 + 「远程仓库有更新」+ 等宽 `项目 · 分支` + 「远端领先 N 个提交」；操作 = 查看（跳项目仓库页签并消除）/ ×（记住已看）；最多同时显示 3 张，其余折叠为「还有 N 条通知」。
+
+**入口**：仓库面板新增「落后 N 个提交」芯片 +「检查远程更新」按钮（手动 fetch + 比对，结果进面板与通知流）。
+
+**验收**：本地 bare 远端往返测试 fetch/behind 全对；同一状态不重复通知、新计数重新通知、关闭后同状态静默、回到同步清横幅、查看跳转正确。
+
+---
+
 ### 4.6 F14 项目文件系统 + F15 Git 仓库管理
 
 两个功能共用一个入口：**项目详情页主列改为页签**「文档 / 文件 / 仓库」（`ui.Tabs`，`a.projectView`）；右栏记录卡不变。
@@ -366,6 +381,7 @@ ALTER TABLE documents ADD COLUMN file_size INTEGER NOT NULL DEFAULT 0;
 | F16 备注就地编辑 | ✅ | `app/todos.go noteSection/saveNote`（记录卡内 TextArea + 保存/取消，走 `UpdateProject` 原样带回其余字段） | `TestProjectNoteInlineEdit` |
 | F17 待办列表 | ✅ | 迁移 `003_todos.sql`（外键级联）、`store/todos.go`、`service` 校验（1–200 rune）、`app/todos.go`（第 4 页签「待办 NN」：添加/勾选/删除/筛选/清理，记录卡摘要行联动） | store 2 件（生命周期+级联）、`TestProjectTodosTab`（添加 2 条→勾选→筛选→删除→计数联动） |
 | F18 评论功能 | ✅ | 迁移 `004_comments.sql`（通用 owner_type 表）、`store/comments.go`、宿主删除事务补级联（项目/组/文档）、`service` 校验（1–500 rune + 宿主存在性）、`app/todos.go commentSection`（记录卡常驻：输入/回车发布、最新在前、悬停删除、限高 240 滚动） | store 2 件（生命周期 + 三类宿主级联）、`TestProjectComments`（发布 2 条→计数→空提交拒绝→删除） |
+| F19 远程更新检查 + 通知 | ✅ | `gitcmd Fetch/AheadBehind`、`app/notify.go`（20s 后首轮 + 每 5 分钟一轮；worker 只取数、UI 线程合并；横幅去重/替换/seen 静默/同步清除；`ui.Overlay` 右上角 Absolute 定位）、仓库面板「落后 N 个提交」芯片 +「检查远程更新」 | gitcmd 本地 bare 远端往返 1 件、`TestRemoteUpdateNotices`（去重/再通知/关闭静默/清横幅/查看跳转） |
 
 实现备注：
 - 命令面板的 Enter 经输入框 `OnSubmit`、方向键经面板 `OnShortcut`——`Context.Shortcut` 会被焦点输入框先消费，这是 mygo 的按键路由约定。

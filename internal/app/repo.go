@@ -33,6 +33,10 @@ type repoState struct {
 	dirtyMsg string // last successful action, until the next one
 	gen      int
 
+	// remoteBehind: how far origin is ahead, set by an explicit fetch;
+	// -2 not compared yet, -1 unknown.
+	remoteBehind int
+
 	// Form state that must survive frames.
 	commitMsg  string
 	tagName    string
@@ -55,7 +59,8 @@ type repoData struct {
 func (a *App) openRepoView(p model.Project) {
 	a.repo = repoState{
 		projectID: p.ID, loading: true, gen: a.repo.gen + 1,
-		commitMsg: a.repo.commitMsg, tagName: a.repo.tagName, tagMessage: a.repo.tagMessage,
+		remoteBehind: -2,
+		commitMsg:    a.repo.commitMsg, tagName: a.repo.tagName, tagMessage: a.repo.tagMessage,
 	}
 	id := a.repo.gen
 	if a.win == nil {
@@ -276,6 +281,9 @@ func (a *App) repoView(c *ui.Context, p model.Project) {
 			}
 			if text := repoRemoteText(r); text != "" {
 				ui.Text(c, text).FontSize(10).TextColor(colInk3)
+			}
+			if r.isRepo && r.hasRemote {
+				a.repoBehindChip(c, p, r)
 			}
 			ui.Spacer(c)
 			if r.dirtyMsg != "" {

@@ -504,6 +504,76 @@ func TestProjectComments(t *testing.T) {
 	saveShot(t, tt, "comments")
 }
 
+// The remote-update watcher turns behind counts into top-right banners,
+// deduplicates them, re-announces new counts and clears them once seen.
+func TestRemoteUpdateNotices(t *testing.T) {
+	a := demoApp(t)
+	tt := ui.NewTester(a.View, 1440, 900)
+	tt.Frame()
+
+	target := remoteTarget{id: a.projects[0].ID, name: a.projects[0].Name}
+
+	// Three commits behind: one banner.
+	a.applyRemoteResult(remoteResult{target: target, isRepo: true, hasRemote: true, behind: 3})
+	tt.Frame()
+	if len(a.notices) != 1 {
+		t.Fatalf("notices = %d, want 1", len(a.notices))
+	}
+	if _, ok := tt.Find("远程仓库有更新"); !ok {
+		t.Fatal("banner did not render")
+	}
+	if _, ok := tt.Find("远端领先 3 个提交"); !ok {
+		t.Fatal("banner did not show the behind count")
+	}
+	saveShot(t, tt, "notify")
+
+	// The same state again does not stack a second banner.
+	a.applyRemoteResult(remoteResult{target: target, isRepo: true, hasRemote: true, behind: 3})
+	tt.Frame()
+	if len(a.notices) != 1 {
+		t.Fatalf("duplicate notices = %d, want 1", len(a.notices))
+	}
+
+	// A new count re-announces.
+	a.applyRemoteResult(remoteResult{target: target, isRepo: true, hasRemote: true, behind: 5})
+	tt.Frame()
+	if len(a.notices) != 1 || a.notices[0].behind != 5 {
+		t.Fatalf("re-announce failed: %#v", a.notices)
+	}
+
+	// Dismissing remembers the state: the same count stays quiet.
+	a.dismissNotice(a.notices[0])
+	a.applyRemoteResult(remoteResult{target: target, isRepo: true, hasRemote: true, behind: 5})
+	tt.Frame()
+	if len(a.notices) != 0 {
+		t.Fatalf("dismissed notice came back: %#v", a.notices)
+	}
+	if _, ok := tt.Find("远程仓库有更新"); ok {
+		t.Fatal("dismissed banner still rendered")
+	}
+
+	// Back in sync clears any leftovers; a fresh move re-announces.
+	a.applyRemoteResult(remoteResult{target: target, isRepo: true, hasRemote: true, behind: 2})
+	a.applyRemoteResult(remoteResult{target: target, isRepo: true, hasRemote: true, behind: 0})
+	if len(a.notices) != 0 {
+		t.Fatalf("in-sync result left notices: %#v", a.notices)
+	}
+	a.applyRemoteResult(remoteResult{target: target, isRepo: true, hasRemote: true, behind: 1})
+	tt.Frame()
+
+	// 查看 jumps to the project's repository panel and dismisses.
+	if err := tt.Click("查看 " + target.name + " 的更新"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if len(a.notices) != 0 {
+		t.Fatalf("openNotice left the banner: %#v", a.notices)
+	}
+	if a.page != PageProject || a.projectView != 2 {
+		t.Fatalf("openNotice landed on %v/%d, want the repo panel", a.page, a.projectView)
+	}
+}
+
 // The statistics page reuses the home ledger and adds the distributions.
 func TestStatsPage(t *testing.T) {
 	a := demoApp(t)

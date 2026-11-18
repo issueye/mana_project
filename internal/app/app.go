@@ -100,6 +100,13 @@ type App struct {
 	// The comment box of the record card (F18).
 	commentInput string
 
+	// The remote-update watcher (F19): banners, dedupe state and the
+	// check-cycle guard. All writes happen on the UI thread.
+	notices      []updateNotice
+	seenNotices  map[string]bool
+	knownRepos   map[int64]bool
+	checkRunning bool
+
 	// The command palette (CTRL K) and its debounced search.
 	paletteOpen     bool
 	paletteQuery    string
@@ -154,6 +161,8 @@ func New() *App {
 		homeProjectRow: -1,
 		projectRow:     -1,
 		docRow:         -1,
+		seenNotices:    map[string]bool{},
+		knownRepos:     map[int64]bool{},
 	}
 }
 
@@ -192,8 +201,11 @@ func (a *App) Start() error {
 }
 
 // AttachWindow gives the app the window used for asynchronous updates and
-// dialogs.
-func (a *App) AttachWindow(win *mygo.Window) { a.win = win }
+// dialogs, and starts the periodic remote-update watcher.
+func (a *App) AttachWindow(win *mygo.Window) {
+	a.win = win
+	a.startUpdateWatcher()
+}
 
 // Close closes the database.
 func (a *App) Close() {
@@ -821,6 +833,7 @@ func (a *App) View(c *ui.Context) {
 		})
 	})
 	a.dialogs(c)
+	a.notificationOverlay(c)
 	if a.notice != "" {
 		c.Toast(a.notice)
 		a.notice = ""

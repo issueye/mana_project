@@ -182,3 +182,93 @@ func TestIsRepo(t *testing.T) {
 		t.Fatal("initialized repository not detected")
 	}
 }
+
+// gitArgs wraps a CombinedOutput call for the fetch test's setup.
+func gitRun(t *testing.T, dir string, args ...string) {
+	t.Helper()
+	gitAvailable(t)
+	cmd := exec.Command("git", args...)
+	cmd.Dir = dir
+	if out, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("git %v: %v: %s", args, err, out)
+	}
+}
+
+// Fetch and the ahead/behind count work end to end against a local
+// "remote": a bare repository two clones share.
+func TestFetchAndAheadBehind(t *testing.T) {
+	gitAvailable(t)
+	base := t.TempDir()
+	origin := filepath.Join(base, "origin.git")
+	gitRun(t, base, "init", "--bare", "-b", "main", origin)
+	work := filepath.Join(base, "work")
+	gitRun(t, base, "clone", origin, work)
+	gitRun(t, work, "config", "user.name", "Mana")
+	gitRun(t, work, "config", "user.email", "mana@example.com")
+
+	ctx := context.Background()
+
+	// Nothing pushed yet: the upstream branch does not exist.
+	if err := Fetch(ctx, work); err != nil {
+		t.Fatalf("fetch from empty remote: %v", err)
+	}
+	if _, _, err := AheadBehind(ctx, work, "main"); err == nil {
+		t.Fatal("ahead/behind without an upstream branch should fail")
+	}
+
+	if err := os.WriteFile(filepath.Join(work, "a.txt"), []byte("v1"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := Stage(ctx, work, nil); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Commit(ctx, work, "first"); err != nil {
+		t.Fatal(err)
+	}
+	gitRun(t, work, "push", "-u", "origin", "main")
+
+	ahead, behind, err := AheadBehind(ctx, work, "main")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ahead != 0 || behind != 0 {
+		t.Fatalf("after push ahead=%d behind=%d, want 0/0", ahead, behind)
+	}
+
+	// A second clone moves the remote ahead of work.
+	other := filepath.Join(base, "other")
+	gitRun(t, base, "clone", origin, other)
+	gitRun(t, other, "config", "user.name", "Mana")
+	gitRun(t, other, "config", "user.email", "mana@example.com")
+	if err := os.WriteFile(filepath.Join(other, "b.txt"), []byte("v2"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	gitRun(t, other, "add", ".")
+	gitRun(t, other, "commit", "-m", "second")
+	gitRun(t, other, "push", "origin", "main")
+
+	// Before the fetch, work still sees itself in sync.
+	ahead, behind, err = AheadBehind(ctx, work, "main")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if behind != 0 {
+		t.Fatalf("behind before fetch = %d, want 0", behind)
+	}
+
+	if err := Fetch(ctx, work); err != nil {
+		t.Fatal(err)
+	}
+	ahead, behind, err = AheadBehind(ctx, work, "main")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ahead != 0 || behind != 1 {
+		t.Fatalf("after fetch ahead=%d behind=%d, want 0/1", ahead, behind)
+	}
+
+	// A directory without a remote cannot fetch.
+	if err := Fetch(ctx, newRepo(t)); err == nil {
+		t.Fatal("fetch without a remote should fail")
+	}
+}
