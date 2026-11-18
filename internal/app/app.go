@@ -12,6 +12,7 @@ import (
 
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
+	"github.com/egoist/mygo/ui/editor"
 
 	"mana/internal/model"
 	"mana/internal/service"
@@ -26,17 +27,20 @@ const (
 	PageGroups
 	PageProject
 	PageEditor
+	PageStats
 )
 
 type App struct {
-	svc   *service.Service
-	store *store.Store
-	win   *mygo.Window
-	theme ui.Theme
+	svc    *service.Service
+	store  *store.Store
+	win    *mygo.Window
+	theme  ui.Theme
+	dbPath string
 
 	page        Page
 	groupFilter int64 // 0 all, -1 ungrouped, >0 group ID
 	groupTab    int   // 0 projects, 1 documents
+	projectView int   // 0 documents, 1 files, 2 repository
 	projectID   int64
 	docID       int64
 	editorFrom  Page
@@ -48,6 +52,26 @@ type App struct {
 
 	currentProject model.Project
 	currentDoc     model.Document
+
+	// The project page's side views: the file browser (F14) and the Git
+	// panel (F15), both loaded off the frame.
+	explorer explorerState
+	repo     repoState
+
+	// The editor's buffer and state live across frames so the writing
+	// paper keeps the caret, scroll and line numbers.
+	docBuf      *editor.Buffer
+	editorState editor.State
+
+	// The viewer state of a file document (F13): loaded in the
+	// background, keyed by document ID.
+	viewer      viewerFile
+	viewerSheet string
+
+	// The preview card on the project page loads the newest document's
+	// body once per document.
+	previewDocID int64
+	previewBody  string
 
 	projectTable   ui.ListState
 	homeTable      ui.ListState
@@ -64,6 +88,23 @@ type App struct {
 	groupListQuery string
 	tagFilter      string
 	sortMode       string
+
+	// The command palette (CTRL K) and its debounced search.
+	paletteOpen     bool
+	paletteQuery    string
+	paletteSearched string
+	paletteResults  model.SearchResult
+	paletteSel      int
+	paletteGen      int
+
+	// The settings sheet and its backup flow.
+	showSettings bool
+	dbSize       int64
+
+	// The move-to-group dialog.
+	showMoveDialog bool
+	moveProjectID  int64
+	moveChoice     string
 
 	showProjectDialog bool
 	showGroupDialog   bool
@@ -109,6 +150,7 @@ func New() *App {
 func NewWithService(svc *service.Service) *App {
 	a := New()
 	a.svc = svc
+	a.store = svc.Store()
 	if err := a.Load(); err != nil {
 		a.err = service.FormatError(err)
 	}
@@ -131,8 +173,10 @@ func (a *App) Start() error {
 	if err != nil {
 		return err
 	}
+	st.SetFilesDir(dir)
 	a.store = st
 	a.svc = service.New(st)
+	a.dbPath = filepath.Join(dir, "mana.db")
 	return a.Load()
 }
 
@@ -225,6 +269,15 @@ func (a *App) groupByID(id int64) (model.Group, bool) {
 	return model.Group{}, false
 }
 
+func (a *App) groupByName(name string) (model.Group, bool) {
+	for _, g := range a.groups {
+		if g.Name == name {
+			return g, true
+		}
+	}
+	return model.Group{}, false
+}
+
 func (a *App) docByID(id int64) (model.Document, bool) {
 	for _, d := range a.docs {
 		if d.ID == id {
@@ -238,15 +291,15 @@ func (a *App) docByID(id int64) (model.Document, bool) {
 // virtual all/ungrouped entries.
 func (a *App) currentGroup() (name, description, color string) {
 	if a.groupFilter == 0 {
-		return "全部项目", "汇总所有项目组与未分组中的项目，用于全局浏览。", "#1677FF"
+		return "全部项目", "汇总所有项目组与未分组中的项目，用于全局浏览。", "#33586B"
 	}
 	if a.groupFilter == -1 {
-		return "未分组", "尚未归入项目组的项目；可随时移动到任意项目组。", "#8F959E"
+		return "未分组", "尚未归入项目组的项目；可随时移动到任意项目组。", "#A39B87"
 	}
 	if g, ok := a.groupByID(a.groupFilter); ok {
 		return g.Name, g.Description, g.Color
 	}
-	return "全部项目", "汇总所有项目组与未分组中的项目，用于全局浏览。", "#1677FF"
+	return "全部项目", "汇总所有项目组与未分组中的项目，用于全局浏览。", "#33586B"
 }
 
 func (a *App) visibleProjects() []model.Project {
@@ -419,6 +472,9 @@ func (a *App) openProject(id int64) {
 		a.notice = "项目不存在或已被删除"
 		return
 	}
+	if a.projectID != id {
+		a.projectView = 0
+	}
 	a.projectID = id
 	a.currentProject = p
 	a.page = PageProject
@@ -460,6 +516,7 @@ func (a *App) openDoc(id int64) {
 	a.page = PageEditor
 	a.docRow = -1
 	a.fieldErr = map[string]string{}
+	a.resetDocBuffer(d.Content)
 }
 
 // newDoc opens the editor for a new document owned by ownerType/ownerID.
@@ -477,11 +534,22 @@ func (a *App) newDoc(ownerType string, ownerID int64) {
 	a.editorFrom = a.page
 	a.page = PageEditor
 	a.fieldErr = map[string]string{}
+	a.resetDocBuffer("")
+}
+
+// resetDocBuffer points the writing paper at a fresh buffer with text.
+func (a *App) resetDocBuffer(text string) {
+	if a.docBuf == nil {
+		a.docBuf = editor.NewBuffer(text)
+	} else {
+		a.docBuf.Reset(text)
+	}
+	a.editorState = editor.State{}
 }
 
 func (a *App) editorDirty() bool {
 	return a.docForm.Title != a.docInitial.Title ||
-		a.docForm.Content != a.docInitial.Content ||
+		a.docContent() != a.docInitial.Content ||
 		a.docForm.Kind != a.docInitial.Kind ||
 		a.docForm.Link != a.docInitial.Link ||
 		a.docKindChoice != model.KindLabel(a.docInitial.Kind)
@@ -510,6 +578,7 @@ func (a *App) saveDoc(c *ui.Context) {
 	if a.svc == nil {
 		return
 	}
+	a.syncDocBuffer()
 	a.docForm.Kind = model.NormalizeKind(a.docKindChoice)
 	a.fieldErr = map[string]string{}
 	_, err := a.svc.SaveDocument(context.Background(), a.docFormID, a.docForm)
@@ -665,7 +734,7 @@ func (a *App) askDeleteProject() {
 	a.deleteKind = "project"
 	a.deleteID = a.currentProject.ID
 	a.deleteTitle = "删除项目 “" + a.currentProject.Name + "”？"
-	a.deleteMessage = fmt.Sprintf("项目下的 %d 篇文档将一并删除，此操作不可恢复。", len(a.projectDocs()))
+	a.deleteMessage = "项目会从索引中移除，受影响的记录如下。"
 	a.showDeleteDialog = true
 }
 
@@ -677,8 +746,7 @@ func (a *App) askDeleteGroup() {
 	a.deleteID = a.groupFilter
 	g, _ := a.groupByID(a.groupFilter)
 	a.deleteTitle = "删除项目组 “" + g.Name + "”？"
-	a.deleteMessage = fmt.Sprintf("组内 %d 个项目将移至「未分组」，%d 篇组文档将一并删除。",
-		g.ProjectCount, len(a.groupDocs()))
+	a.deleteMessage = "项目组会从索引中移除，受影响的记录如下。"
 	a.showDeleteDialog = true
 }
 
@@ -690,7 +758,7 @@ func (a *App) askDeleteDoc(id int64) {
 	a.deleteKind = "doc"
 	a.deleteID = id
 	a.deleteTitle = "删除文档 “" + d.Title + "”？"
-	a.deleteMessage = "删除后不可恢复。"
+	a.deleteMessage = "这篇文档会从记录中移除。"
 	a.showDeleteDialog = true
 }
 
@@ -731,10 +799,11 @@ func (a *App) View(c *ui.Context) {
 	ui.Column(c).Fill().Children(func() {
 		a.windowBar(c)
 		ui.Row(c).Grow(1).FillWidth().Children(func() {
-			a.sidebar(c)
-			ui.Column(c).Grow(1).FillHeight().Children(func() {
-				a.topbar(c)
+			a.iconRail(c)
+			a.contextPanel(c)
+			ui.Column(c).Grow(1).FillHeight().Background(colSheet).Children(func() {
 				a.content(c)
+				a.statusBar(c)
 			})
 		})
 	})
@@ -746,6 +815,13 @@ func (a *App) View(c *ui.Context) {
 }
 
 func (a *App) shortcuts(c *ui.Context) {
+	if c.Shortcut(ui.Cmd, ui.KeyK) {
+		if a.paletteOpen {
+			a.paletteOpen = false
+		} else {
+			a.openPalette()
+		}
+	}
 	if c.Shortcut(ui.Cmd, ui.KeyN) {
 		if a.page != PageEditor {
 			a.openNewProject()
@@ -760,6 +836,15 @@ func (a *App) shortcuts(c *ui.Context) {
 	if a.page == PageEditor && c.Shortcut(ui.Cmd, ui.KeyS) {
 		a.saveDoc(c)
 	}
+	if a.showProjectDialog && c.Shortcut(ui.Cmd, ui.KeyEnter) {
+		a.submitProject(c)
+	}
+	if a.showGroupDialog && c.Shortcut(ui.Cmd, ui.KeyEnter) {
+		a.submitGroup(c)
+	}
+	if a.showMoveDialog && c.Shortcut(ui.Cmd, ui.KeyEnter) {
+		a.submitMove(c)
+	}
 }
 
 func (a *App) content(c *ui.Context) {
@@ -770,6 +855,8 @@ func (a *App) content(c *ui.Context) {
 		a.projectPage(c)
 	case PageEditor:
 		a.editorPage(c)
+	case PageStats:
+		a.statsPage(c)
 	default:
 		a.homePage(c)
 	}

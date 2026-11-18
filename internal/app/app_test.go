@@ -45,8 +45,8 @@ func TestHomeRenders(t *testing.T) {
 	a := demoApp(t)
 	tt := ui.NewTester(a.View, 1440, 900)
 	tt.Frame()
-	if _, ok := tt.Find("最近更新项目"); !ok {
-		t.Fatal("home did not render the recent projects card")
+	if _, ok := tt.Find("最近更新"); !ok {
+		t.Fatal("home did not render the recent projects ledger")
 	}
 	if _, ok := tt.Find("Mana Desktop"); !ok {
 		t.Fatal("home did not render the sample project")
@@ -65,6 +65,11 @@ func TestGroupPageRenders(t *testing.T) {
 	if _, ok := tt.Find("客户端应用"); !ok {
 		t.Fatal("group page did not render")
 	}
+	for _, action := range []string{"编辑", "删除项目组", "新建项目"} {
+		if _, ok := tt.Find(action); !ok {
+			t.Fatalf("group header lost the %q action", action)
+		}
+	}
 	saveShot(t, tt, "groups")
 }
 
@@ -80,7 +85,7 @@ func TestProjectAndEditorRender(t *testing.T) {
 		t.Fatal(err)
 	}
 	tt.Frame()
-	if _, ok := tt.Find("项目信息"); !ok {
+	if _, ok := tt.Find("记录卡"); !ok {
 		t.Fatal("project detail did not render")
 	}
 	saveShot(t, tt, "project")
@@ -89,13 +94,54 @@ func TestProjectAndEditorRender(t *testing.T) {
 	}
 	tt.Frame()
 	t.Logf("page after click: %v, docID=%d, title=%q", a.page, a.docFormID, a.docForm.Title)
-	if _, ok := tt.Find("Markdown 实时预览"); !ok {
+	if _, ok := tt.Find("CTRL S 保存"); !ok {
 		for _, text := range tt.Texts() {
 			t.Logf("text: %q", text)
 		}
 		t.Fatal("editor did not render")
 	}
 	saveShot(t, tt, "editor")
+}
+
+// The project header keeps the three actions as bordered buttons whose
+// names are visible; going back to the group lives in the context panel.
+func TestProjectHeaderActions(t *testing.T) {
+	a := demoApp(t)
+	tt := ui.NewTester(a.View, 1440, 900)
+	tt.Frame()
+	a.openProject(a.projects[0].ID)
+	tt.Frame()
+	for _, action := range []string{"打开目录", "编辑项目", "删除项目"} {
+		if _, ok := tt.Find(action); !ok {
+			t.Fatalf("project header lost the %q action", action)
+		}
+	}
+	if _, ok := tt.Find("返回项目组"); !ok {
+		t.Fatal("project context panel lost the back action")
+	}
+	saveShot(t, tt, "project-icon-actions")
+
+	if err := tt.Click("删除项目"); err != nil {
+		t.Fatal(err)
+	}
+	if !a.showDeleteDialog {
+		t.Fatal("delete button did not ask for confirmation")
+	}
+	tt.Frame()
+	if err := tt.Click("取消"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if a.showDeleteDialog {
+		t.Fatal("the delete dialog did not close")
+	}
+
+	if err := tt.Click("返回项目组"); err != nil {
+		t.Fatal(err)
+	}
+	if a.page != PageGroups {
+		t.Errorf("back button left the page on %v, want PageGroups", a.page)
+	}
 }
 
 func TestDialogsRender(t *testing.T) {
@@ -120,7 +166,7 @@ func TestGroupDocsRender(t *testing.T) {
 		t.Fatal(err)
 	}
 	tt.Frame()
-	if err := tt.Click("文档 5"); err != nil {
+	if err := tt.Click("文档 05"); err != nil {
 		t.Fatal(err)
 	}
 	tt.Frame()
@@ -145,8 +191,8 @@ func TestNativeWindowContentSize(t *testing.T) {
 	saveShot(t, tt, "native-project")
 	a.openDoc(a.docs[0].ID)
 	tt.Frame()
-	if _, ok := tt.Find("Ctrl S 保存"); !ok {
-		t.Fatal("editor status bar clipped at native content height")
+	if _, ok := tt.Find("CTRL S 保存"); !ok {
+		t.Fatal("editor paper header clipped at native content height")
 	}
 	saveShot(t, tt, "native-editor")
 }
@@ -168,14 +214,14 @@ func TestMinimumPagesRender(t *testing.T) {
 
 	a.openProject(a.projects[0].ID)
 	tt.Frame()
-	if _, ok := tt.Find("项目信息"); !ok {
+	if _, ok := tt.Find("记录卡"); !ok {
 		t.Fatal("project detail missing at minimum size")
 	}
 	saveShot(t, tt, "project-min")
 
 	a.openDoc(a.docs[0].ID)
 	tt.Frame()
-	if _, ok := tt.Find("Markdown 实时预览"); !ok {
+	if _, ok := tt.Find("CTRL S 保存"); !ok {
 		t.Fatal("editor missing at minimum size")
 	}
 	saveShot(t, tt, "editor-min")

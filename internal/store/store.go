@@ -23,8 +23,9 @@ var migrationFS embed.FS
 // database/sql pool is pinned to one connection because the app is local
 // and small.
 type Store struct {
-	db  *sql.DB
-	now func() time.Time
+	db       *sql.DB
+	now      func() time.Time
+	filesDir string
 }
 
 // Open opens (and creates) the database at path and applies migrations.

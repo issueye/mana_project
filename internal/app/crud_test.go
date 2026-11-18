@@ -127,7 +127,7 @@ func TestDeleteProject(t *testing.T) {
 	tt.Frame()
 	a.openProject(a.projects[0].ID)
 	tt.Frame()
-	if err := tt.Click("更多"); err != nil {
+	if err := tt.Click("删除项目"); err != nil {
 		t.Fatal(err)
 	}
 	tt.Frame()
@@ -151,7 +151,7 @@ func TestDeleteGroup(t *testing.T) {
 		t.Fatal(err)
 	}
 	tt.Frame()
-	if err := tt.Click("更多"); err != nil {
+	if err := tt.Click("删除项目组"); err != nil {
 		t.Fatal(err)
 	}
 	tt.Frame()

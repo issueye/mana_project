@@ -1,6 +1,8 @@
 # Mana 界面设计说明
 
 > 关联需求：`docs/requirements.md` ｜ 可交互原型：`design/mana-prototype.html` ｜ 截图：`design/screens/`
+>
+> **2026-11 重设计 v2（索引卡 · INDEX）**：见 [`README-v2.md`](README-v2.md) 与 [`screens-v2/`](screens-v2/)，画布导出见 [`mana-redesign-v2.html`](mana-redesign-v2.html)。
 
 ## 1. 设计概要
 

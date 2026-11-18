@@ -1,8 +1,11 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"strings"
+	"time"
 
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
@@ -10,6 +13,10 @@ import (
 	"mana/internal/model"
 )
 
+// projectPage is the record card: the header keeps the facts the developer
+// needs in one line; the main column switches between the documents, the
+// file browser and the Git panel; the right column is the record itself
+// behind a hairline.
 func (a *App) projectPage(c *ui.Context) {
 	p := a.currentProject
 	w, _ := c.Size()
@@ -17,62 +24,93 @@ func (a *App) projectPage(c *ui.Context) {
 	if w < 1280 {
 		infoWidth = 288
 	}
-	ui.Column(c).Fill().Padding(16, 20, 18, 20).Gap(10).Children(func() {
-		a.detailCrumb(c)
+	ui.Column(c).Fill().Children(func() {
 		a.detailHead(c, p)
-		ui.Row(c).Grow(1).Gap(14).AlignItems(ui.Stretch).Children(func() {
-			left := a.card(c, 0, func() { a.projectDocsCard(c, p) })
-			left.Grow(1)
-			right := a.card(c, 0, func() { a.projectInfoCard(c, p) })
-			right.Width(infoWidth)
+		a.projectViewTabs(c, p)
+		ui.Row(c).Grow(1).AlignItems(ui.Stretch).Children(func() {
+			switch a.projectView {
+			case 1:
+				a.filesView(c, p)
+			case 2:
+				a.repoView(c, p)
+			default:
+				a.projectDocsColumn(c, p)
+			}
+			a.recordCard(c, p, infoWidth)
 		})
 	})
 }
 
-func (a *App) detailCrumb(c *ui.Context) {
-	ui.Row(c).Height(22).Gap(6).Children(func() {
-		b := ui.Box(c).Size(20, 20).Radius(4).Center().Focusable().Role(ui.RoleButton).Label("返回项目组")
-		b.OnClick(a.backToGroups)
-		b.Children(func() { ui.Icon(c, icons.arrowLeft).FontSize(12).TextColor(colText2) })
-		ui.Text(c, "项目组管理").FontSize(11).TextColor(colText3)
-		ui.Text(c, "/").FontSize(11.5).TextColor(colText4)
-		ui.Text(c, a.currentProject.GroupName).FontSize(11.5).TextColor(colText3)
-		ui.Text(c, "/").FontSize(11.5).TextColor(colText4)
-		ui.Text(c, a.currentProject.Name).FontSize(11).Bold()
+// projectViewTabs is the 文档 / 文件 / 仓库 switch of the main column.
+func (a *App) projectViewTabs(c *ui.Context, p model.Project) {
+	ui.Column(c).Padding(0, 24).Children(func() {
+		hairline(c)
+		ui.Row(c).Height(42).AlignItems(ui.Center).Children(func() {
+			ui.Tabs(c, &a.projectView,
+				fmt.Sprintf("文档 %02d", p.DocumentCount), "文件", "仓库")
+			ui.Spacer(c)
+		})
+		hairline(c)
 	})
 }
 
+// detailHead is the project header: breadcrumb, name with version, the
+// description and one meta line with tags, path and freshness.
 func (a *App) detailHead(c *ui.Context, p model.Project) {
-	ui.Row(c).Height(76).Gap(12).Children(func() {
-		ui.Box(c).Size(46, 46).Radius(8).Background(colPrimary1).Center().Children(func() {
-			ui.Icon(c, icons.code).FontSize(22).TextColor(colPrimary)
+	groupName := p.GroupName
+	if groupName == "" {
+		groupName = "未分组"
+	}
+	ui.Column(c).Padding(18, 24, 14, 24).Gap(4).Children(func() {
+		ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
+			ui.Text(c, "索引").FontSize(10).TextColor(colInk4)
+			ui.Text(c, "/").FontSize(10).TextColor(colInk4)
+			ui.Text(c, groupName).FontSize(10).TextColor(colInk4)
+			ui.Text(c, "/").FontSize(10).TextColor(colInk4)
+			ui.Text(c, "项目 01").FontSize(10).FontWeight(600).TextColor(colSeal)
 		})
-		ui.Column(c).Grow(1).Gap(2).Children(func() {
-			ui.Row(c).Gap(9).Children(func() {
-				ui.Text(c, p.Name).FontSize(20).Bold()
-				a.versionChip(c, p.Version)
-			})
-			ui.Text(c, p.Description).FontSize(11.5).TextColor(colText3).SingleLine()
-			ui.Row(c).Gap(5).Children(func() {
-				for i, tag := range p.Tags {
-					if i > 4 {
-						break
-					}
-					fg, bg := colPrimary, colPrimary1
-					if i == 1 {
-						fg, bg = colCyan, colCyan1
-					}
-					a.tag(c, tag, fg, bg)
-				}
-			})
-		})
-		ui.Row(c).Gap(7).AlignItems(ui.Center).Children(func() {
-			a.secondaryButton(c, icons.folderOpen, "打开目录", func() {
+		ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {
+			ui.Text(c, p.Name).FontSize(29).FontWeight(700).SingleLine()
+			a.versionChip(c, p.Version)
+			ui.Spacer(c)
+			a.borderedButton(c, icons.folderOpen, "打开目录", func() {
 				a.openProjectFolder(c, p)
 			})
-			a.secondaryButton(c, icons.edit, "编辑项目", a.openEditProject)
-			a.ghostButton(c, icons.more, "更多", a.askDeleteProject)
+			ui.Box(c).Width(7)
+			a.borderedButton(c, icons.edit, "编辑项目", a.openEditProject)
+			ui.Box(c).Width(7)
+			a.dangerButton(c, icons.trash, "删除项目", a.askDeleteProject)
 		})
+		ui.Text(c, p.Description).FontSize(11.5).TextColor(colInk3).SingleLine()
+		ui.Row(c).Gap(12).Padding(2, 0, 0, 0).AlignItems(ui.Center).Children(func() {
+			tagsText(c, p.Tags, 4)
+			a.metaDot(c)
+			a.pathChip(c, p.Path)
+			a.metaDot(c)
+			a.metaItem(c, icons.file, fmt.Sprintf("%d 篇文档", p.DocumentCount))
+			a.metaDot(c)
+			a.metaItem(c, icons.clock, model.Relative(p.UpdatedAt)+"更新")
+		})
+	})
+}
+
+func (a *App) metaDot(c *ui.Context) {
+	ui.Box(c).Size(2, 2).Radius(1).Background(colInk4)
+}
+
+// pathChip is the monospace path with a copy affordance.
+func (a *App) pathChip(c *ui.Context, path string) {
+	if path == "" {
+		path = "未登记路径"
+	}
+	chip := ui.Row(c).Height(22).Padding(0, 7).Gap(6).Radius(2).
+		Border(1, colLine).Background(colSheet2).AlignItems(ui.Center)
+	chip.Children(func() {
+		monoText(c, path, 9.5).TextColor(colInk2).SingleLine()
+		b := ui.Box(c).Size(16, 16).Radius(2).Center().
+			Focusable().Role(ui.RoleButton).Label("复制路径")
+		b.OnClick(func() { c.WriteClipboard(path); c.Toast("路径已复制到剪贴板") })
+		b.Children(func() { ui.Icon(c, icons.copy).FontSize(10).TextColor(colInk3) })
 	})
 }
 
@@ -92,167 +130,347 @@ func (a *App) openProjectFolder(c *ui.Context, p model.Project) {
 	}()
 }
 
-func (a *App) projectDocsCard(c *ui.Context, p model.Project) {
+// projectDocsColumn is the left column: the document table and, under it,
+// the preview of the latest document.
+func (a *App) projectDocsColumn(c *ui.Context, p model.Project) {
 	docs := a.projectDocs()
-	ui.Row(c).Height(46).Padding(0, 16).Children(func() {
-		ui.Text(c, "项目文档").FontSize(13).Bold()
-		ui.Text(c, itoa(len(docs))).FontSize(10.5).TextColor(colText3)
-		ui.Spacer(c)
-		a.linkMore(c, "管理排序", func() {})
-	})
-	ui.Row(c).Height(40).Padding(0, 14).Gap(8).BorderWidth(0, 0, 1, 0).BorderColor(colBorder2).Children(func() {
-		ui.SearchField(c, &a.groupQuery).Width(210).Height(28).Placeholder("搜索文档标题或正文…")
-		ui.Spacer(c)
-		a.primaryButton(c, icons.plus, "新建文档", func() {
-			a.newDoc(model.OwnerProject, p.ID)
+	w, _ := c.Size()
+	narrow := w < 1280
+	ui.Column(c).Grow(1).Padding(12, 24, 0, 24).Children(func() {
+		ui.Row(c).Height(34).AlignItems(ui.Center).Children(func() {
+			sectionTitle(c, "项目文档")
+			ui.Box(c).Width(6)
+			monoText(c, itoaPad(len(docs)), 9.5).TextColor(colInk4)
+			ui.Spacer(c)
+			ui.SearchField(c, &a.groupQuery).Width(200).Height(30).Placeholder("搜索标题或正文")
+			ui.Box(c).Width(8)
+			a.borderedButton(c, icons.file, "上传文档", func() {
+				a.uploadDocument(model.OwnerProject, p.ID)
+			})
+			ui.Box(c).Width(8)
+			a.primaryButton(c, icons.plus, "新建文档", func() {
+				a.newDoc(model.OwnerProject, p.ID)
+			})
 		})
-	})
-	if len(docs) == 0 {
-		a.emptyState(c, icons.file, "这个项目还没有文档", "新建需求、设计或开发计划，文档会跟随项目。", "新建文档", func() {
-			a.newDoc(model.OwnerProject, p.ID)
+		if len(docs) == 0 {
+			ui.Box(c).Grow(1).Children(func() {
+				a.emptyState(c, "这个项目还没有文档", "新建需求、设计或开发计划，文档会跟随项目。",
+					[2]any{"新建文档", func() { a.newDoc(model.OwnerProject, p.ID) }})
+			})
+			return
+		}
+		a.detailDocTable.Selected = &a.docRow
+		a.detailDocTable.Key = func(row int) any { return docs[row].ID }
+		a.detailDocTable.Label = func(row int) string { return docs[row].Title }
+		cols := []ui.TableColumn{
+			{Title: "#", Width: 36},
+			{Title: "标题"},
+			{Title: "类型", Width: 96},
+			{Title: "字数", Width: 70},
+			{Title: "更新", Width: 80},
+			{Title: "", Width: 30},
+		}
+		tbl := ui.Table(c, &a.detailDocTable, cols, len(docs), func(row, col int) {
+			d := docs[row]
+			switch col {
+			case 0:
+				monoText(c, itoaPad(row+1), 10).TextColor(colInk4)
+			case 1:
+				r := ui.Row(c).MinHeight(46).AlignItems(ui.Center).Gap(8).
+					Focusable().Role(ui.RoleButton).Label(d.Title)
+				r.OnClick(func() { a.openDoc(d.ID) })
+				r.Children(func() {
+					kindDot(c, d.Kind)
+					ui.Text(c, d.Title).FontSize(12.5).FontWeight(600).SingleLine()
+				})
+			case 2:
+				r := ui.Row(c).MinHeight(46).AlignItems(ui.Center).
+					Focusable().Role(ui.RoleButton).Label(model.KindLabel(d.Kind))
+				r.OnClick(func() { a.openDoc(d.ID) })
+				r.Children(func() {
+					if d.FileName != "" {
+						monoText(c, fileKindLabel(d), 10).TextColor(colInk3)
+					} else {
+						kindText(c, d.Kind)
+					}
+				})
+			case 3:
+				r := ui.Row(c).MinHeight(46).AlignItems(ui.Center).
+					Focusable().Role(ui.RoleButton).Label(itoa(d.Words))
+				r.OnClick(func() { a.openDoc(d.ID) })
+				r.Children(func() {
+					if d.FileName != "" {
+						monoText(c, byteSize(d.FileSize), 10).TextColor(colInk3)
+					} else {
+						monoText(c, itoa(d.Words), 10.5).TextColor(colInk3)
+					}
+				})
+			case 4:
+				r := ui.Row(c).MinHeight(46).AlignItems(ui.Center).
+					Focusable().Role(ui.RoleButton).Label(model.Relative(d.UpdatedAt))
+				r.OnClick(func() { a.openDoc(d.ID) })
+				r.Children(func() {
+					ui.Text(c, model.Relative(d.UpdatedAt)).FontSize(10.5).TextColor(colInk3)
+				})
+			case 5:
+				doc := d
+				ui.Box(c).Size(24, 24).Radius(2).Center().Focusable().Role(ui.RoleButton).Label("文档操作").OnClick(func() {
+					a.askDeleteDoc(doc.ID)
+				}).Children(func() {
+					ui.Icon(c, icons.more).FontSize(14).TextColor(colInk4)
+				})
+			}
+		}).FillWidth().Grow(1)
+		if tbl.Changed() && a.detailDocTable.Selected != nil && *a.detailDocTable.Selected >= 0 && *a.detailDocTable.Selected < len(docs) {
+			a.openDoc(docs[*a.detailDocTable.Selected].ID)
+		}
+		words := 0
+		for _, d := range docs {
+			words += d.Words
+		}
+		ui.Row(c).Height(30).BorderWidth(1, 0, 0, 0).BorderColor(colLine2).
+			AlignItems(ui.Center).Children(func() {
+			ui.Text(c, fmt.Sprintf("共 %d 篇 · 合计 %d 字", len(docs), words)).FontSize(9.5).TextColor(colInk4)
+			ui.Spacer(c)
+			ui.Text(c, "最后更新于 "+model.Relative(docs[0].UpdatedAt)).FontSize(9.5).TextColor(colInk4)
 		})
-		return
+		if !narrow {
+			a.docPreview(c, docs)
+		}
+	})
+}
+
+// docPreview shows the newest document of the project as a summary card.
+// The snapshot carries metadata only, so the body is fetched once per
+// document, off the frame, and the window refreshes when it arrives.
+func (a *App) docPreview(c *ui.Context, docs []model.Document) {
+	latest := docs[0]
+	a.requestDocBody(latest.ID)
+	summary := docSummary(a.previewBody, 2)
+	if summary == "" {
+		summary = "打开文档查看全文。"
 	}
-	a.detailDocTable.Selected = &a.docRow
-	a.detailDocTable.Key = func(row int) any { return docs[row].ID }
-	a.detailDocTable.Label = func(row int) string { return docs[row].Title }
-	cols := []ui.TableColumn{
-		{Title: "标题"},
-		{Title: "类型", Width: 100},
-		{Title: "字数", Width: 78},
-		{Title: "更新时间", Width: 92},
-		{Title: "", Width: 26},
-	}
-	tbl := ui.Table(c, &a.detailDocTable, cols, len(docs), func(row, col int) {
-		d := docs[row]
-		switch col {
-		case 0:
-			a.clickRow(c, 46, func() { a.openDoc(d.ID) }, func() {
-				ui.Row(c).Gap(8).Children(func() {
-					ui.Icon(c, icons.note).FontSize(15).TextColor(colText3)
-					ui.Text(c, d.Title).FontSize(12).Bold().SingleLine()
+	ui.Column(c).Margin(10, 0, 16, 0).Background(colSheet2).
+		Border(1, colLine2).Radius(2).Children(func() {
+			ui.Row(c).Height(32).Padding(0, 14).AlignItems(ui.Center).Children(func() {
+				sectionTitle(c, "文档预览")
+				ui.Box(c).Width(8)
+				monoText(c, "REQ · "+versionOrDash(a.currentProject.Version), 9).TextColor(colInk4)
+				ui.Spacer(c)
+				a.linkMore(c, "打开文档", func() { a.openDoc(latest.ID) })
+			})
+			ui.Row(c).Gap(10).Padding(4, 14, 10, 14).AlignItems(ui.Start).Children(func() {
+				ui.Box(c).Width(2).FillHeight().Background(colSeal)
+				ui.Column(c).Gap(4).Children(func() {
+					ui.Text(c, latest.Title).FontSize(12.5).FontWeight(600)
+					ui.Text(c, summary).FontSize(10.5).TextColor(colInk2)
 				})
 			})
-		case 1:
-			a.clickRow(c, 46, func() { a.openDoc(d.ID) }, func() { a.kindTag(c, d.Kind) })
-		case 2:
-			a.clickRow(c, 46, func() { a.openDoc(d.ID) }, func() {
-				ui.Text(c, fmt.Sprintf("%d 字", d.Words)).FontSize(10.5).TextColor(colText3)
+			hairline(c)
+			ui.Row(c).Height(26).Padding(0, 14).AlignItems(ui.Center).Children(func() {
+				if latest.FileName != "" {
+					monoText(c, strings.ToUpper(fileKindLabel(latest)), 9).TextColor(colInk4)
+					ui.Box(c).Width(10)
+					monoText(c, byteSize(latest.FileSize), 9).TextColor(colInk4)
+				} else {
+					monoText(c, "MARKDOWN", 9).TextColor(colInk4)
+					ui.Box(c).Width(10)
+					monoText(c, fmt.Sprintf("%d 字", latest.Words), 9).TextColor(colInk4)
+				}
+				ui.Box(c).Width(10)
+				monoText(c, "更新于 "+model.Relative(latest.UpdatedAt), 9).TextColor(colInk4)
 			})
-		case 3:
-			a.clickRow(c, 46, func() { a.openDoc(d.ID) }, func() {
-				ui.Text(c, model.Relative(d.UpdatedAt)).FontSize(10.5).TextColor(colText3)
-			})
-		case 4:
-			doc := d
-			ui.Box(c).Size(24, 24).Radius(5).Center().Focusable().Role(ui.RoleButton).Label("文档操作").OnClick(func() {
-				a.askDeleteDoc(doc.ID)
-			}).Children(func() {
-				ui.Icon(c, icons.more).FontSize(15).TextColor(colText3)
-			})
-		}
-	}).FillWidth().Padding(4, 12).Grow(1)
-	if tbl.Changed() && a.detailDocTable.Selected != nil && *a.detailDocTable.Selected >= 0 && *a.detailDocTable.Selected < len(docs) {
-		a.openDoc(docs[*a.detailDocTable.Selected].ID)
+		})
+}
+
+// requestDocBody loads a document's markdown in the background for the
+// preview card, once per document.
+func (a *App) requestDocBody(id int64) {
+	if a.previewDocID == id {
+		return
 	}
+	a.previewDocID = id
+	a.previewBody = ""
+	if a.svc == nil || a.win == nil {
+		return
+	}
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		d, err := a.svc.Document(ctx, id)
+		if err == nil && a.previewDocID == id {
+			a.win.Update(func() { a.previewBody = d.Content })
+		}
+	}()
+}
+
+// docSummary flattens the markdown into a short plain-text summary.
+func docSummary(content string, lines int) string {
+	var out []string
+	for _, line := range strings.Split(content, "\n") {
+		trimmed := strings.TrimSpace(line)
+		trimmed = strings.TrimLeft(trimmed, "#>-* ")
+		if trimmed == "" {
+			continue
+		}
+		out = append(out, trimmed)
+		if len(out) >= lines {
+			break
+		}
+	}
+	joined := strings.Join(out, " ")
+	runes := []rune(joined)
+	if len(runes) > 120 {
+		joined = string(runes[:120]) + "…"
+	}
+	return joined
+}
+
+// recordCard is the right column: the project's facts behind one hairline,
+// not inside a card.
+func (a *App) recordCard(c *ui.Context, p model.Project, width float32) {
+	docs := a.projectDocs()
 	words := 0
 	for _, d := range docs {
 		words += d.Words
 	}
-	ui.Row(c).Height(30).Padding(0, 16).BorderWidth(1, 0, 0, 0).BorderColor(colBorder2).Children(func() {
-		ui.Text(c, fmt.Sprintf("共 %d 篇 · 合计 %d 字", len(docs), words)).FontSize(10).TextColor(colText3)
-		ui.Spacer(c)
-		ui.Text(c, "最后更新于 "+model.Relative(docs[0].UpdatedAt)).FontSize(10.5).TextColor(colText3)
-	})
-}
-
-func (a *App) projectInfoCard(c *ui.Context, p model.Project) {
-	ui.Row(c).Height(42).Padding(0, 16).BorderWidth(0, 0, 1, 0).BorderColor(colBorder2).Children(func() {
-		ui.Text(c, "项目信息").FontSize(13).Bold()
-		ui.Spacer(c)
-		a.ghostButton(c, icons.edit, "编辑项目", a.openEditProject)
-	})
-	ui.Scroll(c).Grow(1).Padding(12, 14).Children(func() {
-		a.sectionLabel(c, "基本信息")
-		a.infoRow(c, "所属项目组", func() {
-			ui.Row(c).Gap(5).AlignItems(ui.Center).Children(func() {
-				ui.Box(c).Size(6, 6).Radius(3).Background(groupColor(a, p.GroupID))
-				ui.Text(c, p.GroupName).FontSize(11.5).Bold()
-			})
-		})
-		a.infoRow(c, "版本", func() { a.versionChip(c, p.Version) })
-		a.infoRow(c, "项目路径", func() {
-			path := p.Path
-			if path == "" {
-				path = "未登记"
-			}
-			box := ui.Row(c).Gap(5).Padding(5, 7).Radius(6).Background(colSurface2).Border(1, colBorder2)
-			box.Children(func() {
-				ui.Text(c, path).FontSize(9.6).TextColor(colText2).SingleLine()
+	ui.Column(c).Width(width).Background(colSheet2).
+		BorderWidth(0, 0, 0, 1).BorderColor(colLine).
+		Padding(14, 18, 14, 18).Gap(2).Children(func() {
+			ui.Row(c).Height(30).AlignItems(ui.Center).Children(func() {
+				ui.Text(c, "记录卡").FontSize(12.5).FontWeight(600)
+				ui.Box(c).Width(7)
+				monoText(c, fmt.Sprintf("RECORD %04d", p.ID), 9).TextColor(colInk4)
 				ui.Spacer(c)
-				b := ui.Box(c).Size(20, 20).Radius(4).Center().Focusable().Role(ui.RoleButton).Label("复制路径")
-				b.OnClick(func() { c.WriteClipboard(path); c.Toast("路径已复制到剪贴板") })
-				b.Children(func() { ui.Icon(c, icons.copy).FontSize(12).TextColor(colText3) })
+				ui.Row(c).Height(18).Padding(0, 6).Radius(2).
+					Border(1, colSeal).AlignItems(ui.Center).Children(func() {
+					monoText(c, "LOCAL", 8.5).TextColor(colSeal)
+				})
+			})
+			a.recordRow(c, "所属项目组", func() {
+				ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
+					ui.Box(c).Size(7, 7).Radius(1).Background(groupColor(a, p.GroupID))
+					ui.Text(c, groupOrUngrouped(a, p)).FontSize(11).FontWeight(600)
+					ui.Spacer(c)
+					b := ui.Row(c).Height(20).Padding(0, 7).Radius(2).Gap(4).AlignItems(ui.Center).
+						Focusable().Role(ui.RoleButton).Label("移入其他组")
+					if b.Hovered() {
+						b.Background(colSheet)
+					}
+					b.OnClick(func() { a.openMoveProject(p.ID) })
+					b.Children(func() {
+						ui.Icon(c, icons.chevronRight).FontSize(10).TextColor(colInk4)
+						ui.Text(c, "移动").FontSize(9.5).TextColor(colInk3)
+					})
+				})
+			})
+			a.recordRow(c, "版本", func() { a.versionChip(c, p.Version) })
+			a.recordRow(c, "项目路径", func() {
+				monoText(c, pathOrNone(p.Path), 9.5).TextColor(colInk2).SingleLine()
+			})
+			a.recordRow(c, "创建时间", func() {
+				monoText(c, model.DateTime(p.CreatedAt), 9.5).TextColor(colInk2)
+			})
+			a.recordRow(c, "更新时间", func() {
+				monoText(c, model.DateTime(p.UpdatedAt), 9.5).TextColor(colInk2)
+			})
+			a.recordRow(c, "标签", func() { tagsText(c, p.Tags, 0) })
+			hairline(c)
+			ui.Column(c).Padding(8, 0, 4, 0).Gap(4).Children(func() {
+				ui.Text(c, p.Description).FontSize(10.5).TextColor(colInk2)
+			})
+			hairline(c)
+			ui.Column(c).Padding(10, 0, 0, 0).Gap(6).Children(func() {
+				microLabel(c, "文档分布 · " + itoaPad(len(docs)))
+				a.docDistribution(c, docs)
+			})
+			ui.Spacer(c)
+			hairline(c)
+			ui.Row(c).Padding(10, 0, 0, 0).Children(func() {
+				ui.Column(c).Grow(1).Gap(1).Children(func() {
+					monoText(c, itoa(len(docs)), 22).FontWeight(600)
+					ui.Text(c, "项目文档").FontSize(9.5).TextColor(colInk3)
+				})
+				ui.Box(c).Width(1).Height(34).Background(colLine2).Margin(0, 14)
+				ui.Column(c).Grow(1).Gap(1).Children(func() {
+					monoText(c, wordsCount(words), 22).FontWeight(600)
+					ui.Text(c, "文档总字数").FontSize(9.5).TextColor(colInk3)
+				})
 			})
 		})
-		a.infoRow(c, "创建时间", func() { ui.Text(c, model.DateTime(p.CreatedAt)).FontSize(11).TextColor(colText2) })
-		a.infoRow(c, "更新时间", func() { ui.Text(c, model.Relative(p.UpdatedAt)).FontSize(11).TextColor(colText2) })
-		ui.Box(c).Height(1).Background(colBorder2).Margin(12, 0, 12, 0)
-		a.sectionLabel(c, "标签")
-		ui.Row(c).Gap(5).Padding(2, 0, 8, 0).Children(func() {
-			if len(p.Tags) == 0 {
-				ui.Text(c, "暂无标签").FontSize(11).TextColor(colText3)
-			}
-			for i, tag := range p.Tags {
-				fg, bg := colPrimary, colPrimary1
-				if i == 1 {
-					fg, bg = colCyan, colCyan1
-				}
-				a.tag(c, tag, fg, bg)
-			}
-		})
-		ui.Box(c).Height(1).Background(colBorder2).Margin(12, 0, 12, 0)
-		a.sectionLabel(c, "备注")
-		note := p.Description
-		if note == "" {
-			note = "暂无备注"
-		}
-		ui.Box(c).Background(colSurface2).Border(1, colBorder2).Radius(4).Padding(8, 9).Children(func() {
-			ui.Text(c, note).FontSize(11).TextColor(colText2)
-		})
-		ui.Row(c).Gap(10).Padding(12, 0, 0, 0).Children(func() {
-			a.infoStat(c, itoa(p.DocumentCount), "项目文档")
-			words := 0
-			for _, d := range a.projectDocs() {
-				words += d.Words
-			}
-			a.infoStat(c, fmt.Sprintf("%.1fk", float64(words)/1000), "文档总字数")
-		})
-	})
 }
 
-func (a *App) infoRow(c *ui.Context, label string, value func()) {
-	ui.Row(c).Padding(6, 0).Gap(8).AlignItems(ui.Start).Children(func() {
-		ui.Box(c).Width(72).Children(func() {
-			ui.Text(c, label).FontSize(11).TextColor(colText3)
+// recordRow is one label/value line of the record card.
+func (a *App) recordRow(c *ui.Context, label string, value func()) {
+	ui.Row(c).MinHeight(26).Padding(4, 0).Gap(10).AlignItems(ui.Center).Children(func() {
+		ui.Box(c).Width(66).Children(func() {
+			ui.Text(c, label).FontSize(10).TextColor(colInk3)
 		})
 		ui.Column(c).Grow(1).Children(value)
 	})
 }
 
-func (a *App) infoStat(c *ui.Context, value, label string) {
-	ui.Box(c).Grow(1).Background(colSurface2).Border(1, colBorder2).Radius(8).Padding(10, 11).Children(func() {
-		ui.Text(c, value).FontSize(18).Bold()
-		ui.Text(c, label).FontSize(10).TextColor(colText3).Padding(2, 0, 0, 0)
-	})
+// docDistribution is the per-kind bar ledger inside the record card.
+func (a *App) docDistribution(c *ui.Context, docs []model.Document) {
+	total := len(docs)
+	if total == 0 {
+		ui.Text(c, "暂无文档").FontSize(10).TextColor(colInk4)
+		return
+	}
+	counts := map[string]int{}
+	var order []string
+	for _, d := range docs {
+		k := model.KindLabel(d.Kind)
+		if counts[k] == 0 {
+			order = append(order, k)
+		}
+		counts[k]++
+	}
+	for _, k := range order {
+		n := counts[k]
+		ui.Row(c).Height(20).Gap(8).AlignItems(ui.Center).Children(func() {
+			ui.Box(c).Size(5, 5).Radius(1).Background(kindColor(kindOf(k)))
+			ui.Text(c, k).FontSize(10).TextColor(colInk2)
+			ui.Spacer(c)
+			ui.Box(c).Width(80).Height(2).Background(colLine2).Children(func() {
+				ui.Box(c).Width(80 * float32(n) / float32(total)).Height(2).Background(colInk3)
+			})
+			ui.Box(c).Width(8)
+			monoText(c, itoa(n), 9.5).TextColor(colInk3)
+		})
+	}
+}
+
+func kindOf(label string) string {
+	switch label {
+	case "需求":
+		return "requirement"
+	case "设计":
+		return "design"
+	case "开发计划":
+		return "plan"
+	case "接口":
+		return "api"
+	case "会议纪要":
+		return "meeting"
+	default:
+		return "other"
+	}
+}
+
+func wordsCount(words int) string {
+	if words >= 1000 {
+		return fmt.Sprintf("%.1fk", float64(words)/1000)
+	}
+	return itoa(words)
 }
 
 func groupColor(a *App, groupID *int64) ui.Color {
 	if groupID == nil {
-		return colText4
+		return colInk4
 	}
 	if g, ok := a.groupByID(*groupID); ok {
 		return ui.Hex(g.Color)
 	}
-	return colPrimary
+	return colSeal
 }

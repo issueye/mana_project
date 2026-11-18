@@ -5,6 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"strconv"
 	"time"
 
 	"mana/internal/model"
@@ -16,7 +20,8 @@ const documentSelect = `
 	         WHEN 'project' THEN COALESCE((SELECT name FROM projects WHERE id = d.owner_id), '未命名项目')
 	         ELSE COALESCE((SELECT name FROM project_groups WHERE id = d.owner_id), '未命名项目组')
 	       END,
-	       d.title, d.kind, d.link, length(d.content), d.created_at, d.updated_at
+	       d.title, d.kind, d.link, length(d.content), d.created_at, d.updated_at,
+	       d.file_name, d.file_size
 	FROM documents d`
 
 // ListDocuments lists metadata for one owner, or every document when
@@ -36,14 +41,10 @@ func (s *Store) ListDocuments(ctx context.Context, ownerType string, ownerID int
 	defer rows.Close()
 	var out []model.Document
 	for rows.Next() {
-		var d model.Document
-		var created, updated int64
-		if err := rows.Scan(&d.ID, &d.OwnerType, &d.OwnerID, &d.OwnerName,
-			&d.Title, &d.Kind, &d.Link, &d.Words, &created, &updated); err != nil {
-			return nil, fmt.Errorf("scan document: %w", err)
+		d, err := scanDocumentMeta(rows)
+		if err != nil {
+			return nil, err
 		}
-		d.CreatedAt = time.Unix(created, 0)
-		d.UpdatedAt = time.Unix(updated, 0)
 		out = append(out, d)
 	}
 	return out, rows.Err()
@@ -57,12 +58,14 @@ func (s *Store) GetDocument(ctx context.Context, id int64) (model.Document, erro
 		         WHEN 'project' THEN COALESCE((SELECT name FROM projects WHERE id = d.owner_id), '未命名项目')
 		         ELSE COALESCE((SELECT name FROM project_groups WHERE id = d.owner_id), '未命名项目组')
 		       END,
-		       d.title, d.kind, d.content, d.link, length(d.content), d.created_at, d.updated_at
+		       d.title, d.kind, d.content, d.link, length(d.content), d.created_at, d.updated_at,
+		       d.file_name, d.file_size
 		FROM documents d WHERE d.id = ?`, id)
 	var d model.Document
 	var created, updated int64
 	if err := row.Scan(&d.ID, &d.OwnerType, &d.OwnerID, &d.OwnerName,
-		&d.Title, &d.Kind, &d.Content, &d.Link, &d.Words, &created, &updated); err != nil {
+		&d.Title, &d.Kind, &d.Content, &d.Link, &d.Words, &created, &updated,
+		&d.FileName, &d.FileSize); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return model.Document{}, ErrNotFound
 		}
@@ -88,7 +91,9 @@ func (s *Store) CreateDocument(ctx context.Context, in model.DocumentInput) (mod
 	return s.GetDocument(ctx, id)
 }
 
-// UpdateDocument updates a document's editable fields.
+// UpdateDocument updates a document's editable fields. The attachment
+// columns stay as they are: a file's body does not change through the
+// note editor.
 func (s *Store) UpdateDocument(ctx context.Context, id int64, in model.DocumentInput) (model.Document, error) {
 	now := s.now()
 	res, err := s.db.ExecContext(ctx, `
@@ -127,4 +132,97 @@ func (s *Store) CountDocuments(ctx context.Context, ownerType string, ownerID in
 		return 0, fmt.Errorf("count documents: %w", err)
 	}
 	return n, nil
+}
+
+// SetFilesDir points the store at the directory that holds uploaded
+// attachments; empty disables file uploads.
+func (s *Store) SetFilesDir(dir string) { s.filesDir = dir }
+
+// FilesDir reports the attachments root, empty when unset.
+func (s *Store) FilesDir() string { return s.filesDir }
+
+// AttachmentPath is where a document's file lives, relative to the files
+// dir.
+func AttachmentPath(docID int64, fileName string) string {
+	return filepath.Join("attachments", strconv.FormatInt(docID, 10), fileName)
+}
+
+// SaveFile inserts a file document and copies the uploaded file into the
+// attachments tree. The extracted preview text travels in in.Content.
+// A failed copy removes the new row again.
+func (s *Store) SaveFile(ctx context.Context, in model.DocumentInput, srcPath, fileName string) (model.Document, error) {
+	if s.filesDir == "" {
+		return model.Document{}, fmt.Errorf("save file: attachments directory is not configured")
+	}
+	if fileName == "" {
+		return model.Document{}, fmt.Errorf("save file: file name is empty")
+	}
+	now := s.now()
+	res, err := s.db.ExecContext(ctx, `
+		INSERT INTO documents(owner_type, owner_id, title, kind, content, link, file_name, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		in.OwnerType, in.OwnerID, in.Title, in.Kind, in.Content, in.Link, fileName,
+		now.Unix(), now.Unix())
+	if err != nil {
+		return model.Document{}, mapError("create document", err)
+	}
+	id, _ := res.LastInsertId()
+
+	rel := AttachmentPath(id, fileName)
+	dest := filepath.Join(s.filesDir, rel)
+	if err := copyFile(srcPath, dest); err != nil {
+		s.db.ExecContext(ctx, `DELETE FROM documents WHERE id = ?`, id)
+		os.RemoveAll(filepath.Dir(dest))
+		return model.Document{}, fmt.Errorf("save file: %w", err)
+	}
+	info, err := os.Stat(dest)
+	if err != nil {
+		return model.Document{}, fmt.Errorf("save file: %w", err)
+	}
+	if _, err := s.db.ExecContext(ctx,
+		`UPDATE documents SET file_size = ? WHERE id = ?`, info.Size(), id); err != nil {
+		return model.Document{}, fmt.Errorf("save file: %w", err)
+	}
+	return s.GetDocument(ctx, id)
+}
+
+// RemoveAttachment deletes a document's copied file tree, best effort.
+func (s *Store) RemoveAttachment(docID int64) {
+	if s.filesDir == "" {
+		return
+	}
+	os.RemoveAll(filepath.Join(s.filesDir, "attachments", strconv.FormatInt(docID, 10)))
+}
+
+// AttachmentFile returns the absolute path of a stored attachment.
+func (s *Store) AttachmentFile(docID int64, fileName string) (string, error) {
+	if s.filesDir == "" || fileName == "" {
+		return "", fmt.Errorf("document has no attached file")
+	}
+	path := filepath.Join(s.filesDir, AttachmentPath(docID, fileName))
+	if _, err := os.Stat(path); err != nil {
+		return "", fmt.Errorf("attachment is missing: %w", err)
+	}
+	return path, nil
+}
+
+// copyFile copies src to dest, creating the parent directories.
+func copyFile(src, dest string) error {
+	if err := os.MkdirAll(filepath.Dir(dest), 0o700); err != nil {
+		return err
+	}
+	in, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+	out, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+	if _, err := io.Copy(out, in); err != nil {
+		return err
+	}
+	return out.Close()
 }

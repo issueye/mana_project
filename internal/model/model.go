@@ -29,7 +29,9 @@ type Project struct {
 	UpdatedAt     time.Time
 }
 
-// Document belongs to exactly one project or group.
+// Document belongs to exactly one project or group. A note carries its
+// text in Content; a file document carries it in FileName and FileSize
+// (with extracted preview text in Content).
 type Document struct {
 	ID        int64
 	OwnerType string // "project" or "group"
@@ -40,6 +42,8 @@ type Document struct {
 	Content   string
 	Link      string
 	Words     int
+	FileName  string
+	FileSize  int64
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -76,6 +80,15 @@ type Snapshot struct {
 	Groups   []Group
 	Projects []Project
 	Docs     []Document
+}
+
+// SearchResult is the outcome of a global search, one capped section per
+// kind of record.
+type SearchResult struct {
+	Query    string
+	Projects []Project
+	Docs     []Document
+	Groups   []Group
 }
 
 // DocumentKind is one of the fixed document types.

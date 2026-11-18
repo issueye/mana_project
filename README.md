@@ -58,6 +58,8 @@ go tool mygo build -skip-installer -o build   # 打包 Windows 可执行文件
 
 ## 设计图预览
 
+> 2026-11 已交付**界面重设计 v2「索引卡 · INDEX」**：8 张 1440×900 设计稿、视觉规范与 MyGo 落地映射，见 [`design/README-v2.md`](design/README-v2.md)、[`design/screens-v2/`](design/screens-v2/)。现有 v1 实现与截图保持不变。
+
 | 首页 | 项目组管理 |
 |---|---|
 | ![首页](design/screens/01-home.png) | ![项目组管理](design/screens/02-group-management.png) |

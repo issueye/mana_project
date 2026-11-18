@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"errors"
+	"io/fs"
 	"testing"
 
 	"mana/internal/model"
@@ -24,12 +25,16 @@ func TestMigrateIdempotent(t *testing.T) {
 	if err := s.Migrate(ctx); err != nil {
 		t.Fatal(err)
 	}
+	entries, err := fs.ReadDir(migrationFS, "migrations")
+	if err != nil {
+		t.Fatal(err)
+	}
 	var n int
 	if err := s.DB().QueryRowContext(ctx, `SELECT COUNT(*) FROM schema_migrations`).Scan(&n); err != nil {
 		t.Fatal(err)
 	}
-	if n != 1 {
-		t.Fatalf("migrations = %d, want 1", n)
+	if n != len(entries) {
+		t.Fatalf("migrations = %d, want one row per script (%d)", n, len(entries))
 	}
 }
 

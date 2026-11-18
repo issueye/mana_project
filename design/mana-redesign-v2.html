@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mana · 索引卡界面重设计 v2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f1014;color:#e8e9ee;font-family:"Segoe UI",system-ui,"PingFang SC","Microsoft YaHei",sans-serif;padding:20px}
+header{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+h1{font-size:18px;font-weight:700}
+meta-info{color:#8a8fa0}
+.meta{color:#8a8fa0;font-size:12px}
+.board{position:relative;background-image:radial-gradient(#2a2b36 1px,transparent 1px);background-size:28px 28px;border:1px solid #2a2b36;border-radius:12px;min-width:5984px;min-height:2056px}
+.frame{position:absolute;background:#16171d;border:1px solid #2a2b36;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+.cap{display:flex;align-items:center;gap:8px;height:26px;padding:0 10px;border-bottom:1px solid #2a2b36;font-size:11px;flex:none}
+.cap-title{font-weight:600}
+.cap-meta{margin-left:auto;color:#8a8fa0}
+.frame iframe{width:100%;flex:1;border:none;background:#fff}
+.empty{color:#8a8fa0;padding:40px;text-align:center}
+</style>
+</head>
+<body>
+<header><h1>Mana · 索引卡界面重设计 v2</h1><span class="meta">adago-design · 2026-11-18 23:29</span></header>
+<div class="board">
+<div class="frame" style="left:40px;top:40px;width:1440px;height:936px"><div class="cap"><span class="cap-title">00 总览 · 从企业卡片到索引工作台</span><span class="cap-meta">ant · note · web-1440</span></div><iframe sandbox="allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;zh-CN&#34;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Content-Security-Policy&#34; content=&#34;default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src data:; font-src data:&#34;&gt;
+&lt;meta charset=&#34;utf-8&#34;&gt;
+&lt;style&gt;
+:root{--paper:#F0EBE0;--sheet:#FCFAF5;--ink:#1B1913;--ink2:#4B463C;--ink3:#7B7464;--ink4:#A79F8D;--line:#D6CFBE;--line2:#E7E1D3;--seal:#AE4229;--seal-deep:#8E3220;--seal-soft:#EFDFD7;--moss:#4E6444;--amber:#8C6227}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{background:#14120D;color:#EDE7DA;font-family:Inter,&#34;Noto Sans SC&#34;,&#34;PingFang SC&#34;,&#34;Microsoft YaHei&#34;,sans-serif;-webkit-font-smoothing:antialiased}
+.page{position:relative;width:1440px;height:900px;padding:34px 52px 22px;display:flex;flex-direction:column;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 43px,rgba(237,231,218,.035) 43px,rgba(237,231,218,.035) 44px)}
+.mono{font-family:&#34;JetBrains Mono&#34;,Consolas,&#34;SFMono-Regular&#34;,monospace}
+.micro{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#8F8877}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.top{display:flex;align-items:center;gap:12px;height:24px}
+.mark{width:22px;height:22px;background:var(--seal);display:grid;place-items:center;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:12px;font-weight:700;color:#FCFAF5}
+.word{font-size:12px;font-weight:600;letter-spacing:.18em}
+.div{width:1px;height:14px;background:#3A3428}
+.top .micro{color:#9C9482}
+.top .right{margin-left:auto;display:flex;gap:18px}
+.hero{display:grid;grid-template-columns:1fr 560px;gap:54px;margin-top:40px}
+.hero .kicker{display:flex;align-items:center;gap:10px;color:#B9AE98;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:9px;letter-spacing:.18em}
+.hero .kicker .dot{width:5px;height:5px;background:var(--seal)}
+h1{font-size:58px;line-height:1.06;font-weight:700;letter-spacing:-.02em;margin-top:14px;color:#F3EEE3}
+h1 em{font-style:normal;color:var(--seal)}
+.lede{margin-top:16px;font-size:12.5px;line-height:1.95;color:#B7AE9B;max-width:540px}
+.principles{margin-top:22px;border-top:1px solid #3A3428}
+.p{display:flex;gap:18px;padding:10px 0;border-bottom:1px solid #2A261D}
+.p .n{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:9px;color:var(--seal);letter-spacing:.1em;width:22px;padding-top:2px}
+.p .t{font-size:12px;font-weight:600;width:112px;color:#EDE7DA}
+.p .d{font-size:10.5px;line-height:1.75;color:#9C9482;flex:1}
+.quote{margin-top:18px;border-left:2px solid var(--seal);padding:2px 0 2px 14px;display:flex;gap:10px}
+.quote .q{font-family:Georgia,serif;font-size:30px;line-height:1;color:var(--seal);margin-top:-4px}
+.quote .txt{font-size:11px;line-height:1.9;color:#B7AE9B}
+.quote .txt b{color:#EDE7DA;font-weight:600}
+.compare{display:flex;flex-direction:column;gap:14px}
+.cap{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
+.cap .t{font-size:10px;letter-spacing:.16em;color:#B7AE9B}
+.cap .s{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8.5px;color:#736C5D;letter-spacing:.1em}
+.cap .tag{margin-left:auto;font-size:8.5px;color:#8F8877;border:1px solid #3A3428;padding:1px 5px;letter-spacing:.1em}
+.frame{border:1px solid #3A3428;background:#1B1812;overflow:hidden}
+.frame.old{opacity:.72}
+.wf{height:178px;display:flex;background:#EFEADD}
+.wf .side{width:70px;background:#FBF8F1;border-right:1px solid #D6CFBE;padding:8px 6px;display:flex;flex-direction:column;gap:4px}
+.wf .side i{height:8px;background:#E4DECF}
+.wf .side i:first-child{height:12px;background:#CFC6B2;margin-bottom:4px}
+.wf .col{flex:1;display:flex;flex-direction:column;min-width:0}
+.wf .bar{height:20px;background:#FBF8F1;border-bottom:1px solid #D6CFBE;display:flex;align-items:center;padding:0 6px;gap:4px}
+.wf .bar i{height:6px;background:#E4DECF}
+.wf .bar i:first-child{width:38%;background:#CFC6B2}
+.wf .bar i:nth-child(2){width:18%;margin-left:auto}
+.wf .bar i:nth-child(3){width:10%;background:var(--seal)}
+.wf .main{flex:1;padding:8px;display:flex;flex-direction:column;gap:5px}
+.wf .cards{display:flex;gap:4px}
+.wf .cards i{flex:1;height:26px;border:1px solid #D6CFBE;background:#FBF8F1}
+.wf .rows{flex:1;border:1px solid #D6CFBE;background:#FBF8F1;padding:4px;display:flex;flex-direction:column;gap:4px}
+.wf .rows i{height:6px;background:#EDE7D8}
+.wf .rows i:nth-child(odd){width:88%}
+.wf .rightw{width:96px;border-left:1px solid #D6CFBE;background:#FBF8F1;padding:6px;display:flex;flex-direction:column;gap:4px}
+.wf .rightw i{height:7px;background:#EDE7D8}
+.wf2{display:flex;height:100%;width:100%}
+.wf2 .rail{width:22px;background:#17150F;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:9px}
+.wf2 .rail i{width:8px;height:8px;background:#4A4438}
+.wf2 .rail i:first-child{background:var(--seal)}
+.wf2 .panel{width:92px;background:#F1EBDD;border-right:1px solid #D6CFBE;padding:7px 5px;display:flex;flex-direction:column;gap:4px}
+.wf2 .panel i{height:6px;background:#DDD5C4}
+.wf2 .panel i:first-child{width:50%;background:#B9AF99;margin-bottom:3px}
+.wf2 .work{flex:1;padding:7px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.wf2 .mast{height:22px;border-bottom:1px solid #D6CFBE;display:flex;align-items:center;gap:4px}
+.wf2 .mast i:first-child{width:38%;height:8px;background:#B9AF99}
+.wf2 .mast i:nth-child(2){width:12%;height:8px;background:var(--seal);margin-left:auto}
+.wf2 .ledger{display:flex;border-bottom:1px solid #D6CFBE;height:24px}
+.wf2 .ledger i{flex:1;border-right:1px solid #E7E1D3}
+.wf2 .ledger i:last-child{border-right:0}
+.wf2 .list{flex:1;display:flex;flex-direction:column;gap:3px}
+.wf2 .list i{height:9px;border-bottom:1px solid #E7E1D3}
+.delta{margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:5px 14px}
+.delta div{font-size:9.5px;color:#8F8877;display:flex;gap:6px}
+.delta .m{color:var(--seal);font-family:&#34;JetBrains Mono&#34;,Consolas,monospace}
+.deliver{display:flex;margin-top:auto;border-top:1px solid #2A261D;border-bottom:1px solid #2A261D}
+.deliver div{flex:1;padding:10px 10px 10px 0;border-right:1px solid #2A261D;display:flex;flex-direction:column;gap:3px}
+.deliver div:last-child{border-right:0}
+.deliver .n{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8.5px;color:var(--seal);letter-spacing:.1em}
+.deliver .t{font-size:10.5px;color:#B7AE9B}
+.foot{margin-top:14px;display:flex;align-items:center;gap:20px}
+.foot .l{display:flex;align-items:center;gap:10px}
+.foot .r{margin-left:auto;display:flex;gap:22px}
+.foot .r span{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8.5px;letter-spacing:.12em;color:#736C5D}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width=&#34;0&#34; height=&#34;0&#34; style=&#34;position:absolute&#34; aria-hidden=&#34;true&#34;&gt;
+  &lt;symbol id=&#34;i-folder&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 7.5A1.5 1.5 0 015.5 6h3.2c.4 0 .8.2 1 .5L11 8h7.5A1.5 1.5 0 0120 9.5v8A1.5 1.5 0 0118.5 19h-13A1.5 1.5 0 014 17.5z&#34;/&gt;&lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;div class=&#34;page&#34;&gt;
+  &lt;div class=&#34;top&#34;&gt;
+    &lt;div class=&#34;mark&#34;&gt;M&lt;/div&gt;&lt;div class=&#34;word&#34;&gt;MANA&lt;/div&gt;&lt;div class=&#34;div&#34;&gt;&lt;/div&gt;&lt;div class=&#34;micro&#34;&gt;Redesign · 2026.11.18&lt;/div&gt;
+    &lt;div class=&#34;right&#34;&gt;&lt;div class=&#34;micro&#34;&gt;1440 × 900 · 8 BOARDS&lt;/div&gt;&lt;div class=&#34;micro&#34;&gt;MYGO NATIVE&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;hero&#34;&gt;
+    &lt;div&gt;
+      &lt;div class=&#34;kicker&#34;&gt;&lt;i class=&#34;dot&#34;&gt;&lt;/i&gt;PROJECT INDEX · LOCAL-FIRST&lt;/div&gt;
+      &lt;h1&gt;把项目收进索引，&lt;br&gt;&lt;em&gt;而不是收进卡片墙。&lt;/em&gt;&lt;/h1&gt;
+      &lt;div class=&#34;lede&#34;&gt;Mana v2 把「后台管理模板」式的双层导航、卡片统计与彩色药丸，换成一条深色工具栏、一层上下文目录、一张带编号的记录纸。信息更密，层级更少，路径与版本回到主位。&lt;/div&gt;
+
+      &lt;div class=&#34;principles&#34;&gt;
+        &lt;div class=&#34;p&#34;&gt;&lt;div class=&#34;n mono&#34;&gt;01&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;一条工具栏&lt;/div&gt;&lt;div class=&#34;d&#34;&gt;品牌、本地状态、命令入口与窗口信息集中到 38px 顶条；导航收进 68px 图标轨，去掉页面内再套一层导航。&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;p&#34;&gt;&lt;div class=&#34;n mono&#34;&gt;02&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;一层目录&lt;/div&gt;&lt;div class=&#34;d&#34;&gt;252px 上下文目录随页面变化：最近项目、项目组、项目目录、文档目录。当前位置只在一处表达。&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;p&#34;&gt;&lt;div class=&#34;n mono&#34;&gt;03&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;一张记录纸&lt;/div&gt;&lt;div class=&#34;d&#34;&gt;发丝线代替卡片边框，等宽数字与编号承担层级；朱砂色只留给当前选中、主操作与危险操作。&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;p&#34;&gt;&lt;div class=&#34;n mono&#34;&gt;04&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;编号即坐标&lt;/div&gt;&lt;div class=&#34;d&#34;&gt;项目、文档、分组统一用 01—06 的等宽序号；页脚与记录卡复用同一套编号，扫视时可直接对齐。&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;p&#34;&gt;&lt;div class=&#34;n mono&#34;&gt;05&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;纸感不拟物&lt;/div&gt;&lt;div class=&#34;d&#34;&gt;暖纸底与朱砂来自索引卡，但不用纹理、贴纸与手写体；一切仍是原生控件能画出的直线、文本与图标。&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;quote&#34;&gt;
+        &lt;div class=&#34;q&#34;&gt;“&lt;/div&gt;
+        &lt;div class=&#34;txt&#34;&gt;&lt;b&gt;路径、版本、更新时间&lt;/b&gt;是开发项目真正的三要素。它们应该在一屏内可直接比较，而不是藏在卡片与详情页里。&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&#34;compare&#34;&gt;
+      &lt;div&gt;
+        &lt;div class=&#34;cap&#34;&gt;&lt;div class=&#34;t&#34;&gt;V1 / 企业卡片&lt;/div&gt;&lt;div class=&#34;s&#34;&gt;SIDEBAR + TOPBAR + CARDS&lt;/div&gt;&lt;div class=&#34;tag&#34;&gt;BEFORE&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;frame old&#34;&gt;
+          &lt;div class=&#34;wf&#34;&gt;
+            &lt;div class=&#34;side&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+            &lt;div class=&#34;col&#34;&gt;&lt;div class=&#34;bar&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+              &lt;div class=&#34;main&#34;&gt;&lt;div class=&#34;cards&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+                &lt;div style=&#34;display:flex;gap:5px;flex:1&#34;&gt;&lt;div class=&#34;rows&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;rightw&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&#34;delta&#34;&gt;&lt;div&gt;&lt;span class=&#34;m&#34;&gt;−&lt;/span&gt;侧栏 + 顶栏两层导航重复&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;m&#34;&gt;−&lt;/span&gt;四张统计卡占据首屏&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;m&#34;&gt;−&lt;/span&gt;彩色药丸与卡片边框噪声&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;m&#34;&gt;−&lt;/span&gt;详情页信息与正文同权重&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;div class=&#34;cap&#34;&gt;&lt;div class=&#34;t&#34;&gt;V2 / 索引工作台&lt;/div&gt;&lt;div class=&#34;s&#34;&gt;RAIL + CONTEXT + LEDGER + RULE&lt;/div&gt;&lt;div class=&#34;tag&#34; style=&#34;border-color:var(--seal);color:var(--seal)&#34;&gt;AFTER&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;frame&#34;&gt;
+          &lt;div class=&#34;wf&#34;&gt;
+            &lt;div class=&#34;wf2&#34;&gt;
+              &lt;div class=&#34;rail&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+              &lt;div class=&#34;panel&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+              &lt;div class=&#34;work&#34;&gt;
+                &lt;div class=&#34;mast&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+                &lt;div class=&#34;ledger&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+                &lt;div class=&#34;list&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&#34;delta&#34;&gt;&lt;div&gt;&lt;span class=&#34;m&#34;&gt;+&lt;/span&gt;单条命令栏 + 图标轨，路径更短&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;m&#34;&gt;+&lt;/span&gt;四格账本替代统计卡，省 60px&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;m&#34;&gt;+&lt;/span&gt;编号 01—06 与发丝线建立节奏&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;m&#34;&gt;+&lt;/span&gt;记录卡把元信息退到辅助层&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;deliver&#34;&gt;
+    &lt;div&gt;&lt;div class=&#34;n mono&#34;&gt;00&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;总览 / 判断&lt;/div&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;div class=&#34;n mono&#34;&gt;01&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;视觉规范&lt;/div&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;div class=&#34;n mono&#34;&gt;02&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;首页 / 索引&lt;/div&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;div class=&#34;n mono&#34;&gt;03&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;项目组管理&lt;/div&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;div class=&#34;n mono&#34;&gt;04&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;项目详情&lt;/div&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;div class=&#34;n mono&#34;&gt;05&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;文档编辑&lt;/div&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;div class=&#34;n mono&#34;&gt;06&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;新建项目弹层&lt;/div&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;div class=&#34;n mono&#34;&gt;07&lt;/div&gt;&lt;div class=&#34;t&#34;&gt;状态与最小窗口&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;foot&#34;&gt;
+    &lt;div class=&#34;l&#34;&gt;&lt;div class=&#34;micro&#34;&gt;TYPE&lt;/div&gt;&lt;div class=&#34;micro&#34; style=&#34;color:#B7AE9B&#34;&gt;Inter / Noto Sans SC / JetBrains Mono&lt;/div&gt;&lt;/div&gt;
+    &lt;div class=&#34;l&#34; style=&#34;margin-left:18px&#34;&gt;&lt;div class=&#34;micro&#34;&gt;ICON&lt;/div&gt;&lt;div class=&#34;micro&#34; style=&#34;color:#B7AE9B&#34;&gt;adago design_icons · 24 grid · 1.7 stroke&lt;/div&gt;&lt;/div&gt;
+    &lt;div class=&#34;r&#34;&gt;&lt;span&gt;PALETTE SEAL #AE4229&lt;/span&gt;&lt;span&gt;PAPER #F0EBE0&lt;/span&gt;&lt;span&gt;INK #1B1913&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" scrolling="auto"></iframe></div>
+<div class="frame" style="left:1528px;top:40px;width:1440px;height:936px"><div class="cap"><span class="cap-title">01 视觉规范 · 纸墨与朱砂</span><span class="cap-meta">ant · note · web-1440</span></div><iframe sandbox="allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;zh-CN&#34;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Content-Security-Policy&#34; content=&#34;default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src data:; font-src data:&#34;&gt;
+&lt;meta charset=&#34;utf-8&#34;&gt;
+&lt;style&gt;
+:root{--paper:#F0EBE0;--sheet:#FCFAF5;--sheet2:#F6F1E6;--ink:#1B1913;--ink2:#4B463C;--ink3:#7B7464;--ink4:#A79F8D;--line:#D6CFBE;--line2:#E7E1D3;--seal:#AE4229;--seal-deep:#8E3220;--seal-soft:#EFDFD7;--moss:#4E6444;--indigo:#33586B;--amber:#8C6227;--danger:#9B2E20}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{background:var(--paper);color:var(--ink);font-family:Inter,&#34;Noto Sans SC&#34;,&#34;PingFang SC&#34;,&#34;Microsoft YaHei&#34;,sans-serif;font-size:12px;-webkit-font-smoothing:antialiased}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ico12{width:12px;height:12px}.ico14{width:14px;height:14px}
+.mono{font-family:&#34;JetBrains Mono&#34;,Consolas,&#34;SFMono-Regular&#34;,monospace}
+.micro{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink4)}
+.page{width:1440px;height:900px;padding:26px 48px 20px;display:flex;flex-direction:column;background:var(--paper)}
+.top{display:flex;align-items:center;gap:12px;height:26px}
+.mark{width:22px;height:22px;background:var(--seal);display:grid;place-items:center;color:#FCFAF5;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:12px;font-weight:700}
+.word{font-size:11.5px;font-weight:600;letter-spacing:.16em}
+.div{width:1px;height:14px;background:var(--line)}
+.top .micro{color:var(--ink3)}
+.top .r{margin-left:auto;display:flex;gap:20px}
+.head{display:flex;align-items:flex-end;gap:20px;margin-top:12px;padding-bottom:12px;border-bottom:1px solid var(--ink)}
+h1{font-size:36px;line-height:1.05;font-weight:700;letter-spacing:-.02em}
+.head .lede{font-size:10.5px;line-height:1.8;color:var(--ink3);max-width:520px;padding-bottom:2px}
+.head .meta{margin-left:auto;text-align:right;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px;line-height:1.9;color:var(--ink3);letter-spacing:.08em}
+.grid{display:grid;grid-template-columns:730px 1fr;gap:40px;margin-top:14px}
+.sec{margin-bottom:12px}
+.sechead{display:flex;align-items:baseline;gap:8px;margin-bottom:7px}
+.sechead .n{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8.5px;color:var(--seal);letter-spacing:.1em}
+.sechead .t{font-size:11.5px;font-weight:600}
+.sechead .e{font-size:8.5px;letter-spacing:.16em;color:var(--ink4);text-transform:uppercase}
+.sechead .r{margin-left:auto;font-size:9px;color:var(--ink4)}
+.colors{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sw{border:1px solid var(--line)}
+.sw .chip{height:34px}
+.sw .lab{padding:4px 6px 4px;font-size:8.5px;color:var(--ink3);display:flex;justify-content:space-between;gap:2px}
+.sw .lab .h{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px;color:var(--ink4)}
+.typerow{display:flex;align-items:center;gap:14px;height:34px;border-bottom:1px solid var(--line2)}
+.typerow .sample{width:250px;white-space:nowrap;line-height:1.15}
+.typerow .spec{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8.5px;color:var(--ink4);letter-spacing:.03em}
+.typerow .use{margin-left:auto;font-size:9px;color:var(--ink3)}
+.spacebars{display:flex;align-items:flex-end;gap:14px;height:48px;border-bottom:1px solid var(--line2)}
+.spacebars .b{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:54px}
+.spacebars .b .bar{height:5px;background:var(--ink2)}
+.spacebars .b:nth-child(1) .bar{width:4px}.spacebars .b:nth-child(2) .bar{width:8px}.spacebars .b:nth-child(3) .bar{width:12px}.spacebars .b:nth-child(4) .bar{width:16px}
+.spacebars .b:nth-child(5) .bar{width:24px}.spacebars .b:nth-child(6) .bar{width:32px}.spacebars .b:nth-child(7) .bar{width:40px}
+.spacebars .b span{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:7.5px;color:var(--ink4)}
+.spacehint{display:flex;gap:18px;font-size:9px;color:var(--ink3);margin-top:6px}
+.rightcol{display:flex;flex-direction:column}
+.specimen{border:1px solid var(--line);background:var(--sheet);padding:9px 11px}
+.btnrow{display:flex;align-items:center;gap:8px}
+.btn{height:28px;padding:0 10px;border:1px solid var(--line);background:var(--sheet2);border-radius:2px;display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--ink2)}
+.btn .ico{width:11px;height:11px;color:var(--ink3)}
+.btn.pri{background:var(--seal);border-color:var(--seal);color:#FCFAF5}
+.btn.pri .ico{color:#FCFAF5}
+.btn.danger{color:var(--danger)}.btn.danger .ico{color:var(--danger)}
+.sqbtn{width:28px;height:28px;border:1px solid var(--line);border-radius:2px;display:grid;place-items:center;color:var(--ink3);background:var(--sheet2)}
+.inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.inp{height:29px;border:1px solid var(--line);background:#FFFDF8;border-radius:2px;display:flex;align-items:center;padding:0 8px;font-size:10px;color:var(--ink4)}
+.inp.focus{border-color:var(--seal);box-shadow:0 0 0 3px rgba(174,66,41,.1);color:var(--ink)}
+.inp.err{border-color:var(--danger);color:var(--ink)}
+.errline{font-size:8.5px;color:var(--danger);margin-top:4px;display:flex;align-items:center;gap:4px}
+.errline .ico{width:10px;height:10px}
+.tokens{display:flex;align-items:center;gap:6px;margin-top:9px;flex-wrap:wrap}
+.tok{height:20px;border:1px solid var(--line);background:var(--sheet2);border-radius:2px;display:flex;align-items:center;padding:0 6px;font-size:9px;color:var(--ink2)}
+.tagtext{font-size:9.5px;color:var(--ink3)}.tagtext .d{color:var(--line);margin:0 4px}
+.statusdot{display:flex;align-items:center;gap:5px;font-size:8.5px;color:var(--ink3);margin-top:9px}
+.statusdot i{width:5px;height:5px;background:#7C9060}
+.stamp{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px;color:var(--seal);border:1px solid var(--seal);padding:1px 5px;letter-spacing:.1em}
+.tablerow{display:grid;grid-template-columns:20px 1fr 54px 56px;gap:8px;align-items:center;height:29px;border-bottom:1px solid var(--line2);margin-top:7px;font-size:9.5px}
+.tablerow .idx{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px;color:var(--ink4)}
+.tablerow .nm{font-weight:600;font-size:10px}
+.tablerow .chip{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px;border:1px solid var(--line);padding:1px 4px;width:max-content}
+.tablerow .time{font-size:8.5px;color:var(--ink4)}
+.edge{display:flex;gap:14px;align-items:center;margin-top:6px}
+.edge .box{width:70px;height:38px;border:1px solid var(--ink3);border-radius:2px;display:grid;place-items:center;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px;color:var(--ink3)}
+.edge .box.solid{background:var(--sheet2)}
+.edge .note{font-size:9px;line-height:1.7;color:var(--ink3);flex:1}
+.icongrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:6px}
+.ic{height:42px;border:1px solid var(--line2);background:var(--sheet);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink2)}
+.ic span{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:7px;color:var(--ink4)}
+.band{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;border-top:1px solid var(--ink);margin-top:14px;padding-top:10px}
+.bcol .sechead{margin-bottom:6px}
+.btoast{height:32px;background:#17150F;color:#EDE7DA;display:flex;align-items:center;gap:7px;padding:0 11px;font-size:9.5px}
+.btoast .ico{width:11px;height:11px;color:#A9BC8B}
+.btoast .k{margin-left:auto;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:7.5px;color:#8F8877}
+.blist{font-size:9px;color:var(--ink3);line-height:1.7;margin-top:5px;display:flex;gap:6px;align-items:flex-start}
+.blist .ico{width:10px;height:10px;color:var(--ink4);margin-top:2px}
+.focusring{margin-top:4px;height:30px;border:1px solid var(--seal);box-shadow:0 0 0 3px rgba(174,66,41,.12);background:#FFFDF8;display:flex;align-items:center;padding:0 8px;font-size:9px;color:var(--ink2);width:190px}
+.copyrules div{font-size:9px;color:var(--ink3);line-height:1.8;display:flex;gap:6px}
+.copyrules .n{color:var(--seal);font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px}
+.footer{margin-top:auto;border-top:1px solid var(--ink);padding-top:8px;display:flex;align-items:center;gap:22px;font-size:8.5px;color:var(--ink3);letter-spacing:.04em}
+.footer .r{margin-left:auto;display:flex;gap:22px}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width=&#34;0&#34; height=&#34;0&#34; style=&#34;position:absolute&#34; aria-hidden=&#34;true&#34;&gt;
+  &lt;symbol id=&#34;i-home&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 11l8-7 8 7&#34;/&gt;&lt;path d=&#34;M6.5 9.5V20h11V9.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-folder&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 7.5A1.5 1.5 0 015.5 6h3.2c.4 0 .8.2 1 .5L11 8h7.5A1.5 1.5 0 0120 9.5v8A1.5 1.5 0 0118.5 19h-13A1.5 1.5 0 014 17.5z&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-file&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M6 4h8l4 4v12H6z&#34;/&gt;&lt;path d=&#34;M14 4v4h4&#34;/&gt;&lt;path d=&#34;M9 13h6&#34;/&gt;&lt;path d=&#34;M9 16h4&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-search&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;11&#34; cy=&#34;11&#34; r=&#34;6&#34;/&gt;&lt;path d=&#34;M20 20l-3.6-3.6&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-plus&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 5v14M5 12h14&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-settings&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 8h9&#34;/&gt;&lt;path d=&#34;M17 8h3&#34;/&gt;&lt;path d=&#34;M4 16h3&#34;/&gt;&lt;path d=&#34;M11 16h9&#34;/&gt;&lt;circle cx=&#34;15&#34; cy=&#34;8&#34; r=&#34;2&#34;/&gt;&lt;circle cx=&#34;9&#34; cy=&#34;16&#34; r=&#34;2&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-database&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;ellipse cx=&#34;12&#34; cy=&#34;6&#34; rx=&#34;7&#34; ry=&#34;2.8&#34;/&gt;&lt;path d=&#34;M5 6v12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6&#34;/&gt;&lt;path d=&#34;M5 12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-calendar&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;rect x=&#34;4&#34; y=&#34;6&#34; width=&#34;16&#34; height=&#34;14&#34; rx=&#34;2&#34;/&gt;&lt;path d=&#34;M8 3v5&#34;/&gt;&lt;path d=&#34;M16 3v5&#34;/&gt;&lt;path d=&#34;M4 11h16&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-clock&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;12&#34; cy=&#34;12&#34; r=&#34;8&#34;/&gt;&lt;path d=&#34;M12 7v5l3 2&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-more&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;6&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;circle cx=&#34;12&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;circle cx=&#34;18&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-chevron-down&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M5 9l7 7 7-7&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-arrow-right&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M5 12h14&#34;/&gt;&lt;path d=&#34;M13 6l6 6-6 6&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-warning&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 4l8.5 15h-17z&#34;/&gt;&lt;path d=&#34;M12 10v4&#34;/&gt;&lt;path d=&#34;M12 16.6v.9&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-check&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 12.5l5 5L20 6.5&#34;/&gt;&lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;div class=&#34;page&#34;&gt;
+  &lt;div class=&#34;top&#34;&gt;
+    &lt;div class=&#34;mark&#34;&gt;M&lt;/div&gt;&lt;div class=&#34;word&#34;&gt;MANA&lt;/div&gt;&lt;div class=&#34;div&#34;&gt;&lt;/div&gt;&lt;div class=&#34;micro&#34;&gt;Index system · v2&lt;/div&gt;
+    &lt;div class=&#34;r&#34;&gt;&lt;div class=&#34;micro&#34;&gt;1440 × 900&lt;/div&gt;&lt;div class=&#34;micro&#34;&gt;2026.11.18&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;head&#34;&gt;
+    &lt;div&gt;&lt;h1&gt;视觉规范&lt;/h1&gt;&lt;/div&gt;
+    &lt;div class=&#34;lede&#34;&gt;索引卡工作台的语言：暖纸、墨字、朱砂。用发丝线与等宽编号组织层级，而不是卡片、投影与彩色药丸。&lt;/div&gt;
+    &lt;div class=&#34;meta&#34;&gt;PAPER / INK / SEAL&lt;br&gt;INTER · NOTO SANS SC · JETBRAINS MONO&lt;br&gt;TOKENS 1.0&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;grid&#34;&gt;
+    &lt;div&gt;
+      &lt;div class=&#34;sec&#34;&gt;
+        &lt;div class=&#34;sechead&#34;&gt;&lt;span class=&#34;n mono&#34;&gt;01&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;颜色&lt;/span&gt;&lt;span class=&#34;e&#34;&gt;Color&lt;/span&gt;&lt;span class=&#34;r&#34;&gt;10 TOKENS&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;colors&#34;&gt;
+          &lt;div class=&#34;sw&#34;&gt;&lt;div class=&#34;chip&#34; style=&#34;background:#F0EBE0&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lab&#34;&gt;&lt;span&gt;Paper&lt;/span&gt;&lt;span class=&#34;h&#34;&gt;F0EBE0&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;sw&#34;&gt;&lt;div class=&#34;chip&#34; style=&#34;background:#FCFAF5&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lab&#34;&gt;&lt;span&gt;Sheet&lt;/span&gt;&lt;span class=&#34;h&#34;&gt;FCFAF5&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;sw&#34;&gt;&lt;div class=&#34;chip&#34; style=&#34;background:#F6F1E6&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lab&#34;&gt;&lt;span&gt;Sheet 2&lt;/span&gt;&lt;span class=&#34;h&#34;&gt;F6F1E6&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;sw&#34;&gt;&lt;div class=&#34;chip&#34; style=&#34;background:#1B1913&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lab&#34;&gt;&lt;span&gt;Ink&lt;/span&gt;&lt;span class=&#34;h&#34;&gt;1B1913&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;sw&#34;&gt;&lt;div class=&#34;chip&#34; style=&#34;background:#7B7464&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lab&#34;&gt;&lt;span&gt;Ink 3&lt;/span&gt;&lt;span class=&#34;h&#34;&gt;7B7464&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;sw&#34;&gt;&lt;div class=&#34;chip&#34; style=&#34;background:#AE4229&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lab&#34;&gt;&lt;span&gt;Seal&lt;/span&gt;&lt;span class=&#34;h&#34;&gt;AE4229&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;sw&#34;&gt;&lt;div class=&#34;chip&#34; style=&#34;background:#EFDFD7&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lab&#34;&gt;&lt;span&gt;Seal soft&lt;/span&gt;&lt;span class=&#34;h&#34;&gt;EFDFD7&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;sw&#34;&gt;&lt;div class=&#34;chip&#34; style=&#34;background:#4E6444&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lab&#34;&gt;&lt;span&gt;Moss&lt;/span&gt;&lt;span class=&#34;h&#34;&gt;4E6444&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;sw&#34;&gt;&lt;div class=&#34;chip&#34; style=&#34;background:#8C6227&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lab&#34;&gt;&lt;span&gt;Amber&lt;/span&gt;&lt;span class=&#34;h&#34;&gt;8C6227&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;sw&#34;&gt;&lt;div class=&#34;chip&#34; style=&#34;background:#D6CFBE&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lab&#34;&gt;&lt;span&gt;Line&lt;/span&gt;&lt;span class=&#34;h&#34;&gt;D6CFBE&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;sec&#34;&gt;
+        &lt;div class=&#34;sechead&#34;&gt;&lt;span class=&#34;n mono&#34;&gt;02&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;字阶&lt;/span&gt;&lt;span class=&#34;e&#34;&gt;Type scale&lt;/span&gt;&lt;span class=&#34;r&#34;&gt;7 STEPS&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;typerow&#34;&gt;&lt;div class=&#34;sample&#34; style=&#34;font-size:23px;font-weight:700;letter-spacing:-.02em&#34;&gt;索引工作台&lt;/div&gt;&lt;div class=&#34;spec&#34;&gt;DISPLAY 29/34 · 700&lt;/div&gt;&lt;div class=&#34;use&#34;&gt;页面主标题&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;typerow&#34;&gt;&lt;div class=&#34;sample&#34; style=&#34;font-size:18px;font-weight:700&#34;&gt;项目详情&lt;/div&gt;&lt;div class=&#34;spec&#34;&gt;TITLE 22/28 · 700&lt;/div&gt;&lt;div class=&#34;use&#34;&gt;详情 / 弹层标题&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;typerow&#34;&gt;&lt;div class=&#34;sample&#34; style=&#34;font-size:12px;font-weight:600&#34;&gt;分区标题&lt;/div&gt;&lt;div class=&#34;spec&#34;&gt;SECTION 13/20 · 600&lt;/div&gt;&lt;div class=&#34;use&#34;&gt;表格区 / 卡片头&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;typerow&#34;&gt;&lt;div class=&#34;sample&#34; style=&#34;font-size:11.5px&#34;&gt;本地优先的项目管理桌面端&lt;/div&gt;&lt;div class=&#34;spec&#34;&gt;BODY 12.5/20 · 400&lt;/div&gt;&lt;div class=&#34;use&#34;&gt;正文 / 表格&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;typerow&#34;&gt;&lt;div class=&#34;sample&#34; style=&#34;font-size:9.5px;color:var(--ink3)&#34;&gt;路径、标签、说明文字&lt;/div&gt;&lt;div class=&#34;spec&#34;&gt;SMALL 10.5/18 · 400&lt;/div&gt;&lt;div class=&#34;use&#34;&gt;次要信息&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;typerow&#34;&gt;&lt;div class=&#34;sample micro&#34; style=&#34;width:250px&#34;&gt;SECTION LABEL · 小节标签&lt;/div&gt;&lt;div class=&#34;spec&#34;&gt;MICRO 9.5/14 · .16EM&lt;/div&gt;&lt;div class=&#34;use&#34;&gt;表头 / 标签&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;typerow&#34; style=&#34;border-bottom:0&#34;&gt;&lt;div class=&#34;sample mono&#34; style=&#34;font-size:9px&#34;&gt;E:\codes\go_projects\mana_project&lt;/div&gt;&lt;div class=&#34;spec&#34;&gt;MONO 10/18 · JETBRAINS&lt;/div&gt;&lt;div class=&#34;use&#34;&gt;路径 / 版本 / 编号&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;sec&#34; style=&#34;margin-bottom:0&#34;&gt;
+        &lt;div class=&#34;sechead&#34;&gt;&lt;span class=&#34;n mono&#34;&gt;03&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;间距与栅格&lt;/span&gt;&lt;span class=&#34;e&#34;&gt;Space&lt;/span&gt;&lt;span class=&#34;r&#34;&gt;4 GRID&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;spacebars&#34;&gt;
+          &lt;div class=&#34;b&#34;&gt;&lt;i class=&#34;bar&#34;&gt;&lt;/i&gt;&lt;span&gt;4&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;b&#34;&gt;&lt;i class=&#34;bar&#34;&gt;&lt;/i&gt;&lt;span&gt;8&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;b&#34;&gt;&lt;i class=&#34;bar&#34;&gt;&lt;/i&gt;&lt;span&gt;12&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;b&#34;&gt;&lt;i class=&#34;bar&#34;&gt;&lt;/i&gt;&lt;span&gt;16&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;b&#34;&gt;&lt;i class=&#34;bar&#34;&gt;&lt;/i&gt;&lt;span&gt;24&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;b&#34;&gt;&lt;i class=&#34;bar&#34;&gt;&lt;/i&gt;&lt;span&gt;32&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;b&#34;&gt;&lt;i class=&#34;bar&#34;&gt;&lt;/i&gt;&lt;span&gt;40&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&#34;spacehint&#34;&gt;&lt;span&gt;基线 4 · 间距只用 4 的倍数&lt;/span&gt;&lt;span&gt;内容区左右 34 · 栏间距 32&lt;/span&gt;&lt;span&gt;同屏不超过 3 种间距层级&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&#34;rightcol&#34;&gt;
+      &lt;div class=&#34;sec&#34;&gt;
+        &lt;div class=&#34;sechead&#34;&gt;&lt;span class=&#34;n mono&#34;&gt;04&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;边界与层级&lt;/span&gt;&lt;span class=&#34;e&#34;&gt;Edge&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;edge&#34;&gt;&lt;div class=&#34;box&#34;&gt;R 2&lt;/div&gt;&lt;div class=&#34;box solid&#34;&gt;1 PX&lt;/div&gt;&lt;div class=&#34;note&#34;&gt;控件与弹层圆角 2px；容器之间只用 1px 发丝线。&lt;br&gt;卡片不投影；仅弹层允许一层柔和大阴影与 56% 墨色遮罩。&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;sec&#34;&gt;
+        &lt;div class=&#34;sechead&#34;&gt;&lt;span class=&#34;n mono&#34;&gt;05&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;组件&lt;/span&gt;&lt;span class=&#34;e&#34;&gt;Components&lt;/span&gt;&lt;span class=&#34;r&#34;&gt;CORE 06&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;specimen&#34;&gt;
+          &lt;div class=&#34;btnrow&#34;&gt;&lt;div class=&#34;btn pri&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-plus&#34;/&gt;&lt;/svg&gt;新建项目&lt;/div&gt;&lt;div class=&#34;btn&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-folder&#34;/&gt;&lt;/svg&gt;打开目录&lt;/div&gt;&lt;div class=&#34;btn danger&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-warning&#34;/&gt;&lt;/svg&gt;删除&lt;/div&gt;&lt;div class=&#34;sqbtn&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-settings&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;inputs&#34;&gt;&lt;div class=&#34;inp&#34;&gt;项目名称&lt;/div&gt;&lt;div class=&#34;inp focus&#34;&gt;Mana Console&lt;/div&gt;&lt;div class=&#34;inp err&#34;&gt;输入内容不合法&lt;/div&gt;&lt;div class=&#34;inp&#34; style=&#34;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9px&#34;&gt;E:\codes\go_projects\mana_project&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;errline&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-warning&#34;/&gt;&lt;/svg&gt;名称不能为空，最多 80 字符。&lt;/div&gt;
+          &lt;div class=&#34;tokens&#34;&gt;&lt;div class=&#34;tok&#34;&gt;Go&lt;/div&gt;&lt;div class=&#34;tok&#34;&gt;MyGo&lt;/div&gt;&lt;div class=&#34;tok&#34; style=&#34;border-style:dashed;color:var(--ink4)&#34;&gt;+ 添加标签&lt;/div&gt;&lt;span class=&#34;tagtext&#34;&gt;Go&lt;span class=&#34;d&#34;&gt;·&lt;/span&gt;MyGo&lt;span class=&#34;d&#34;&gt;·&lt;/span&gt;桌面端&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;statusdot&#34;&gt;&lt;i&gt;&lt;/i&gt;SQLite 已连接 · 本地索引 42 篇文档&lt;span class=&#34;stamp&#34; style=&#34;margin-left:auto&#34;&gt;LOCAL&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;tablerow&#34;&gt;&lt;div class=&#34;idx&#34;&gt;01&lt;/div&gt;&lt;div class=&#34;nm&#34;&gt;Mana Desktop&lt;/div&gt;&lt;div class=&#34;chip&#34;&gt;v0.9.2&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;2 小时前&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;tablerow&#34; style=&#34;border-bottom:0&#34;&gt;&lt;div class=&#34;idx&#34;&gt;02&lt;/div&gt;&lt;div class=&#34;nm&#34;&gt;Atlas API&lt;/div&gt;&lt;div class=&#34;chip&#34;&gt;v3.1.0&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;4 小时前&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;sec&#34; style=&#34;margin-bottom:0&#34;&gt;
+        &lt;div class=&#34;sechead&#34;&gt;&lt;span class=&#34;n mono&#34;&gt;06&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;图标&lt;/span&gt;&lt;span class=&#34;e&#34;&gt;Icons&lt;/span&gt;&lt;span class=&#34;r&#34;&gt;24 GRID · 1.7&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;icongrid&#34;&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-home&#34;/&gt;&lt;/svg&gt;&lt;span&gt;home&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-folder&#34;/&gt;&lt;/svg&gt;&lt;span&gt;folder&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-file&#34;/&gt;&lt;/svg&gt;&lt;span&gt;file&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;span&gt;search&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-plus&#34;/&gt;&lt;/svg&gt;&lt;span&gt;plus&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-settings&#34;/&gt;&lt;/svg&gt;&lt;span&gt;settings&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-database&#34;/&gt;&lt;/svg&gt;&lt;span&gt;database&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-calendar&#34;/&gt;&lt;/svg&gt;&lt;span&gt;calendar&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-clock&#34;/&gt;&lt;/svg&gt;&lt;span&gt;clock&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;span&gt;more&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-down&#34;/&gt;&lt;/svg&gt;&lt;span&gt;chevron&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;ic&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-arrow-right&#34;/&gt;&lt;/svg&gt;&lt;span&gt;arrow&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;band&#34;&gt;
+    &lt;div class=&#34;bcol&#34;&gt;
+      &lt;div class=&#34;sechead&#34;&gt;&lt;span class=&#34;n mono&#34;&gt;07&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;反馈&lt;/span&gt;&lt;span class=&#34;e&#34;&gt;Feedback&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;btoast&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-check&#34;/&gt;&lt;/svg&gt;项目已保存；路径不存在，已仅登记&lt;span class=&#34;k&#34;&gt;2.4S&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;blist&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;没有匹配的项目，清除筛选后重试。&lt;/div&gt;
+      &lt;div class=&#34;blist&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-warning&#34;/&gt;&lt;/svg&gt;危险操作必须写明级联数量与去向。&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;bcol&#34;&gt;
+      &lt;div class=&#34;sechead&#34;&gt;&lt;span class=&#34;n mono&#34;&gt;08&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;可访问性&lt;/span&gt;&lt;span class=&#34;e&#34;&gt;A11y&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;focusring&#34;&gt;Mana Console&lt;/div&gt;
+      &lt;div class=&#34;blist&#34;&gt;焦点外圈 3px · 10% 朱砂；键盘可达；图标按钮带可读标签。&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;bcol&#34;&gt;
+      &lt;div class=&#34;sechead&#34;&gt;&lt;span class=&#34;n mono&#34;&gt;09&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;文案&lt;/span&gt;&lt;span class=&#34;e&#34;&gt;Copy&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;copyrules&#34;&gt;
+        &lt;div&gt;&lt;span class=&#34;n mono&#34;&gt;01&lt;/span&gt;按钮动词开头：新建项目 / 打开目录 / 确认删除。&lt;/div&gt;
+        &lt;div&gt;&lt;span class=&#34;n mono&#34;&gt;02&lt;/span&gt;空状态给下一步，不写“暂无数据”。&lt;/div&gt;
+        &lt;div&gt;&lt;span class=&#34;n mono&#34;&gt;03&lt;/span&gt;时间用相对值，精确值放等宽副行。&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;footer&#34;&gt;
+    &lt;span&gt;字体：Inter + Noto Sans SC（正文） · JetBrains Mono（路径 / 版本 / 编号）&lt;/span&gt;
+    &lt;span&gt;图标：adago design_icons SVG，禁止 emoji 与字符图标&lt;/span&gt;
+    &lt;div class=&#34;r&#34;&gt;&lt;span&gt;TOKENS 1.0&lt;/span&gt;&lt;span&gt;2026.11.18&lt;/span&gt;&lt;span&gt;MANA / LOCAL&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" scrolling="auto"></iframe></div>
+<div class="frame" style="left:3016px;top:40px;width:1440px;height:936px"><div class="cap"><span class="cap-title">07 状态与响应式 · 边界场景</span><span class="cap-meta">ant · note · web-1440</span></div><iframe sandbox="allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;zh-CN&#34;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Content-Security-Policy&#34; content=&#34;default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src data:; font-src data:&#34;&gt;
+&lt;meta charset=&#34;utf-8&#34;&gt;
+&lt;style&gt;
+:root{--paper:#F0EBE0;--sheet:#FCFAF5;--sheet2:#F6F1E6;--ink:#1B1913;--ink2:#4B463C;--ink3:#7B7464;--ink4:#A79F8D;--line:#D6CFBE;--line2:#E7E1D3;--seal:#AE4229;--seal-deep:#8E3220;--seal-soft:#EFDFD7;--moss:#4E6444;--amber:#8C6227;--danger:#9B2E20}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{background:var(--paper);color:var(--ink);font-family:Inter,&#34;Noto Sans SC&#34;,&#34;PingFang SC&#34;,&#34;Microsoft YaHei&#34;,sans-serif;font-size:12px;-webkit-font-smoothing:antialiased}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ico12{width:12px;height:12px}.ico14{width:14px;height:14px}
+.mono{font-family:&#34;JetBrains Mono&#34;,Consolas,&#34;SFMono-Regular&#34;,monospace}
+.micro{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink4)}
+.page{width:1440px;height:900px;padding:30px 48px 22px;display:flex;flex-direction:column;background:var(--paper)}
+.top{display:flex;align-items:center;gap:12px;height:24px}
+.mark{width:22px;height:22px;background:var(--seal);display:grid;place-items:center;color:#FCFAF5;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:12px;font-weight:700}
+.word{font-size:11.5px;font-weight:600;letter-spacing:.16em}
+.div{width:1px;height:14px;background:var(--line)}
+.top .micro{color:var(--ink3)}
+.top .r{margin-left:auto;display:flex;gap:20px}
+.head{display:flex;align-items:flex-end;gap:18px;margin-top:12px;padding-bottom:12px;border-bottom:1px solid var(--ink)}
+h1{font-size:28px;font-weight:700;letter-spacing:-.015em}
+.head .lede{font-size:10.5px;line-height:1.8;color:var(--ink3);max-width:560px}
+.head .r{margin-left:auto;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8.5px;color:var(--ink3);letter-spacing:.1em;text-align:right;line-height:1.8}
+.grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:18px;margin-top:16px;min-height:0}
+.cell{display:flex;flex-direction:column;min-height:0}
+.cap{height:24px;display:flex;align-items:baseline;gap:8px}
+.cap .n{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8.5px;color:var(--seal);letter-spacing:.1em}
+.cap .t{font-size:10.5px;font-weight:600}
+.cap .d{font-size:9px;color:var(--ink4);margin-left:auto}
+.stage{flex:1;border:1px solid var(--line);background:var(--sheet);overflow:hidden;position:relative}
+.dim{position:absolute;inset:0;background:#17150F;opacity:.56}
+.dialog{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:486px;background:var(--sheet);border:1px solid #2B261C;box-shadow:0 18px 42px rgba(15,13,9,.32)}
+.dialog:before{content:&#34;&#34;;position:absolute;left:0;right:0;top:0;height:3px;background:var(--danger)}
+.dh{padding:18px 20px 14px;display:flex;gap:12px;align-items:flex-start;border-bottom:1px solid var(--line)}
+.warn{width:36px;height:36px;border-radius:2px;background:var(--seal-soft);display:grid;place-items:center;color:var(--danger);flex:none}
+.dh .t{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.dh .s{font-size:10px;color:var(--ink3);line-height:1.7;margin-top:3px}
+.body{padding:14px 20px 16px}
+.impact{border-left:2px solid var(--danger);background:var(--sheet2);padding:8px 10px;font-size:10px;line-height:1.8;color:var(--ink2)}
+.impact b{font-weight:600}
+.dfoot{height:44px;border-top:1px solid var(--line);display:flex;align-items:center;padding:0 20px;gap:8px}
+.dfoot .keys{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px;color:var(--ink4);letter-spacing:.06em}
+.dfoot .b{margin-left:auto;display:flex;gap:8px}
+.btn{height:30px;padding:0 12px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink2)}
+.btn .ico{width:12px;height:12px}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#FCFAF5}
+.empty{position:absolute;inset:0;display:flex;flex-direction:column}
+.ebar{height:28px;border-bottom:1px solid var(--line2);display:flex;align-items:center;padding:0 14px;gap:8px;background:var(--sheet2)}
+.ebar .dot{width:6px;height:6px;background:var(--line)}
+.ebar .t{font-size:9px;letter-spacing:.14em;color:var(--ink4)}
+.ebody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.blankcard{width:248px;height:132px;border:1px solid var(--line);background:var(--sheet);transform:rotate(-1.6deg);position:relative;padding:14px;box-shadow:6px 6px 0 rgba(27,25,19,.05)}
+.blankcard:before{content:&#34;&#34;;position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--seal)}
+.blankcard .k{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px;color:var(--ink4);letter-spacing:.14em}
+.blankcard .h{font-size:17px;font-weight:700;margin-top:14px;letter-spacing:-.01em}
+.blankcard .l{height:1px;background:var(--line2);margin-top:9px}
+.blankcard .l.s{width:60%}
+.etitle{font-size:15px;font-weight:600;margin-top:26px}
+.esub{font-size:10.5px;color:var(--ink3);margin-top:5px;text-align:center;line-height:1.7;max-width:360px}
+.ebtns{display:flex;gap:8px;margin-top:14px}
+.stampbox{position:absolute;right:20px;bottom:18px;border:1px solid var(--seal);color:var(--seal);font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px;letter-spacing:.12em;padding:3px 6px;transform:rotate(-2deg)}
+.formstage{position:absolute;inset:0;padding:22px 24px;display:flex;flex-direction:column}
+.fhead{display:flex;align-items:baseline;gap:8px}
+.fhead .t{font-size:13px;font-weight:600}
+.fhead .n{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8.5px;color:var(--ink4);letter-spacing:.08em}
+.flabel{font-size:9.5px;color:var(--ink3);letter-spacing:.06em;margin:14px 0 6px;display:flex;gap:5px}
+.req{color:var(--seal)}
+.finp{height:34px;border:1px solid var(--danger);background:#FFFDF8;border-radius:2px;display:flex;align-items:center;padding:0 10px;font-size:11.5px;box-shadow:0 0 0 3px rgba(155,46,32,.08);justify-content:space-between}
+.finp .x{width:16px;height:16px;border-radius:50%;background:var(--danger);color:#FCFAF5;display:grid;place-items:center}
+.errmsg{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--danger);margin-top:5px}
+.errmsg .ico{width:10px;height:10px}
+.row2{display:flex;gap:10px}
+.row2 .fld{flex:1}
+.hint{font-size:9px;color:var(--ink4);margin-top:5px;display:flex;gap:5px;align-items:center}
+.hint .ico{width:10px;height:10px;color:var(--amber)}
+.toast{position:absolute;right:14px;bottom:12px;height:34px;background:#17150F;color:#EDE7DA;display:flex;align-items:center;gap:8px;padding:0 14px;font-size:10px;letter-spacing:.02em;box-shadow:0 8px 20px rgba(15,13,9,.2)}
+.toast .ico{width:12px;height:12px;color:#A9BC8B}
+.toast .k{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8px;color:#8F8877;letter-spacing:.1em;margin-left:6px}
+.winstage{position:absolute;inset:0;padding:14px 16px 12px;display:flex;flex-direction:column}
+.minscale{flex:1;position:relative;overflow:hidden;border:1px solid var(--line);background:var(--paper)}
+.minwin{width:1120px;height:720px;transform:scale(.445);transform-origin:top left;position:absolute;left:50%;margin-left:-249px;top:10px;background:#F0EBE0;display:flex;flex-direction:column;border:1px solid #2B261C}
+.mt{height:38px;background:#17150F;display:flex;align-items:center;gap:10px;padding:0 14px}
+.mt .mk{width:20px;height:20px;background:var(--seal)}
+.mt .nm{width:46px;height:8px;background:#4A4438}
+.mt .st{margin-left:auto;width:64px;height:8px;background:#3C372C}
+.mb{flex:1;display:flex;min-height:0}
+.mrail{width:68px;background:#17150F;display:flex;flex-direction:column;align-items:center;padding-top:18px;gap:14px}
+.mrail i{width:18px;height:18px;background:#3C372C}
+.mrail i:first-child{background:var(--seal)}
+.mpanel{width:240px;background:var(--sheet2);border-right:1px solid var(--line);padding:18px 16px}
+.mpanel .h{width:90px;height:9px;background:#C9C1AE;margin-bottom:14px}
+.mpanel .s{height:30px;border:1px solid var(--line);background:var(--sheet);margin-bottom:14px}
+.mpanel .r{height:38px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:8px}
+.mpanel .r i{width:7px;height:7px;background:#B9B09C}
+.mpanel .r span{height:8px;background:#CFC6B2;flex:1;max-width:120px}
+.mmain{flex:1;background:var(--sheet);padding:22px 26px;min-width:0}
+.mmast{display:flex;align-items:flex-end;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line2)}
+.mmast .t{width:200px;height:18px;background:#B9AF99}
+.mmast .a{margin-left:auto;width:80px;height:28px;background:var(--seal)}
+.mledger{display:flex;border-bottom:1px solid var(--line2);height:74px}
+.mledger div{flex:1;border-right:1px solid var(--line2);padding:12px 14px}
+.mledger b{display:block;width:44px;height:20px;background:#C6BCA6;margin-top:8px}
+.mtable{margin-top:14px}
+.mth{height:26px;border-bottom:1px solid var(--line)}
+.mtr{height:48px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:10px}
+.mtr i{width:12px;height:12px;background:#D8D0BC}
+.mtr span{height:8px;background:#D8D0BC}
+.mtr span:nth-child(2){width:30%}
+.mtr span:nth-child(3){width:8%}
+.mtr span:nth-child(4){width:12%}
+.annotations{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap}
+.annotations div{font-size:8.5px;color:var(--ink3);display:flex;gap:4px}
+.annotations .k{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;color:var(--seal);font-size:8px}
+.footer{margin-top:auto;border-top:1px solid var(--ink);padding-top:8px;display:flex;align-items:center;gap:22px;font-size:8.5px;color:var(--ink3)}
+.footer .r{margin-left:auto;display:flex;gap:22px;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;letter-spacing:.1em}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width=&#34;0&#34; height=&#34;0&#34; style=&#34;position:absolute&#34; aria-hidden=&#34;true&#34;&gt;
+  &lt;symbol id=&#34;i-plus&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 5v14M5 12h14&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-warning&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 4l8.5 15h-17z&#34;/&gt;&lt;path d=&#34;M12 10v4&#34;/&gt;&lt;path d=&#34;M12 16.6v.9&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-check&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 12.5l5 5L20 6.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-close&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M6 6l12 12M18 6L6 18&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-search&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;11&#34; cy=&#34;11&#34; r=&#34;6&#34;/&gt;&lt;path d=&#34;M20 20l-3.6-3.6&#34;/&gt;&lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;div class=&#34;page&#34;&gt;
+  &lt;div class=&#34;top&#34;&gt;&lt;div class=&#34;mark&#34;&gt;M&lt;/div&gt;&lt;div class=&#34;word&#34;&gt;MANA&lt;/div&gt;&lt;div class=&#34;div&#34;&gt;&lt;/div&gt;&lt;div class=&#34;micro&#34;&gt;States &amp; responsive · v2&lt;/div&gt;&lt;div class=&#34;r&#34;&gt;&lt;div class=&#34;micro&#34;&gt;1440 × 900&lt;/div&gt;&lt;div class=&#34;micro&#34;&gt;04 SPECIMENS&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&#34;head&#34;&gt;&lt;h1&gt;状态与响应式&lt;/h1&gt;&lt;div class=&#34;lede&#34;&gt;危险操作、空白页面、校验与反馈、最小窗口：同一个索引语言在边缘场景下仍然成立，不靠弹窗与提示色堆叠。&lt;/div&gt;&lt;div class=&#34;r&#34;&gt;MIN 1120 × 720&lt;br&gt;NO HORIZONTAL SCROLL&lt;br&gt;KEYBOARD FIRST&lt;/div&gt;&lt;/div&gt;
+
+  &lt;div class=&#34;grid&#34;&gt;
+    &lt;div class=&#34;cell&#34;&gt;
+      &lt;div class=&#34;cap&#34;&gt;&lt;span class=&#34;n&#34;&gt;01&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;破坏性操作 · 删除项目组&lt;/span&gt;&lt;span class=&#34;d&#34;&gt;DIALOG 486PX&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;stage&#34;&gt;
+        &lt;div class=&#34;dim&#34;&gt;&lt;/div&gt;
+        &lt;div class=&#34;dialog&#34;&gt;
+          &lt;div class=&#34;dh&#34;&gt;&lt;div class=&#34;warn&#34;&gt;&lt;svg class=&#34;ico&#34; style=&#34;width:20px;height:20px&#34;&gt;&lt;use href=&#34;#i-warning&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;t&#34;&gt;删除项目组「客户端应用」？&lt;/div&gt;&lt;div class=&#34;s&#34;&gt;项目不会删除，但会离开当前分组；组文档将一并删除。&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;body&#34;&gt;&lt;div class=&#34;impact&#34;&gt;组内 &lt;b&gt;5 个项目&lt;/b&gt;将移至「未分组」，&lt;br&gt;&lt;b&gt;5 篇组文档&lt;/b&gt;将一并删除，无法恢复。&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;dfoot&#34;&gt;&lt;div class=&#34;keys&#34;&gt;ESC 取消 · ENTER 确认&lt;/div&gt;&lt;div class=&#34;b&#34;&gt;&lt;div class=&#34;btn&#34;&gt;取消&lt;/div&gt;&lt;div class=&#34;btn danger&#34;&gt;确认删除&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&#34;cell&#34;&gt;
+      &lt;div class=&#34;cap&#34;&gt;&lt;span class=&#34;n&#34;&gt;02&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;空状态 · 还没有项目&lt;/span&gt;&lt;span class=&#34;d&#34;&gt;EMPTY INDEX&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;stage&#34;&gt;
+        &lt;div class=&#34;empty&#34;&gt;
+          &lt;div class=&#34;ebar&#34;&gt;&lt;i class=&#34;dot&#34;&gt;&lt;/i&gt;&lt;div class=&#34;t&#34;&gt;INDEX 00 / EMPTY&lt;/div&gt;&lt;div class=&#34;t&#34; style=&#34;margin-left:auto&#34;&gt;本地 · SQLITE&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;ebody&#34;&gt;&lt;div class=&#34;blankcard&#34;&gt;&lt;div class=&#34;k&#34;&gt;BLANK RECORD&lt;/div&gt;&lt;div class=&#34;h&#34;&gt;空白索引卡&lt;/div&gt;&lt;div class=&#34;l&#34;&gt;&lt;/div&gt;&lt;div class=&#34;l&#34;&gt;&lt;/div&gt;&lt;div class=&#34;l s&#34;&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;etitle&#34;&gt;还没有项目&lt;/div&gt;&lt;div class=&#34;esub&#34;&gt;从第一个项目开始建立本地索引。登记名称与路径，或先建一个项目组。&lt;/div&gt;
+            &lt;div class=&#34;ebtns&#34;&gt;&lt;div class=&#34;btn&#34; style=&#34;background:var(--seal);border-color:var(--seal);color:#FCFAF5&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-plus&#34;/&gt;&lt;/svg&gt;新建项目&lt;/div&gt;&lt;div class=&#34;btn&#34;&gt;新建项目组&lt;/div&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&#34;stampbox&#34;&gt;NO. 0000&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&#34;cell&#34;&gt;
+      &lt;div class=&#34;cap&#34;&gt;&lt;span class=&#34;n&#34;&gt;03&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;校验与反馈 · 字段错误 + toast&lt;/span&gt;&lt;span class=&#34;d&#34;&gt;INLINE ERROR&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;stage&#34;&gt;
+        &lt;div class=&#34;formstage&#34;&gt;
+          &lt;div class=&#34;fhead&#34;&gt;&lt;div class=&#34;t&#34;&gt;新建项目&lt;/div&gt;&lt;div class=&#34;n&#34;&gt;NEW RECORD&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;flabel&#34;&gt;项目名称&lt;span class=&#34;req&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;margin-left:auto;color:var(--ink4)&#34;&gt;最多 80 字符&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&#34;finp&#34;&gt;Mana Console&lt;div class=&#34;x&#34;&gt;&lt;svg class=&#34;ico&#34; style=&#34;width:9px;height:9px&#34;&gt;&lt;use href=&#34;#i-close&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;errmsg&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-warning&#34;/&gt;&lt;/svg&gt;名称已存在：索引中还有一个 Mana Console。&lt;/div&gt;
+          &lt;div class=&#34;row2&#34;&gt;&lt;div class=&#34;fld&#34;&gt;&lt;div class=&#34;flabel&#34;&gt;所属项目组&lt;/div&gt;&lt;div class=&#34;finp&#34; style=&#34;border-color:var(--line);box-shadow:none;color:var(--ink2)&#34;&gt;客户端应用&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;fld&#34;&gt;&lt;div class=&#34;flabel&#34;&gt;版本&lt;/div&gt;&lt;div class=&#34;finp&#34; style=&#34;border-color:var(--line);box-shadow:none;color:var(--ink4)&#34;&gt;例如 v1.0.0&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;flabel&#34;&gt;项目路径&lt;/div&gt;
+          &lt;div class=&#34;finp&#34; style=&#34;border-color:var(--line);box-shadow:none;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9.5px;color:var(--ink2)&#34;&gt;E:\codes\go_projects\mana_console&lt;/div&gt;
+          &lt;div class=&#34;hint&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-warning&#34;/&gt;&lt;/svg&gt;路径不存在时仍可保存，但“打开目录”会禁用。&lt;/div&gt;
+          &lt;div class=&#34;toast&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-check&#34;/&gt;&lt;/svg&gt;项目已保存；路径不存在，已仅登记&lt;span class=&#34;k&#34;&gt;2.4S&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&#34;cell&#34;&gt;
+      &lt;div class=&#34;cap&#34;&gt;&lt;span class=&#34;n&#34;&gt;04&lt;/span&gt;&lt;span class=&#34;t&#34;&gt;最小窗口 · 1120 × 720&lt;/span&gt;&lt;span class=&#34;d&#34;&gt;NO H-SCROLL&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;stage&#34;&gt;
+        &lt;div class=&#34;winstage&#34;&gt;
+          &lt;div class=&#34;minscale&#34;&gt;
+            &lt;div class=&#34;minwin&#34;&gt;
+              &lt;div class=&#34;mt&#34;&gt;&lt;div class=&#34;mk&#34;&gt;&lt;/div&gt;&lt;div class=&#34;nm&#34;&gt;&lt;/div&gt;&lt;div class=&#34;st&#34;&gt;&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&#34;mb&#34;&gt;&lt;div class=&#34;mrail&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;mpanel&#34;&gt;&lt;div class=&#34;h&#34;&gt;&lt;/div&gt;&lt;div class=&#34;s&#34;&gt;&lt;/div&gt;&lt;div class=&#34;r&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;r&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;r&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;r&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;r&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+                &lt;div class=&#34;mmain&#34;&gt;&lt;div class=&#34;mmast&#34;&gt;&lt;div class=&#34;t&#34;&gt;&lt;/div&gt;&lt;div class=&#34;a&#34;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;mledger&#34;&gt;&lt;div&gt;&lt;b&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;mtable&#34;&gt;&lt;div class=&#34;mth&#34;&gt;&lt;/div&gt;&lt;div class=&#34;mtr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;mtr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;mtr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;mtr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;mtr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;mtr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&#34;annotations&#34;&gt;&lt;div&gt;&lt;span class=&#34;k&#34;&gt;01&lt;/span&gt;目录收至 240&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;k&#34;&gt;02&lt;/span&gt;标签列隐藏&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;k&#34;&gt;03&lt;/span&gt;详情右栏 288&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;k&#34;&gt;04&lt;/span&gt;文档预览折叠&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;footer&#34;&gt;&lt;span&gt;状态规则：危险操作必须写明级联数量；空状态给两步主操作；字段错误就近显示；toast 2.4s 自动消退。&lt;/span&gt;&lt;div class=&#34;r&#34;&gt;&lt;span&gt;MANA / INDEX&lt;/span&gt;&lt;span&gt;2026.11.18&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" scrolling="auto"></iframe></div>
+<div class="frame" style="left:4504px;top:40px;width:1440px;height:936px"><div class="cap"><span class="cap-title">02 首页 · 索引工作台</span><span class="cap-meta">ant · screen · web-1440</span></div><iframe sandbox="allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;zh-CN&#34;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Content-Security-Policy&#34; content=&#34;default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src data:; font-src data:&#34;&gt;
+&lt;meta charset=&#34;utf-8&#34;&gt;
+&lt;style&gt;
+:root{
+  --paper:#F0EBE0; --sheet:#FCFAF5; --sheet2:#F6F1E6;
+  --ink:#1B1913; --ink2:#4B463C; --ink3:#7B7464; --ink4:#A79F8D;
+  --line:#D6CFBE; --line2:#E7E1D3;
+  --seal:#AE4229; --seal-deep:#8E3220; --seal-soft:#EFDFD7;
+  --moss:#4E6444; --indigo:#33586B; --amber:#8C6227;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{background:var(--paper);color:var(--ink);font-family:Inter,&#34;Noto Sans SC&#34;,&#34;PingFang SC&#34;,&#34;Microsoft YaHei&#34;,sans-serif;font-size:12.5px;-webkit-font-smoothing:antialiased}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ico12{width:12px;height:12px}.ico14{width:14px;height:14px}.ico18{width:18px;height:18px}
+.mono{font-family:&#34;JetBrains Mono&#34;,Consolas,&#34;SFMono-Regular&#34;,monospace}
+.micro{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4)}
+.wrap{display:flex;flex-direction:column;height:900px}
+
+.titlebar{height:38px;background:#17150F;color:#EDE7DA;border-bottom:1px solid #2A261D;display:flex;align-items:center;padding:0 14px;gap:12px}
+.mark{width:20px;height:20px;background:var(--seal);display:grid;place-items:center;color:#FCFAF5;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:11px;font-weight:700}
+.wordmark{font-size:11.5px;font-weight:600;letter-spacing:.14em}
+.divider{width:1px;height:14px;background:#3A3428}
+.tb-note{font-size:9.5px;letter-spacing:.13em;color:#8F8877;text-transform:uppercase}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.status-dot{width:6px;height:6px;background:#7C9060;border-radius:1px}
+.tb-status{font-size:9.5px;letter-spacing:.12em;color:#B7AE9B;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.key{height:18px;padding:0 6px;border:1px solid #443C2E;color:#B7AE9B;font-size:9px;display:flex;align-items:center;letter-spacing:.08em;border-radius:2px}
+.avatar{width:24px;height:24px;border-radius:2px;border:1px solid #4B4231;background:#2A2519;color:#EDE7DA;display:grid;place-items:center;font-size:10px;font-weight:600}
+
+.body{display:flex;flex:1;min-height:0}
+.rail{width:68px;background:#17150F;display:flex;flex-direction:column;align-items:center;padding:16px 0 14px;gap:6px}
+.navbtn{width:46px;height:44px;display:grid;place-items:center;border-radius:2px;color:#9C9482}
+.navbtn.active{background:rgba(174,66,41,.26);color:#F3E8E1;box-shadow:inset 2px 0 0 var(--seal)}
+.spacer{flex:1}
+.rail .dot{width:5px;height:5px;background:#7C9060;border-radius:1px;margin-bottom:4px}
+.rail-avatar{width:26px;height:26px;border-radius:2px;border:1px solid #4B4231;background:#2A2519;display:grid;place-items:center;color:#EDE7DA;font-size:10.5px;font-weight:600;margin-top:6px}
+
+.panel{width:252px;background:var(--sheet2);border-right:1px solid var(--line);padding:18px 16px 12px;display:flex;flex-direction:column;min-height:0}
+.panel-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.panel-title{font-size:12px;font-weight:600}
+.panel-title .mono{font-size:9px;color:var(--ink4);margin-left:6px;letter-spacing:.1em}
+.search{height:32px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:7px;padding:0 8px;color:var(--ink3)}
+.search span{font-size:10.5px;color:var(--ink4);flex:1}
+.search .key{border-color:var(--line);color:var(--ink4);background:var(--sheet2)}
+.section{margin-top:16px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:baseline}
+.rec{height:44px;display:flex;align-items:center;gap:9px;padding:0 6px;border-bottom:1px solid var(--line2)}
+.rec .idx{font-size:9px;color:var(--ink4);width:14px}
+.rec .txt{min-width:0}
+.rec .name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec .meta{font-size:9.5px;color:var(--ink3);margin-top:1px;white-space:nowrap}
+.grow{flex:1}
+.type{height:30px;display:flex;align-items:center;gap:8px;padding:0 6px}
+.type .tname{width:62px;font-size:10.5px;color:var(--ink2)}
+.type .track{flex:1;height:3px;background:var(--line2);position:relative}
+.type .fill{position:absolute;left:0;top:0;bottom:0;background:var(--ink3)}
+.type .fill.seal{background:var(--seal)}
+.type .count{width:20px;text-align:right;font-size:9.5px;color:var(--ink4)}
+.ghostbtn{height:32px;border:1px dashed var(--line);border-radius:2px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--ink3);margin-top:10px}
+.panel-foot{padding-top:10px;border-top:1px solid var(--line2);margin-top:8px;display:flex;align-items:center;gap:7px;font-size:9.5px;color:var(--ink4)}
+
+.main{flex:1;background:var(--sheet);display:flex;flex-direction:column;min-width:0}
+.mast{padding:20px 34px 14px;border-bottom:1px solid var(--line2)}
+.crumb{display:flex;align-items:center;gap:7px;font-size:9.5px;letter-spacing:.16em;color:var(--ink4);text-transform:uppercase}
+.crumb .sep{color:var(--line)}
+.crumb .cur{color:var(--seal)}
+.h1row{display:flex;align-items:flex-end;gap:14px;margin-top:7px}
+h1{font-size:29px;line-height:1.14;font-weight:700;letter-spacing:-.015em}
+.date{font-size:9.5px;color:var(--ink4);letter-spacing:.08em;padding-bottom:4px}
+.actions{margin-left:auto;display:flex;align-items:center;gap:8px;padding-bottom:2px}
+.btn{height:32px;padding:0 12px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink2)}
+.btn .ico{width:13px;height:13px;color:var(--ink3)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:#FCFAF5}
+.btn.primary .ico{color:#FCFAF5}
+.sub{margin-top:5px;font-size:11px;color:var(--ink3)}
+
+.ledger{display:grid;grid-template-columns:repeat(4,1fr);height:92px;border-bottom:1px solid var(--line2)}
+.cell{padding:15px 22px 0;border-right:1px solid var(--line2)}
+.cell:first-child{padding-left:34px}
+.cell:last-child{border-right:0}
+.cell .label{display:flex;align-items:center;gap:6px}
+.cell .label .ico{width:11px;height:11px;color:var(--ink4)}
+.cell .num{margin-top:5px;display:flex;align-items:baseline;gap:6px}
+.cell .num b{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:30px;font-weight:500;letter-spacing:-.03em}
+.cell .num span{font-size:9.5px;color:var(--ink4);letter-spacing:.1em;text-transform:uppercase}
+.cell .meta{font-size:10px;color:var(--ink3);margin-top:1px}
+
+.content{flex:1;min-height:0;display:grid;grid-template-columns:1fr 358px;gap:32px;padding:18px 34px 0}
+.left{min-width:0;display:flex;flex-direction:column;min-height:0}
+.sechead{height:34px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--line)}
+.sechead .t{font-size:13px;font-weight:600}
+.sechead .n{font-size:9px;color:var(--ink4);letter-spacing:.1em}
+.sechead .more{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink3)}
+.sechead .more .ico{width:11px;height:11px;color:var(--ink4)}
+.thead,.trow{display:grid;grid-template-columns:32px minmax(0,1fr) 78px 150px 84px 22px;align-items:center;gap:8px;padding:0 4px}
+.thead{height:28px;border-bottom:1px solid var(--line2);font-size:9px;letter-spacing:.14em;color:var(--ink4);text-transform:uppercase}
+.trow{height:58px;border-bottom:1px solid var(--line2)}
+.trow .idx{font-size:9px;color:var(--ink4)}
+.trow .pname{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .pmeta{font-size:9.5px;color:var(--ink4);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .chip{display:inline-flex;align-items:center;height:19px;padding:0 6px;border:1px solid var(--line);border-radius:2px;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:9.5px;color:var(--ink2);background:var(--sheet)}
+.trow .tags{font-size:10.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .tags .plus{color:var(--ink4)}
+.trow .time{font-size:9.5px;color:var(--ink3)}
+.trow .more{color:var(--ink4);display:flex;justify-content:center}
+.tfoot{height:30px;display:flex;align-items:center;border-bottom:1px solid var(--line2)}
+.tfoot .m{font-size:9.5px;color:var(--ink4)}
+.tfoot .sync{margin-left:auto;font-size:9.5px;color:var(--ink4);letter-spacing:.1em}
+
+.docstrip{margin-top:18px;display:flex;flex-direction:column;min-height:0}
+.docgrid{display:grid;grid-template-columns:1fr 1fr;column-gap:28px;margin-top:2px}
+.docitem{height:46px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--line2)}
+.kind{width:36px;flex:none}
+.kind .dot{width:5px;height:5px;margin-bottom:3px}
+.kind .k{font-size:8.5px;color:var(--ink3);letter-spacing:.06em}
+.docitem .txt{min-width:0;flex:1}
+.docitem .title{font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.docitem .meta{font-size:9.5px;color:var(--ink4);margin-top:1px}
+.docitem .time{font-size:9.5px;color:var(--ink4);white-space:nowrap}
+
+.right{display:flex;flex-direction:column;min-height:0;gap:20px}
+.block{display:flex;flex-direction:column;min-height:0}
+.blockhead{height:34px;display:flex;align-items:center;border-bottom:1px solid var(--line);gap:7px}
+.blockhead .t{font-size:12.5px;font-weight:600}
+.blockhead .n{font-size:9px;color:var(--ink4);letter-spacing:.1em}
+.blockhead .link{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:10px;color:var(--ink3)}
+.blockhead .link .ico{width:10px;height:10px;color:var(--ink4)}
+.growrow{height:42px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--line2);padding:0 2px}
+.growrow .sq{width:8px;height:8px;flex:none}
+.growrow .name{font-size:11.5px;font-weight:500;flex:1}
+.growrow .meta{font-size:9.5px;color:var(--ink3);letter-spacing:.02em}
+.growrow .ico{width:10px;height:10px;color:var(--ink4)}
+.growrow.ungrouped .name{color:var(--ink3)}
+.weekrow{height:42px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--line2);padding:0 2px}
+.weekrow .wk{font-size:9px;color:var(--ink4);width:26px;letter-spacing:.04em}
+.weekrow .txt{flex:1;font-size:11px;color:var(--ink2)}
+.weekrow .val{font-size:10.5px;color:var(--ink3);font-family:&#34;JetBrains Mono&#34;,Consolas,monospace}
+.weekfoot{height:34px;display:flex;align-items:center;gap:5px;font-size:10px;color:var(--ink3);margin-top:2px}
+
+.statusbar{height:30px;border-top:1px solid var(--line2);background:var(--sheet2);display:flex;align-items:center;padding:0 34px;gap:16px;font-size:9.5px;color:var(--ink4);letter-spacing:.06em}
+.statusbar .left{display:flex;align-items:center;gap:7px}
+.statusbar .right{margin-left:auto;display:flex;gap:16px}
+.statusbar .dot{width:5px;height:5px;background:#7C9060;border-radius:1px}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width=&#34;0&#34; height=&#34;0&#34; style=&#34;position:absolute&#34; aria-hidden=&#34;true&#34;&gt;
+  &lt;symbol id=&#34;i-home&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 11l8-7 8 7&#34;/&gt;&lt;path d=&#34;M6.5 9.5V20h11V9.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-folder&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 7.5A1.5 1.5 0 015.5 6h3.2c.4 0 .8.2 1 .5L11 8h7.5A1.5 1.5 0 0120 9.5v8A1.5 1.5 0 0118.5 19h-13A1.5 1.5 0 014 17.5z&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-grid&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;rect x=&#34;4&#34; y=&#34;4&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;13&#34; y=&#34;4&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;4&#34; y=&#34;13&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;13&#34; y=&#34;13&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-search&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;11&#34; cy=&#34;11&#34; r=&#34;6&#34;/&gt;&lt;path d=&#34;M20 20l-3.6-3.6&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-layers&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 4l8 4.5-8 4.5-8-4.5z&#34;/&gt;&lt;path d=&#34;M4 13l8 4.5 8-4.5&#34;/&gt;&lt;path d=&#34;M4 17.5l8 4.5 8-4.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-settings&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 8h9&#34;/&gt;&lt;path d=&#34;M17 8h3&#34;/&gt;&lt;path d=&#34;M4 16h3&#34;/&gt;&lt;path d=&#34;M11 16h9&#34;/&gt;&lt;circle cx=&#34;15&#34; cy=&#34;8&#34; r=&#34;2&#34;/&gt;&lt;circle cx=&#34;9&#34; cy=&#34;16&#34; r=&#34;2&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-database&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;ellipse cx=&#34;12&#34; cy=&#34;6&#34; rx=&#34;7&#34; ry=&#34;2.8&#34;/&gt;&lt;path d=&#34;M5 6v12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6&#34;/&gt;&lt;path d=&#34;M5 12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-plus&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 5v14M5 12h14&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-calendar&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;rect x=&#34;4&#34; y=&#34;6&#34; width=&#34;16&#34; height=&#34;14&#34; rx=&#34;2&#34;/&gt;&lt;path d=&#34;M8 3v5&#34;/&gt;&lt;path d=&#34;M16 3v5&#34;/&gt;&lt;path d=&#34;M4 11h16&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-arrow-right&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M5 12h14&#34;/&gt;&lt;path d=&#34;M13 6l6 6-6 6&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-more&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;6&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;circle cx=&#34;12&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;circle cx=&#34;18&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-chevron-right&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M9 5l7 7-7 7&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-clock&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;12&#34; cy=&#34;12&#34; r=&#34;8&#34;/&gt;&lt;path d=&#34;M12 7v5l3 2&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-file&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M6 4h8l4 4v12H6z&#34;/&gt;&lt;path d=&#34;M14 4v4h4&#34;/&gt;&lt;path d=&#34;M9 13h6&#34;/&gt;&lt;path d=&#34;M9 16h4&#34;/&gt;&lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;div class=&#34;wrap&#34;&gt;
+  &lt;div class=&#34;titlebar&#34;&gt;
+    &lt;div class=&#34;mark&#34;&gt;M&lt;/div&gt;
+    &lt;div class=&#34;wordmark&#34;&gt;MANA&lt;/div&gt;
+    &lt;div class=&#34;divider&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;tb-note&#34;&gt;Project index · local&lt;/div&gt;
+    &lt;div class=&#34;tb-right&#34;&gt;
+      &lt;div class=&#34;tb-status&#34;&gt;&lt;i class=&#34;status-dot&#34;&gt;&lt;/i&gt;SQLite · 已连接&lt;/div&gt;
+      &lt;div class=&#34;divider&#34;&gt;&lt;/div&gt;
+      &lt;div class=&#34;key mono&#34;&gt;CTRL K&lt;/div&gt;
+      &lt;svg class=&#34;ico ico14&#34; style=&#34;color:#9C9482&#34;&gt;&lt;use href=&#34;#i-settings&#34;/&gt;&lt;/svg&gt;
+      &lt;div class=&#34;avatar&#34;&gt;L&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;body&#34;&gt;
+    &lt;aside class=&#34;rail&#34;&gt;
+      &lt;div class=&#34;navbtn active&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-home&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-folder&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-grid&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-layers&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;spacer&#34;&gt;&lt;/div&gt;
+      &lt;i class=&#34;dot&#34;&gt;&lt;/i&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-database&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-settings&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;rail-avatar&#34;&gt;L&lt;/div&gt;
+    &lt;/aside&gt;
+
+    &lt;aside class=&#34;panel&#34;&gt;
+      &lt;div class=&#34;panel-head&#34;&gt;&lt;div class=&#34;panel-title&#34;&gt;索引目录&lt;span class=&#34;mono&#34;&gt;MANA&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;search&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;span&gt;搜索项目、文档、标签&lt;/span&gt;&lt;div class=&#34;key mono&#34;&gt;F&lt;/div&gt;&lt;/div&gt;
+
+      &lt;div class=&#34;section&#34;&gt;&lt;div class=&#34;micro&#34;&gt;最近项目 · 06&lt;/div&gt;&lt;div class=&#34;micro mono&#34;&gt;RECENT&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;rec&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;01&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;Mana Desktop&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;客户端应用 · v0.9.2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;rec&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;02&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;Atlas API&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;后端服务 · v3.1.0&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;rec&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;03&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;Orbit Mobile&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;客户端应用 · v2.3.1&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;rec&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;04&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;Relic Worker&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;后端服务 · v1.8.2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+      &lt;div class=&#34;section&#34;&gt;&lt;div class=&#34;micro&#34;&gt;文档类型 · 42&lt;/div&gt;&lt;div class=&#34;micro mono&#34;&gt;TYPE&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;type&#34;&gt;&lt;div class=&#34;tname&#34;&gt;需求&lt;/div&gt;&lt;div class=&#34;track&#34;&gt;&lt;i class=&#34;fill seal&#34; style=&#34;width:29%&#34;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;12&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;type&#34;&gt;&lt;div class=&#34;tname&#34;&gt;设计&lt;/div&gt;&lt;div class=&#34;track&#34;&gt;&lt;i class=&#34;fill&#34; style=&#34;width:19%&#34;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;08&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;type&#34;&gt;&lt;div class=&#34;tname&#34;&gt;开发计划&lt;/div&gt;&lt;div class=&#34;track&#34;&gt;&lt;i class=&#34;fill&#34; style=&#34;width:21%&#34;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;09&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;type&#34;&gt;&lt;div class=&#34;tname&#34;&gt;接口&lt;/div&gt;&lt;div class=&#34;track&#34;&gt;&lt;i class=&#34;fill&#34; style=&#34;width:14%&#34;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;06&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;type&#34;&gt;&lt;div class=&#34;tname&#34;&gt;其他&lt;/div&gt;&lt;div class=&#34;track&#34;&gt;&lt;i class=&#34;fill&#34; style=&#34;width:17%&#34;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;07&lt;/div&gt;&lt;/div&gt;
+
+      &lt;div class=&#34;grow&#34;&gt;&lt;/div&gt;
+      &lt;div class=&#34;ghostbtn&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-plus&#34;/&gt;&lt;/svg&gt;新建项目组&lt;/div&gt;
+      &lt;div class=&#34;panel-foot&#34;&gt;&lt;i class=&#34;status-dot&#34; style=&#34;width:5px;height:5px;background:#7C9060&#34;&gt;&lt;/i&gt;SQLite 1.4 MB · 17:19 同步&lt;/div&gt;
+    &lt;/aside&gt;
+
+    &lt;main class=&#34;main&#34;&gt;
+      &lt;div class=&#34;mast&#34;&gt;
+        &lt;div class=&#34;crumb&#34;&gt;&lt;span&gt;工作台&lt;/span&gt;&lt;span class=&#34;sep&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;cur&#34;&gt;索引 01&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;h1row&#34;&gt;
+          &lt;h1&gt;本地项目索引&lt;/h1&gt;
+          &lt;div class=&#34;date mono&#34;&gt;2026.11.18 · 周三&lt;/div&gt;
+          &lt;div class=&#34;actions&#34;&gt;
+            &lt;div class=&#34;btn&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-calendar&#34;/&gt;&lt;/svg&gt;本周&lt;/div&gt;
+            &lt;div class=&#34;btn primary&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-plus&#34;/&gt;&lt;/svg&gt;新建项目&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&#34;sub&#34;&gt;把项目、项目组与文档收进同一份可检索的本地索引。今天有 2 个项目更新，4 篇文档有改动。&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;ledger&#34;&gt;
+        &lt;div class=&#34;cell&#34;&gt;&lt;div class=&#34;label&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-grid&#34;/&gt;&lt;/svg&gt;&lt;span class=&#34;micro&#34;&gt;项目总数 · Projects&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;num&#34;&gt;&lt;b&gt;18&lt;/b&gt;&lt;span&gt;项&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;其中 11 个项目本周有更新&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;cell&#34;&gt;&lt;div class=&#34;label&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-folder&#34;/&gt;&lt;/svg&gt;&lt;span class=&#34;micro&#34;&gt;项目组 · Groups&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;num&#34;&gt;&lt;b&gt;5&lt;/b&gt;&lt;span&gt;组&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;4 个组本周有项目更新&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;cell&#34;&gt;&lt;div class=&#34;label&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-file&#34;/&gt;&lt;/svg&gt;&lt;span class=&#34;micro&#34;&gt;文档总数 · Docs&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;num&#34;&gt;&lt;b&gt;42&lt;/b&gt;&lt;span&gt;篇&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;32 篇文档本周有改动&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;cell&#34;&gt;&lt;div class=&#34;label&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-clock&#34;/&gt;&lt;/svg&gt;&lt;span class=&#34;micro&#34;&gt;本周更新 · Week&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;num&#34;&gt;&lt;b&gt;11&lt;/b&gt;&lt;span&gt;项&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;近 7 天有更新的项目&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;content&#34;&gt;
+        &lt;div class=&#34;left&#34;&gt;
+          &lt;div class=&#34;sechead&#34;&gt;&lt;div class=&#34;t&#34;&gt;最近更新&lt;/div&gt;&lt;div class=&#34;n mono&#34;&gt;01 — 06&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;全部 18 项&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-arrow-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;thead&#34;&gt;&lt;div&gt;#&lt;/div&gt;&lt;div&gt;项目&lt;/div&gt;&lt;div&gt;版本&lt;/div&gt;&lt;div&gt;标签&lt;/div&gt;&lt;div&gt;更新&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;01&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Mana Desktop&lt;/div&gt;&lt;div class=&#34;pmeta&#34;&gt;客户端应用 · 本地优先的项目管理桌面端&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v0.9.2&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;Go &lt;span style=&#34;color:var(--line)&#34;&gt;·&lt;/span&gt; MyGo &lt;span class=&#34;plus&#34;&gt;+1&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;2 小时前&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;02&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Atlas API&lt;/div&gt;&lt;div class=&#34;pmeta&#34;&gt;后端服务 · 内部服务网关&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v3.1.0&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;Go &lt;span style=&#34;color:var(--line)&#34;&gt;·&lt;/span&gt; SQLite &lt;span class=&#34;plus&#34;&gt;+1&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;4 小时前&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;03&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Orbit Mobile&lt;/div&gt;&lt;div class=&#34;pmeta&#34;&gt;客户端应用 · 移动端产品线&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v2.3.1&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;Flutter &lt;span style=&#34;color:var(--line)&#34;&gt;·&lt;/span&gt; iOS &lt;span class=&#34;plus&#34;&gt;+1&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;昨天&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;04&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Relic Worker&lt;/div&gt;&lt;div class=&#34;pmeta&#34;&gt;后端服务 · 离线任务与队列&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v1.8.2&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;Go &lt;span style=&#34;color:var(--line)&#34;&gt;·&lt;/span&gt; Queue&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;昨天&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;05&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Forge CI&lt;/div&gt;&lt;div class=&#34;pmeta&#34;&gt;基础架构 · 构建与发布流水线&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v1.9.0&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;Go &lt;span style=&#34;color:var(--line)&#34;&gt;·&lt;/span&gt; Docker&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;昨天&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;06&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Echo Lab&lt;/div&gt;&lt;div class=&#34;pmeta&#34;&gt;实验项目 · 语音与模型实验&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v0.0.3&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;Python &lt;span style=&#34;color:var(--line)&#34;&gt;·&lt;/span&gt; ML&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;2 天前&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;tfoot&#34;&gt;&lt;div class=&#34;m&#34;&gt;共 18 个项目 · 按更新时间倒序&lt;/div&gt;&lt;div class=&#34;sync mono&#34;&gt;SYNC 17:19&lt;/div&gt;&lt;/div&gt;
+
+          &lt;div class=&#34;docstrip&#34;&gt;
+            &lt;div class=&#34;sechead&#34; style=&#34;border-bottom:1px solid var(--line)&#34;&gt;&lt;div class=&#34;t&#34;&gt;最近文档&lt;/div&gt;&lt;div class=&#34;n mono&#34;&gt;04&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;全部 42 篇&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-arrow-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;docgrid&#34;&gt;
+              &lt;div class=&#34;docitem&#34;&gt;&lt;div class=&#34;kind&#34;&gt;&lt;div class=&#34;dot&#34; style=&#34;background:#8C6227&#34;&gt;&lt;/div&gt;&lt;div class=&#34;k&#34;&gt;需求&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;title&#34;&gt;需求文档 v1.0&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;Mana Desktop&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;2 小时前&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&#34;docitem&#34;&gt;&lt;div class=&#34;kind&#34;&gt;&lt;div class=&#34;dot&#34; style=&#34;background:#33586B&#34;&gt;&lt;/div&gt;&lt;div class=&#34;k&#34;&gt;接口&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;title&#34;&gt;API 错误码规范&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;后端服务&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;5 小时前&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&#34;docitem&#34;&gt;&lt;div class=&#34;kind&#34;&gt;&lt;div class=&#34;dot&#34; style=&#34;background:#4E6444&#34;&gt;&lt;/div&gt;&lt;div class=&#34;k&#34;&gt;计划&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;title&#34;&gt;CI 基线&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;基础架构&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;10 小时前&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&#34;docitem&#34;&gt;&lt;div class=&#34;kind&#34;&gt;&lt;div class=&#34;dot&#34; style=&#34;background:#8C6227&#34;&gt;&lt;/div&gt;&lt;div class=&#34;k&#34;&gt;需求&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;title&#34;&gt;Q4 迭代目标&lt;/div&gt;&lt;div class=&#34;meta&#34;&gt;客户端应用&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;15 小时前&lt;/div&gt;&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&#34;right&#34;&gt;
+          &lt;div class=&#34;block&#34;&gt;
+            &lt;div class=&#34;blockhead&#34;&gt;&lt;div class=&#34;t&#34;&gt;项目组&lt;/div&gt;&lt;div class=&#34;n mono&#34;&gt;05&lt;/div&gt;&lt;div class=&#34;link&#34;&gt;管理&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-arrow-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;growrow&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#6C5CE7&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;客户端应用&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;5 项 · 5 篇&lt;/div&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+            &lt;div class=&#34;growrow&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#2E7D5B&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;后端服务&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;4 项 · 4 篇&lt;/div&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+            &lt;div class=&#34;growrow&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#7E57C2&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;基础架构&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;3 项 · 3 篇&lt;/div&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+            &lt;div class=&#34;growrow&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#A1622F&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;实验项目&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;2 项 · 2 篇&lt;/div&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+            &lt;div class=&#34;growrow&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#2C7A7B&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;文档与工具&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;2 项 · 1 篇&lt;/div&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+            &lt;div class=&#34;growrow ungrouped&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#9A9484&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;未分组&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;2 项&lt;/div&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&#34;block&#34;&gt;
+            &lt;div class=&#34;blockhead&#34;&gt;&lt;div class=&#34;t&#34;&gt;本周回顾&lt;/div&gt;&lt;div class=&#34;n mono&#34;&gt;W46&lt;/div&gt;&lt;div class=&#34;link&#34;&gt;统计&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-arrow-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;weekrow&#34;&gt;&lt;div class=&#34;wk mono&#34;&gt;MON&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;Mana Desktop 新增需求文档&lt;/div&gt;&lt;div class=&#34;val&#34;&gt;+2&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;weekrow&#34;&gt;&lt;div class=&#34;wk mono&#34;&gt;WED&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;Atlas API 发布 v3.1.0&lt;/div&gt;&lt;div class=&#34;val&#34;&gt;1.0&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;weekrow&#34;&gt;&lt;div class=&#34;wk mono&#34;&gt;THU&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;Forge CI 流水线迁移完成&lt;/div&gt;&lt;div class=&#34;val&#34;&gt;4&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;weekfoot&#34;&gt;本周 11 个项目有更新 · 32 篇文档有改动&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-chevron-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;statusbar&#34;&gt;
+        &lt;div class=&#34;left&#34;&gt;&lt;i class=&#34;dot&#34;&gt;&lt;/i&gt;SQLite 已连接 · 本地存储 42 篇文档 · 最近同步 17:19&lt;/div&gt;
+        &lt;div class=&#34;right mono&#34;&gt;CTRL K 命令 · CTRL N 新建 · CTRL F 搜索&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/main&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" scrolling="auto"></iframe></div>
+<div class="frame" style="left:40px;top:1024px;width:1440px;height:936px"><div class="cap"><span class="cap-title">03 项目组管理 · 组内索引</span><span class="cap-meta">ant · screen · web-1440</span></div><iframe sandbox="allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;zh-CN&#34;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Content-Security-Policy&#34; content=&#34;default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src data:; font-src data:&#34;&gt;
+&lt;meta charset=&#34;utf-8&#34;&gt;
+&lt;style&gt;
+:root{--paper:#F0EBE0;--sheet:#FCFAF5;--sheet2:#F6F1E6;--ink:#1B1913;--ink2:#4B463C;--ink3:#7B7464;--ink4:#A79F8D;--line:#D6CFBE;--line2:#E7E1D3;--seal:#AE4229;--seal-deep:#8E3220;--seal-soft:#EFDFD7;--moss:#4E6444;--indigo:#33586B;--amber:#8C6227;--danger:#9B2E20}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{background:var(--paper);color:var(--ink);font-family:Inter,&#34;Noto Sans SC&#34;,&#34;PingFang SC&#34;,&#34;Microsoft YaHei&#34;,sans-serif;font-size:12.5px;-webkit-font-smoothing:antialiased}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ico12{width:12px;height:12px}.ico14{width:14px;height:14px}.ico18{width:18px;height:18px}
+.mono{font-family:&#34;JetBrains Mono&#34;,Consolas,&#34;SFMono-Regular&#34;,monospace}
+.micro{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4)}
+.wrap{display:flex;flex-direction:column;height:900px}
+.titlebar{height:38px;background:#17150F;color:#EDE7DA;border-bottom:1px solid #2A261D;display:flex;align-items:center;padding:0 14px;gap:12px}
+.mark{width:20px;height:20px;background:var(--seal);display:grid;place-items:center;color:#FCFAF5;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:11px;font-weight:700}
+.wordmark{font-size:11.5px;font-weight:600;letter-spacing:.14em}
+.divider{width:1px;height:14px;background:#3A3428}
+.tb-note{font-size:9.5px;letter-spacing:.13em;color:#8F8877;text-transform:uppercase}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.status-dot{width:6px;height:6px;background:#7C9060;border-radius:1px}
+.tb-status{font-size:9.5px;letter-spacing:.12em;color:#B7AE9B;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.key{height:18px;padding:0 6px;border:1px solid #443C2E;color:#B7AE9B;font-size:9px;display:flex;align-items:center;letter-spacing:.08em;border-radius:2px}
+.avatar{width:24px;height:24px;border-radius:2px;border:1px solid #4B4231;background:#2A2519;color:#EDE7DA;display:grid;place-items:center;font-size:10px;font-weight:600}
+.body{display:flex;flex:1;min-height:0}
+.rail{width:68px;background:#17150F;display:flex;flex-direction:column;align-items:center;padding:16px 0 14px;gap:6px}
+.navbtn{width:46px;height:44px;display:grid;place-items:center;border-radius:2px;color:#9C9482}
+.navbtn.active{background:rgba(174,66,41,.26);color:#F3E8E1;box-shadow:inset 2px 0 0 var(--seal)}
+.spacer{flex:1}
+.rail .dot{width:5px;height:5px;background:#7C9060;border-radius:1px;margin-bottom:4px}
+.rail-avatar{width:26px;height:26px;border-radius:2px;border:1px solid #4B4231;background:#2A2519;display:grid;place-items:center;color:#EDE7DA;font-size:10.5px;font-weight:600;margin-top:6px}
+.panel{width:252px;background:var(--sheet2);border-right:1px solid var(--line);padding:18px 16px 12px;display:flex;flex-direction:column;min-height:0}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.panel-title{font-size:12px;font-weight:600}
+.panel-title .mono{font-size:9px;color:var(--ink4);margin-left:6px;letter-spacing:.1em}
+.iconbtn{width:26px;height:26px;border:1px solid var(--line);border-radius:2px;display:grid;place-items:center;color:var(--ink3);background:var(--sheet)}
+.search{height:32px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:7px;padding:0 8px;color:var(--ink3)}
+.search span{font-size:10.5px;color:var(--ink4);flex:1}
+.section{margin-top:15px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:baseline}
+.grow{flex:1}
+.g{padding:0 6px;height:38px;display:flex;align-items:center;gap:8px;border-radius:2px}
+.g .sq{width:7px;height:7px;flex:none}
+.g .name{font-size:11.5px;color:var(--ink2);flex:1}
+.g .count{font-size:9.5px;color:var(--ink4)}
+.g.active{background:var(--seal-soft);box-shadow:inset 2px 0 0 var(--seal)}
+.g.active .name{color:var(--seal-deep);font-weight:600}
+.g.active .count{color:var(--seal-deep)}
+.allrow{height:38px;display:flex;align-items:center;gap:8px;padding:0 6px;border-radius:2px}
+.allrow .name{font-size:11.5px;font-weight:500;flex:1}
+.allrow .count{font-size:9.5px;color:var(--ink4)}
+.allrow .ico{width:14px;height:14px;color:var(--ink3)}
+.ghostbtn{height:32px;border:1px dashed var(--line);border-radius:2px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--ink3);margin-top:10px}
+.panel-foot{padding-top:9px;border-top:1px solid var(--line2);margin-top:8px;display:flex;align-items:center;gap:7px;font-size:9.5px;color:var(--ink4)}
+.sqdot{width:5px;height:5px;background:#7C9060;flex:none}
+.overview{border-top:1px solid var(--line2);margin-top:12px;padding-top:10px}
+.ovrow{height:28px;display:flex;align-items:center;font-size:9.5px;color:var(--ink3)}
+.ovrow .v{margin-left:auto;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:9.5px;color:var(--ink2)}
+
+.main{flex:1;background:var(--sheet);display:flex;flex-direction:column;min-width:0}
+.mast{padding:18px 34px 14px;border-bottom:1px solid var(--line2)}
+.crumb{display:flex;align-items:center;gap:7px;font-size:9.5px;letter-spacing:.16em;color:var(--ink4);text-transform:uppercase}
+.crumb .sep{color:var(--line)}.crumb .cur{color:var(--seal)}
+.h1row{display:flex;align-items:flex-end;gap:12px;margin-top:6px}
+h1{font-size:27px;line-height:1.15;font-weight:700;letter-spacing:-.015em}
+.gsq{width:12px;height:12px;background:#5B5B8A;margin-bottom:5px}
+.gtitle{display:flex;align-items:flex-end;gap:10px}
+.gmeta{font-size:9.5px;color:var(--ink4);letter-spacing:.06em;padding-bottom:3px}
+.actions{margin-left:auto;display:flex;align-items:center;gap:7px;padding-bottom:1px}
+.btn{height:32px;padding:0 11px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2)}
+.btn .ico{width:13px;height:13px;color:var(--ink3)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:#FCFAF5}
+.btn.primary .ico{color:#FCFAF5}
+.btn.danger{color:var(--danger)}
+.btn.danger .ico{color:var(--danger)}
+.sub{margin-top:5px;font-size:11px;color:var(--ink3)}
+.metarow{display:flex;align-items:center;gap:16px;margin-top:8px}
+.mi{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--ink3)}
+.mi .ico{width:11px;height:11px;color:var(--ink4)}
+.mi .mono{font-size:9.5px}
+.tabs{height:44px;padding:0 34px;display:flex;align-items:center;border-bottom:1px solid var(--line);gap:24px}
+.tab{height:44px;display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink3);position:relative}
+.tab .n{font-size:9px;color:var(--ink4);letter-spacing:.06em}
+.tab.active{color:var(--ink);font-weight:600}
+.tab.active:after{content:&#34;&#34;;position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--seal)}
+.tab.active .n{color:var(--seal)}
+.filters{margin-left:auto;display:flex;align-items:center;gap:8px}
+.fsearch{width:190px;height:30px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:6px;padding:0 8px;color:var(--ink4)}
+.fsearch span{font-size:10.5px;color:var(--ink4)}
+.fbtn{height:30px;display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--ink3)}
+.fbtn .ico{width:11px;height:11px;color:var(--ink4)}
+.table{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 34px}
+.thead,.trow{display:grid;grid-template-columns:30px minmax(0,1fr) 68px 140px 78px 22px;align-items:center;gap:8px}
+.thead{height:30px;border-bottom:1px solid var(--line2);font-size:9px;letter-spacing:.14em;color:var(--ink4);text-transform:uppercase;padding:0 4px;flex:none}
+.trow{flex:1;min-height:63px;border-bottom:1px solid var(--line2);padding:0 4px}
+.trow .idx{font-size:9px;color:var(--ink4)}
+.trow .pname{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .ppath{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:9px;color:var(--ink4);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .chip{display:inline-flex;align-items:center;height:19px;padding:0 6px;border:1px solid var(--line);border-radius:2px;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:9.5px;color:var(--ink2);background:var(--sheet)}
+.trow .tags{font-size:10.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .time{font-size:9.5px;color:var(--ink3)}
+.trow .more{display:flex;justify-content:center;color:var(--ink4)}
+.trow:hover{background:#FAF6EC}
+.tfoot{height:32px;flex:none;display:flex;align-items:center;border-bottom:1px solid var(--line2)}
+.tfoot .m{font-size:9.5px;color:var(--ink4)}
+.tfoot .r{margin-left:auto;font-size:9.5px;color:var(--ink4)}
+.docs{border-top:1px solid var(--line);padding:0 34px;background:var(--sheet2)}
+.dochead{height:34px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line2)}
+.dochead .t{font-size:12px;font-weight:600}
+.dochead .n{font-size:9px;color:var(--ink4);letter-spacing:.08em}
+.dochead .more{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:10px;color:var(--ink3)}
+.dochead .more .ico{width:10px;height:10px;color:var(--ink4)}
+.docrow{height:36px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line2)}
+.docrow .dot{width:5px;height:5px;flex:none}
+.docrow .title{font-size:11.5px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.docrow .kind{font-size:9.5px;color:var(--ink3);width:48px;text-align:right}
+.docrow .time{font-size:9.5px;color:var(--ink4);width:64px;text-align:right}
+.statusbar{height:30px;border-top:1px solid var(--line2);background:var(--sheet2);display:flex;align-items:center;padding:0 34px;gap:16px;font-size:9.5px;color:var(--ink4);letter-spacing:.06em}
+.statusbar .left{display:flex;align-items:center;gap:7px}
+.statusbar .right{margin-left:auto;display:flex;gap:16px}
+.statusbar .dot{width:5px;height:5px;background:#7C9060;border-radius:1px}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width=&#34;0&#34; height=&#34;0&#34; style=&#34;position:absolute&#34; aria-hidden=&#34;true&#34;&gt;
+  &lt;symbol id=&#34;i-home&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 11l8-7 8 7&#34;/&gt;&lt;path d=&#34;M6.5 9.5V20h11V9.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-folder&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 7.5A1.5 1.5 0 015.5 6h3.2c.4 0 .8.2 1 .5L11 8h7.5A1.5 1.5 0 0120 9.5v8A1.5 1.5 0 0118.5 19h-13A1.5 1.5 0 014 17.5z&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-grid&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;rect x=&#34;4&#34; y=&#34;4&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;13&#34; y=&#34;4&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;4&#34; y=&#34;13&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;13&#34; y=&#34;13&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-layers&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 4l8 4.5-8 4.5-8-4.5z&#34;/&gt;&lt;path d=&#34;M4 13l8 4.5 8-4.5&#34;/&gt;&lt;path d=&#34;M4 17.5l8 4.5 8-4.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-search&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;11&#34; cy=&#34;11&#34; r=&#34;6&#34;/&gt;&lt;path d=&#34;M20 20l-3.6-3.6&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-settings&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 8h9&#34;/&gt;&lt;path d=&#34;M17 8h3&#34;/&gt;&lt;path d=&#34;M4 16h3&#34;/&gt;&lt;path d=&#34;M11 16h9&#34;/&gt;&lt;circle cx=&#34;15&#34; cy=&#34;8&#34; r=&#34;2&#34;/&gt;&lt;circle cx=&#34;9&#34; cy=&#34;16&#34; r=&#34;2&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-database&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;ellipse cx=&#34;12&#34; cy=&#34;6&#34; rx=&#34;7&#34; ry=&#34;2.8&#34;/&gt;&lt;path d=&#34;M5 6v12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6&#34;/&gt;&lt;path d=&#34;M5 12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-plus&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 5v14M5 12h14&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-edit&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 20h9&#34;/&gt;&lt;path d=&#34;M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-trash&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 7h16&#34;/&gt;&lt;path d=&#34;M9.5 7V5h5v2&#34;/&gt;&lt;path d=&#34;M6.5 7l1 13h9l1-13&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-more&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;6&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;circle cx=&#34;12&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;circle cx=&#34;18&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-chevron-down&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M5 9l7 7 7-7&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-clock&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;12&#34; cy=&#34;12&#34; r=&#34;8&#34;/&gt;&lt;path d=&#34;M12 7v5l3 2&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-file&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M6 4h8l4 4v12H6z&#34;/&gt;&lt;path d=&#34;M14 4v4h4&#34;/&gt;&lt;path d=&#34;M9 13h6&#34;/&gt;&lt;path d=&#34;M9 16h4&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-arrow-right&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M5 12h14&#34;/&gt;&lt;path d=&#34;M13 6l6 6-6 6&#34;/&gt;&lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;div class=&#34;wrap&#34;&gt;
+  &lt;div class=&#34;titlebar&#34;&gt;
+    &lt;div class=&#34;mark&#34;&gt;M&lt;/div&gt;&lt;div class=&#34;wordmark&#34;&gt;MANA&lt;/div&gt;&lt;div class=&#34;divider&#34;&gt;&lt;/div&gt;&lt;div class=&#34;tb-note&#34;&gt;Project index · local&lt;/div&gt;
+    &lt;div class=&#34;tb-right&#34;&gt;&lt;div class=&#34;tb-status&#34;&gt;&lt;i class=&#34;status-dot&#34;&gt;&lt;/i&gt;SQLite · 已连接&lt;/div&gt;&lt;div class=&#34;divider&#34;&gt;&lt;/div&gt;&lt;div class=&#34;key mono&#34;&gt;CTRL K&lt;/div&gt;&lt;svg class=&#34;ico ico14&#34; style=&#34;color:#9C9482&#34;&gt;&lt;use href=&#34;#i-settings&#34;/&gt;&lt;/svg&gt;&lt;div class=&#34;avatar&#34;&gt;L&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;body&#34;&gt;
+    &lt;aside class=&#34;rail&#34;&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-home&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn active&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-folder&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-grid&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-layers&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;spacer&#34;&gt;&lt;/div&gt;
+      &lt;i class=&#34;dot&#34;&gt;&lt;/i&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-database&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-settings&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;rail-avatar&#34;&gt;L&lt;/div&gt;
+    &lt;/aside&gt;
+
+    &lt;aside class=&#34;panel&#34;&gt;
+      &lt;div class=&#34;panel-head&#34;&gt;&lt;div class=&#34;panel-title&#34;&gt;项目组&lt;span class=&#34;mono&#34;&gt;05&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;iconbtn&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-plus&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;search&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;span&gt;搜索项目组&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;section&#34; style=&#34;margin-top:12px&#34;&gt;&lt;div class=&#34;micro&#34;&gt;全部索引&lt;/div&gt;&lt;div class=&#34;micro mono&#34;&gt;ALL&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;allrow&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-layers&#34;/&gt;&lt;/svg&gt;&lt;div class=&#34;name&#34;&gt;全部项目&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;18&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;section&#34;&gt;&lt;div class=&#34;micro&#34;&gt;项目组 · 05&lt;/div&gt;&lt;div class=&#34;micro mono&#34;&gt;GROUPS&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;g active&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#5B5B8A&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;客户端应用&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;05&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;g&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#4E6444&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;后端服务&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;04&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;g&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#6E4B5E&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;基础架构&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;03&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;g&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#8C6227&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;实验项目&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;02&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;g&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#2C6E6A&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;文档与工具&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;02&lt;/div&gt;&lt;/div&gt;
+      &lt;div style=&#34;height:1px;background:var(--line2);margin:10px 6px&#34;&gt;&lt;/div&gt;
+      &lt;div class=&#34;g&#34;&gt;&lt;i class=&#34;sq&#34; style=&#34;background:#9A9484&#34;&gt;&lt;/i&gt;&lt;div class=&#34;name&#34;&gt;未分组&lt;/div&gt;&lt;div class=&#34;count mono&#34;&gt;02&lt;/div&gt;&lt;/div&gt;
+
+      &lt;div class=&#34;overview&#34;&gt;
+        &lt;div class=&#34;micro&#34; style=&#34;margin-bottom:4px&#34;&gt;组概览 · SUMMARY&lt;/div&gt;
+        &lt;div class=&#34;ovrow&#34;&gt;项目&lt;span class=&#34;v&#34;&gt;5&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;ovrow&#34;&gt;文档&lt;span class=&#34;v&#34;&gt;5&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;ovrow&#34;&gt;最近更新&lt;span class=&#34;v&#34;&gt;2 小时前&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;grow&#34;&gt;&lt;/div&gt;
+      &lt;div class=&#34;ghostbtn&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-plus&#34;/&gt;&lt;/svg&gt;新建项目组&lt;/div&gt;
+      &lt;div class=&#34;panel-foot&#34;&gt;&lt;i class=&#34;sqdot&#34;&gt;&lt;/i&gt;5 个组 · 18 个项目 · 本地索引&lt;/div&gt;
+    &lt;/aside&gt;
+
+    &lt;main class=&#34;main&#34;&gt;
+      &lt;div class=&#34;mast&#34;&gt;
+        &lt;div class=&#34;crumb&#34;&gt;&lt;span&gt;索引&lt;/span&gt;&lt;span class=&#34;sep&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;cur&#34;&gt;项目组 02&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;h1row&#34;&gt;
+          &lt;div class=&#34;gtitle&#34;&gt;&lt;i class=&#34;gsq&#34;&gt;&lt;/i&gt;&lt;div&gt;&lt;h1&gt;客户端应用&lt;/h1&gt;&lt;div class=&#34;gmeta mono&#34;&gt;GROUP / CLIENT APPS · 05&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;actions&#34;&gt;&lt;div class=&#34;btn&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-edit&#34;/&gt;&lt;/svg&gt;编辑&lt;/div&gt;&lt;div class=&#34;btn danger&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-trash&#34;/&gt;&lt;/svg&gt;删除&lt;/div&gt;&lt;div class=&#34;btn primary&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-plus&#34;/&gt;&lt;/svg&gt;新建项目&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&#34;sub&#34;&gt;面向桌面与移动端的产品线，覆盖 macOS、iOS 与 Web。&lt;/div&gt;
+        &lt;div class=&#34;metarow&#34;&gt;&lt;div class=&#34;mi&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-grid&#34;/&gt;&lt;/svg&gt;&lt;span class=&#34;mono&#34;&gt;5&lt;/span&gt; 个项目&lt;/div&gt;&lt;div class=&#34;mi&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-file&#34;/&gt;&lt;/svg&gt;&lt;span class=&#34;mono&#34;&gt;5&lt;/span&gt; 篇文档&lt;/div&gt;&lt;div class=&#34;mi&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-clock&#34;/&gt;&lt;/svg&gt;2 小时前更新&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;tabs&#34;&gt;
+        &lt;div class=&#34;tab active&#34;&gt;项目&lt;span class=&#34;n mono&#34;&gt;05&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;tab&#34;&gt;文档&lt;span class=&#34;n mono&#34;&gt;05&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;filters&#34;&gt;&lt;div class=&#34;fsearch&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;span&gt;搜索当前组&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;fbtn&#34;&gt;全部标签&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-down&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;div class=&#34;fbtn&#34;&gt;更新时间&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-down&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;table&#34;&gt;
+        &lt;div class=&#34;thead&#34;&gt;&lt;div&gt;#&lt;/div&gt;&lt;div&gt;项目 / 路径&lt;/div&gt;&lt;div&gt;版本&lt;/div&gt;&lt;div&gt;标签&lt;/div&gt;&lt;div&gt;更新&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;01&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Mana Desktop&lt;/div&gt;&lt;div class=&#34;ppath&#34;&gt;E:\codes\go_projects\mana_project&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v0.9.2&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;Go · MyGo&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;2 小时前&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;02&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Orbit Mobile&lt;/div&gt;&lt;div class=&#34;ppath&#34;&gt;E:\codes\mobile\orbit&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v2.3.1&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;Flutter · iOS&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;昨天&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;03&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Pulse CLI&lt;/div&gt;&lt;div class=&#34;ppath&#34;&gt;E:\codes\go_projects\pulse&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v1.4.0&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;Go · CLI&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;3 天前&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;04&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Nova Player&lt;/div&gt;&lt;div class=&#34;ppath&#34;&gt;E:\codes\yacl\nova-player&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v0.6.0&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;Swift · macOS&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;5 天前&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;trow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;05&lt;/div&gt;&lt;div&gt;&lt;div class=&#34;pname&#34;&gt;Ember Notes&lt;/div&gt;&lt;div class=&#34;ppath&#34;&gt;E:\codes\desktop\ember-notes&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span class=&#34;chip&#34;&gt;v1.2.3&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;tags&#34;&gt;TypeScript · Tauri&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;11-11&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;tfoot&#34;&gt;&lt;div class=&#34;m&#34;&gt;共 5 个项目 · 点击行进入项目详情&lt;/div&gt;&lt;div class=&#34;r&#34;&gt;按更新时间排序&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;docs&#34;&gt;
+        &lt;div class=&#34;dochead&#34;&gt;&lt;div class=&#34;t&#34;&gt;组文档&lt;/div&gt;&lt;div class=&#34;n mono&#34;&gt;05&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;查看全部&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-arrow-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;docrow&#34;&gt;&lt;i class=&#34;dot&#34; style=&#34;background:#4E6444&#34;&gt;&lt;/i&gt;&lt;div class=&#34;title&#34;&gt;Q4 迭代目标&lt;/div&gt;&lt;div class=&#34;kind&#34;&gt;开发计划&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;15 小时前&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;docrow&#34;&gt;&lt;i class=&#34;dot&#34; style=&#34;background:#33586B&#34;&gt;&lt;/i&gt;&lt;div class=&#34;title&#34;&gt;双端发布流程&lt;/div&gt;&lt;div class=&#34;kind&#34;&gt;其他&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;20 小时前&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;docrow&#34;&gt;&lt;i class=&#34;dot&#34; style=&#34;background:#2C6E6A&#34;&gt;&lt;/i&gt;&lt;div class=&#34;title&#34;&gt;客户端设计规范&lt;/div&gt;&lt;div class=&#34;kind&#34;&gt;设计&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;昨天&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;statusbar&#34;&gt;&lt;div class=&#34;left&#34;&gt;&lt;i class=&#34;dot&#34;&gt;&lt;/i&gt;当前组：客户端应用 · 5 个项目 · 5 篇组文档&lt;/div&gt;&lt;div class=&#34;right mono&#34;&gt;CTRL N 新建项目 · CTRL F 搜索&lt;/div&gt;&lt;/div&gt;
+    &lt;/main&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" scrolling="auto"></iframe></div>
+<div class="frame" style="left:1528px;top:1024px;width:1440px;height:936px"><div class="cap"><span class="cap-title">04 项目详情 · 记录卡</span><span class="cap-meta">ant · screen · web-1440</span></div><iframe sandbox="allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;zh-CN&#34;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Content-Security-Policy&#34; content=&#34;default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src data:; font-src data:&#34;&gt;
+&lt;meta charset=&#34;utf-8&#34;&gt;
+&lt;style&gt;
+:root{--paper:#F0EBE0;--sheet:#FCFAF5;--sheet2:#F6F1E6;--ink:#1B1913;--ink2:#4B463C;--ink3:#7B7464;--ink4:#A79F8D;--line:#D6CFBE;--line2:#E7E1D3;--seal:#AE4229;--seal-deep:#8E3220;--seal-soft:#EFDFD7;--moss:#4E6444;--indigo:#33586B;--amber:#8C6227}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{background:var(--paper);color:var(--ink);font-family:Inter,&#34;Noto Sans SC&#34;,&#34;PingFang SC&#34;,&#34;Microsoft YaHei&#34;,sans-serif;font-size:12.5px;-webkit-font-smoothing:antialiased}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ico12{width:12px;height:12px}.ico14{width:14px;height:14px}.ico18{width:18px;height:18px}
+.mono{font-family:&#34;JetBrains Mono&#34;,Consolas,&#34;SFMono-Regular&#34;,monospace}
+.micro{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4)}
+.wrap{display:flex;flex-direction:column;height:900px}
+.titlebar{height:38px;background:#17150F;color:#EDE7DA;border-bottom:1px solid #2A261D;display:flex;align-items:center;padding:0 14px;gap:12px}
+.mark{width:20px;height:20px;background:var(--seal);display:grid;place-items:center;color:#FCFAF5;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:11px;font-weight:700}
+.wordmark{font-size:11.5px;font-weight:600;letter-spacing:.14em}
+.divider{width:1px;height:14px;background:#3A3428}
+.tb-note{font-size:9.5px;letter-spacing:.13em;color:#8F8877;text-transform:uppercase}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.status-dot{width:6px;height:6px;background:#7C9060;border-radius:1px}
+.tb-status{font-size:9.5px;letter-spacing:.12em;color:#B7AE9B;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.key{height:18px;padding:0 6px;border:1px solid #443C2E;color:#B7AE9B;font-size:9px;display:flex;align-items:center;letter-spacing:.08em;border-radius:2px}
+.avatar{width:24px;height:24px;border-radius:2px;border:1px solid #4B4231;background:#2A2519;color:#EDE7DA;display:grid;place-items:center;font-size:10px;font-weight:600}
+.body{display:flex;flex:1;min-height:0}
+.rail{width:68px;background:#17150F;display:flex;flex-direction:column;align-items:center;padding:16px 0 14px;gap:6px}
+.navbtn{width:46px;height:44px;display:grid;place-items:center;border-radius:2px;color:#9C9482}
+.navbtn.active{background:rgba(174,66,41,.26);color:#F3E8E1;box-shadow:inset 2px 0 0 var(--seal)}
+.spacer{flex:1}
+.rail .dot{width:5px;height:5px;background:#7C9060;border-radius:1px;margin-bottom:4px}
+.rail-avatar{width:26px;height:26px;border-radius:2px;border:1px solid #4B4231;background:#2A2519;display:grid;place-items:center;color:#EDE7DA;font-size:10.5px;font-weight:600;margin-top:6px}
+.panel{width:252px;background:var(--sheet2);border-right:1px solid var(--line);padding:18px 16px 12px;display:flex;flex-direction:column;min-height:0}
+.panel-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.panel-title{font-size:12px;font-weight:600}
+.panel-title .mono{font-size:9px;color:var(--ink4);margin-left:6px;letter-spacing:.1em}
+.search{height:32px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:7px;padding:0 8px}
+.search span{font-size:10.5px;color:var(--ink4);flex:1}
+.section{margin-top:15px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:baseline}
+.grow{flex:1}
+.prow{height:42px;display:flex;align-items:center;gap:9px;padding:0 6px;border-radius:2px;border-bottom:1px solid var(--line2)}
+.prow .idx{font-size:9px;color:var(--ink4);width:14px}
+.prow .txt{min-width:0;flex:1}
+.prow .name{font-size:11.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow .meta{font-size:9px;color:var(--ink4);margin-top:1px}
+.prow.active{background:var(--seal-soft);box-shadow:inset 2px 0 0 var(--seal)}
+.prow.active .name{color:var(--seal-deep);font-weight:600}
+.prow.active .meta{color:var(--seal-deep);opacity:.8}
+.backbtn{height:34px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--ink2);margin-top:10px}
+.panel-foot{padding-top:9px;border-top:1px solid var(--line2);margin-top:8px;font-size:9.5px;color:var(--ink4);display:flex;align-items:center;gap:7px}
+.sqdot{width:5px;height:5px;background:#7C9060;flex:none}
+.main{flex:1;background:var(--sheet);display:flex;flex-direction:column;min-width:0}
+.mast{padding:18px 34px 14px;border-bottom:1px solid var(--line2)}
+.crumb{display:flex;align-items:center;gap:7px;font-size:9.5px;letter-spacing:.16em;color:var(--ink4);text-transform:uppercase}
+.crumb .sep{color:var(--line)}.crumb .cur{color:var(--seal)}
+.h1row{display:flex;align-items:flex-end;gap:12px;margin-top:6px}
+h1{font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-.015em}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 7px;border:1px solid var(--line);border-radius:2px;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:10px;color:var(--ink2);background:var(--sheet)}
+.actions{margin-left:auto;display:flex;align-items:center;gap:7px;padding-bottom:1px}
+.btn{height:32px;padding:0 11px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2)}
+.btn .ico{width:13px;height:13px;color:var(--ink3)}
+.iconbtn{width:32px;height:32px;border:1px solid var(--line);border-radius:2px;display:grid;place-items:center;color:var(--ink3);background:var(--sheet)}
+.sub{margin-top:5px;font-size:11px;color:var(--ink3)}
+.metarow{display:flex;align-items:center;gap:18px;margin-top:9px}
+.tags{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--ink2)}
+.tags .d{color:var(--line)}
+.pathbox{display:flex;align-items:center;gap:6px;padding:3px 7px;border:1px solid var(--line2);background:var(--sheet2);border-radius:2px}
+.pathbox .p{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:9.5px;color:var(--ink2)}
+.pathbox .ico{width:11px;height:11px;color:var(--ink4)}
+.mi{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--ink3)}
+.mi .ico{width:11px;height:11px;color:var(--ink4)}
+.mi .mono{font-size:9.5px}
+.content{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;padding:18px 34px 16px}
+.left{display:flex;flex-direction:column;min-height:0}
+.sechead{height:38px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
+.sechead .t{font-size:13px;font-weight:600}
+.sechead .n{font-size:9px;color:var(--ink4);letter-spacing:.08em}
+.sechead .f{margin-left:auto;display:flex;align-items:center;gap:8px}
+.fsearch{width:200px;height:30px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:6px;padding:0 8px}
+.fsearch span{font-size:10.5px;color:var(--ink4)}
+.btn.sm{height:30px;font-size:11px}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:#FCFAF5}
+.btn.primary .ico{color:#FCFAF5}
+.thead,.drow{display:grid;grid-template-columns:minmax(0,1fr) 92px 70px 80px 22px;align-items:center;gap:8px;padding:0 4px}
+.thead{height:30px;border-bottom:1px solid var(--line2);font-size:9px;letter-spacing:.14em;color:var(--ink4);text-transform:uppercase}
+.drow{height:62px;border-bottom:1px solid var(--line2)}
+.drow .dt{display:flex;align-items:center;gap:8px;min-width:0}
+.drow .dt .dot{width:5px;height:5px;flex:none}
+.drow .dt .title{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drow .kind{font-size:10px;color:var(--ink3)}
+.drow .words{font-size:9.5px;color:var(--ink4);font-family:&#34;JetBrains Mono&#34;,Consolas,monospace}
+.drow .time{font-size:9.5px;color:var(--ink3)}
+.drow .more{display:flex;justify-content:center;color:var(--ink4)}
+.tfoot{height:32px;display:flex;align-items:center;border-bottom:1px solid var(--line);font-size:9.5px;color:var(--ink4)}
+.tfoot .r{margin-left:auto}
+.preview{margin-top:18px;border:1px solid var(--line2);background:var(--sheet2);height:158px;flex:none;display:flex;flex-direction:column}
+.preview .ph{height:34px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:8px;padding:0 12px}
+.preview .ph .t{font-size:11.5px;font-weight:600}
+.preview .ph .n{font-size:9px;color:var(--ink4);letter-spacing:.08em}
+.preview .ph .open{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:10px;color:var(--ink3)}
+.preview .ph .open .ico{width:10px;height:10px;color:var(--ink4)}
+.preview .pbody{padding:12px 12px 10px;display:flex;gap:10px}
+.preview .rule{width:2px;background:var(--seal);flex:none}
+.preview .ptxt{min-width:0}
+.preview .ptitle{font-size:12px;font-weight:600}
+.preview .pex{font-size:10.5px;line-height:1.75;color:var(--ink3);margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.preview .pm{font-size:9.5px;color:var(--ink4);margin-top:7px;letter-spacing:.02em}
+.record{border-left:1px solid var(--line);padding-left:22px;display:flex;flex-direction:column;min-height:0}
+.rhead{display:flex;align-items:baseline;gap:7px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.rhead .t{font-size:13px;font-weight:600}
+.rhead .n{font-size:9px;color:var(--ink4);letter-spacing:.12em}
+.rhead .stamp{margin-left:auto;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8.5px;color:var(--seal);border:1px solid var(--seal);padding:2px 5px;letter-spacing:.12em;transform:rotate(-2deg)}
+.field{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
+.field .lab{width:64px;flex:none;font-size:10px;color:var(--ink4);letter-spacing:.06em;padding-top:1px}
+.field .val{flex:1;min-width:0;font-size:11.5px;color:var(--ink2)}
+.field .val.mono{font-size:9.5px;line-height:1.6;word-break:break-all}
+.groupval{display:flex;align-items:center;gap:6px}
+.groupval .sq{width:7px;height:7px;background:#5B5B8A}
+.tagsval{font-size:10.5px;color:var(--ink2)}
+.tagsval .d{color:var(--line);margin:0 4px}
+.notebox{margin-top:9px;border-left:2px solid var(--seal);padding:2px 0 2px 10px;font-size:10.5px;line-height:1.7;color:var(--ink3)}
+.dist{margin-top:12px;border-top:1px solid var(--line2);padding-top:9px}
+.dist .micro{margin-bottom:4px}
+.distrow{height:24px;display:flex;align-items:center;gap:8px;font-size:9.5px;color:var(--ink3)}
+.distrow .nm{width:54px}
+.distrow .tr{flex:1;height:3px;background:var(--line2);position:relative}
+.distrow .fl{position:absolute;left:0;top:0;bottom:0;background:var(--ink3)}
+.distrow .ct{width:14px;text-align:right;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:8.5px;color:var(--ink4)}
+.stats{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.stat{padding:12px 2px 0;border-right:1px solid var(--line2)}
+.stat:last-child{border-right:0;padding-left:16px}
+.stat .v{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:21px;font-weight:500;letter-spacing:-.03em}
+.stat .l{font-size:9.5px;color:var(--ink4);margin-top:2px}
+.statusbar{height:30px;border-top:1px solid var(--line2);background:var(--sheet2);display:flex;align-items:center;padding:0 34px;gap:16px;font-size:9.5px;color:var(--ink4);letter-spacing:.06em}
+.statusbar .left{display:flex;align-items:center;gap:7px}
+.statusbar .right{margin-left:auto;display:flex;gap:16px}
+.statusbar .dot{width:5px;height:5px;background:#7C9060;border-radius:1px}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width=&#34;0&#34; height=&#34;0&#34; style=&#34;position:absolute&#34; aria-hidden=&#34;true&#34;&gt;
+  &lt;symbol id=&#34;i-home&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 11l8-7 8 7&#34;/&gt;&lt;path d=&#34;M6.5 9.5V20h11V9.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-folder&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 7.5A1.5 1.5 0 015.5 6h3.2c.4 0 .8.2 1 .5L11 8h7.5A1.5 1.5 0 0120 9.5v8A1.5 1.5 0 0118.5 19h-13A1.5 1.5 0 014 17.5z&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-folder-open&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 8V6.5A1.5 1.5 0 015.5 5h3.2c.4 0 .8.2 1 .5L11 7h6.5A1.5 1.5 0 0119 8.5V10&#34;/&gt;&lt;path d=&#34;M4 10h15.2a1 1 0 01.96 1.28l-1.6 5.4A1.5 1.5 0 0117.1 18H5.5A1.5 1.5 0 014 16.5z&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-grid&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;rect x=&#34;4&#34; y=&#34;4&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;13&#34; y=&#34;4&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;4&#34; y=&#34;13&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;13&#34; y=&#34;13&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-layers&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 4l8 4.5-8 4.5-8-4.5z&#34;/&gt;&lt;path d=&#34;M4 13l8 4.5 8-4.5&#34;/&gt;&lt;path d=&#34;M4 17.5l8 4.5 8-4.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-search&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;11&#34; cy=&#34;11&#34; r=&#34;6&#34;/&gt;&lt;path d=&#34;M20 20l-3.6-3.6&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-settings&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 8h9&#34;/&gt;&lt;path d=&#34;M17 8h3&#34;/&gt;&lt;path d=&#34;M4 16h3&#34;/&gt;&lt;path d=&#34;M11 16h9&#34;/&gt;&lt;circle cx=&#34;15&#34; cy=&#34;8&#34; r=&#34;2&#34;/&gt;&lt;circle cx=&#34;9&#34; cy=&#34;16&#34; r=&#34;2&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-database&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;ellipse cx=&#34;12&#34; cy=&#34;6&#34; rx=&#34;7&#34; ry=&#34;2.8&#34;/&gt;&lt;path d=&#34;M5 6v12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6&#34;/&gt;&lt;path d=&#34;M5 12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-plus&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 5v14M5 12h14&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-edit&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 20h9&#34;/&gt;&lt;path d=&#34;M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-more&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;6&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;circle cx=&#34;12&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;circle cx=&#34;18&#34; cy=&#34;12&#34; r=&#34;1.4&#34; fill=&#34;currentColor&#34; stroke=&#34;none&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-clock&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;12&#34; cy=&#34;12&#34; r=&#34;8&#34;/&gt;&lt;path d=&#34;M12 7v5l3 2&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-file&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M6 4h8l4 4v12H6z&#34;/&gt;&lt;path d=&#34;M14 4v4h4&#34;/&gt;&lt;path d=&#34;M9 13h6&#34;/&gt;&lt;path d=&#34;M9 16h4&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-copy&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;rect x=&#34;9&#34; y=&#34;9&#34; width=&#34;12&#34; height=&#34;12&#34; rx=&#34;2&#34;/&gt;&lt;path d=&#34;M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-arrow-left&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M19 12H5&#34;/&gt;&lt;path d=&#34;M11 6l-6 6 6 6&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-arrow-up-right&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M7 17L17 7&#34;/&gt;&lt;path d=&#34;M9 7h8v8&#34;/&gt;&lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;div class=&#34;wrap&#34;&gt;
+  &lt;div class=&#34;titlebar&#34;&gt;
+    &lt;div class=&#34;mark&#34;&gt;M&lt;/div&gt;&lt;div class=&#34;wordmark&#34;&gt;MANA&lt;/div&gt;&lt;div class=&#34;divider&#34;&gt;&lt;/div&gt;&lt;div class=&#34;tb-note&#34;&gt;Project index · local&lt;/div&gt;
+    &lt;div class=&#34;tb-right&#34;&gt;&lt;div class=&#34;tb-status&#34;&gt;&lt;i class=&#34;status-dot&#34;&gt;&lt;/i&gt;SQLite · 已连接&lt;/div&gt;&lt;div class=&#34;divider&#34;&gt;&lt;/div&gt;&lt;div class=&#34;key mono&#34;&gt;CTRL K&lt;/div&gt;&lt;svg class=&#34;ico ico14&#34; style=&#34;color:#9C9482&#34;&gt;&lt;use href=&#34;#i-settings&#34;/&gt;&lt;/svg&gt;&lt;div class=&#34;avatar&#34;&gt;L&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;body&#34;&gt;
+    &lt;aside class=&#34;rail&#34;&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-home&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn active&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-folder&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-grid&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-layers&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;spacer&#34;&gt;&lt;/div&gt;
+      &lt;i class=&#34;dot&#34;&gt;&lt;/i&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-database&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-settings&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;rail-avatar&#34;&gt;L&lt;/div&gt;
+    &lt;/aside&gt;
+
+    &lt;aside class=&#34;panel&#34;&gt;
+      &lt;div class=&#34;panel-head&#34;&gt;&lt;div class=&#34;panel-title&#34;&gt;项目目录&lt;span class=&#34;mono&#34;&gt;05&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;search&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;span&gt;搜索当前组&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;section&#34;&gt;&lt;div class=&#34;micro&#34;&gt;客户端应用 · 05&lt;/div&gt;&lt;div class=&#34;micro mono&#34;&gt;APPS&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;prow active&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;01&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;Mana Desktop&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;v0.9.2 · 5 篇文档&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;prow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;02&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;Orbit Mobile&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;v2.3.1 · 4 篇文档&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;prow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;03&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;Pulse CLI&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;v1.4.0 · 3 篇文档&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;prow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;04&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;Nova Player&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;v0.6.0 · 2 篇文档&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;prow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;05&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;Ember Notes&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;v1.2.3 · 2 篇文档&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;grow&#34;&gt;&lt;/div&gt;
+      &lt;div class=&#34;backbtn&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-arrow-left&#34;/&gt;&lt;/svg&gt;返回项目组&lt;/div&gt;
+      &lt;div class=&#34;panel-foot&#34;&gt;&lt;i class=&#34;sqdot&#34;&gt;&lt;/i&gt;5 个项目 · 5 篇文档 · 2 小时前更新&lt;/div&gt;
+    &lt;/aside&gt;
+
+    &lt;main class=&#34;main&#34;&gt;
+      &lt;div class=&#34;mast&#34;&gt;
+        &lt;div class=&#34;crumb&#34;&gt;&lt;span&gt;索引&lt;/span&gt;&lt;span class=&#34;sep&#34;&gt;/&lt;/span&gt;&lt;span&gt;客户端应用&lt;/span&gt;&lt;span class=&#34;sep&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;cur&#34;&gt;项目 01&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&#34;h1row&#34;&gt;&lt;h1&gt;Mana Desktop&lt;/h1&gt;&lt;span class=&#34;chip&#34;&gt;v0.9.2&lt;/span&gt;
+          &lt;div class=&#34;actions&#34;&gt;&lt;div class=&#34;btn&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-folder-open&#34;/&gt;&lt;/svg&gt;打开目录&lt;/div&gt;&lt;div class=&#34;btn&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-edit&#34;/&gt;&lt;/svg&gt;编辑项目&lt;/div&gt;&lt;div class=&#34;iconbtn&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&#34;sub&#34;&gt;本地优先的项目管理桌面端：Go + MyGo 原生 UI，SQLite 存储，无账号、无网络。&lt;/div&gt;
+        &lt;div class=&#34;metarow&#34;&gt;
+          &lt;div class=&#34;tags&#34;&gt;Go&lt;span class=&#34;d&#34;&gt;·&lt;/span&gt;MyGo&lt;span class=&#34;d&#34;&gt;·&lt;/span&gt;桌面端&lt;/div&gt;
+          &lt;div class=&#34;pathbox&#34;&gt;&lt;span class=&#34;p&#34;&gt;E:\codes\go_projects\mana_project&lt;/span&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-copy&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&#34;mi&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-file&#34;/&gt;&lt;/svg&gt;&lt;span class=&#34;mono&#34;&gt;5&lt;/span&gt; 篇文档&lt;/div&gt;
+          &lt;div class=&#34;mi&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-clock&#34;/&gt;&lt;/svg&gt;2 小时前更新&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;content&#34;&gt;
+        &lt;div class=&#34;left&#34;&gt;
+          &lt;div class=&#34;sechead&#34;&gt;&lt;div class=&#34;t&#34;&gt;项目文档&lt;/div&gt;&lt;div class=&#34;n mono&#34;&gt;05&lt;/div&gt;&lt;div class=&#34;f&#34;&gt;&lt;div class=&#34;fsearch&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;span&gt;搜索标题或正文&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;btn sm primary&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-plus&#34;/&gt;&lt;/svg&gt;新建文档&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;thead&#34;&gt;&lt;div&gt;标题&lt;/div&gt;&lt;div&gt;类型&lt;/div&gt;&lt;div&gt;字数&lt;/div&gt;&lt;div&gt;更新&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;drow&#34;&gt;&lt;div class=&#34;dt&#34;&gt;&lt;i class=&#34;dot&#34; style=&#34;background:#8C6227&#34;&gt;&lt;/i&gt;&lt;div class=&#34;title&#34;&gt;需求文档 v1.0&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;kind&#34;&gt;需求&lt;/div&gt;&lt;div class=&#34;words&#34;&gt;385&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;2 小时前&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;drow&#34;&gt;&lt;div class=&#34;dt&#34;&gt;&lt;i class=&#34;dot&#34; style=&#34;background:#2C6E6A&#34;&gt;&lt;/i&gt;&lt;div class=&#34;title&#34;&gt;技术方案&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;kind&#34;&gt;设计&lt;/div&gt;&lt;div class=&#34;words&#34;&gt;073&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;昨天&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;drow&#34;&gt;&lt;div class=&#34;dt&#34;&gt;&lt;i class=&#34;dot&#34; style=&#34;background:#33586B&#34;&gt;&lt;/i&gt;&lt;div class=&#34;title&#34;&gt;接口设计&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;kind&#34;&gt;接口&lt;/div&gt;&lt;div class=&#34;words&#34;&gt;073&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;3 天前&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;drow&#34;&gt;&lt;div class=&#34;dt&#34;&gt;&lt;i class=&#34;dot&#34; style=&#34;background:#4E6444&#34;&gt;&lt;/i&gt;&lt;div class=&#34;title&#34;&gt;迭代计划&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;kind&#34;&gt;开发计划&lt;/div&gt;&lt;div class=&#34;words&#34;&gt;073&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;5 天前&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;drow&#34;&gt;&lt;div class=&#34;dt&#34;&gt;&lt;i class=&#34;dot&#34; style=&#34;background:#9A9484&#34;&gt;&lt;/i&gt;&lt;div class=&#34;title&#34;&gt;发布检查清单&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;kind&#34;&gt;其他&lt;/div&gt;&lt;div class=&#34;words&#34;&gt;075&lt;/div&gt;&lt;div class=&#34;time&#34;&gt;11-11&lt;/div&gt;&lt;div class=&#34;more&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-more&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;tfoot&#34;&gt;&lt;div&gt;共 5 篇 · 合计 679 字&lt;/div&gt;&lt;div class=&#34;r&#34;&gt;最后更新于 2 小时前&lt;/div&gt;&lt;/div&gt;
+
+          &lt;div class=&#34;preview&#34;&gt;
+            &lt;div class=&#34;ph&#34;&gt;&lt;div class=&#34;t&#34;&gt;文档预览&lt;/div&gt;&lt;div class=&#34;n mono&#34;&gt;REQ v1.0&lt;/div&gt;&lt;div class=&#34;open&#34;&gt;打开文档&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-arrow-up-right&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;pbody&#34;&gt;&lt;i class=&#34;rule&#34;&gt;&lt;/i&gt;&lt;div class=&#34;ptxt&#34;&gt;&lt;div class=&#34;ptitle&#34;&gt;需求文档 v1.0&lt;/div&gt;&lt;div class=&#34;pex&#34;&gt;Mana 是本地优先的开发项目管理桌面端，把项目、项目组与文档收拢到同一个窗口。数据仅存本机 SQLite，不依赖账号与网络。常用操作三步内完成。&lt;/div&gt;&lt;div class=&#34;pm mono&#34;&gt;MARKDOWN · 385 字 · 更新于 2 小时前&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;aside class=&#34;record&#34;&gt;
+          &lt;div class=&#34;rhead&#34;&gt;&lt;div class=&#34;t&#34;&gt;记录卡&lt;/div&gt;&lt;div class=&#34;n mono&#34;&gt;RECORD 0001&lt;/div&gt;&lt;div class=&#34;stamp mono&#34;&gt;LOCAL&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;field&#34;&gt;&lt;div class=&#34;lab&#34;&gt;所属项目组&lt;/div&gt;&lt;div class=&#34;val&#34;&gt;&lt;div class=&#34;groupval&#34;&gt;&lt;i class=&#34;sq&#34;&gt;&lt;/i&gt;客户端应用&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;field&#34;&gt;&lt;div class=&#34;lab&#34;&gt;版本&lt;/div&gt;&lt;div class=&#34;val&#34;&gt;&lt;span class=&#34;chip&#34; style=&#34;height:18px;font-size:9.5px&#34;&gt;v0.9.2&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;field&#34;&gt;&lt;div class=&#34;lab&#34;&gt;项目路径&lt;/div&gt;&lt;div class=&#34;val mono&#34;&gt;E:\codes\go_projects\mana_project&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;field&#34;&gt;&lt;div class=&#34;lab&#34;&gt;创建时间&lt;/div&gt;&lt;div class=&#34;val mono&#34; style=&#34;font-size:10px&#34;&gt;2026-11-18 17:19&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;field&#34;&gt;&lt;div class=&#34;lab&#34;&gt;更新时间&lt;/div&gt;&lt;div class=&#34;val&#34; style=&#34;font-size:10.5px&#34;&gt;2 小时前 · 17:19&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;field&#34;&gt;&lt;div class=&#34;lab&#34;&gt;标签&lt;/div&gt;&lt;div class=&#34;val tagsval&#34;&gt;Go&lt;span class=&#34;d&#34;&gt;·&lt;/span&gt;MyGo&lt;span class=&#34;d&#34;&gt;·&lt;/span&gt;桌面端&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;notebox&#34;&gt;本地优先的项目管理桌面端，Go + MyGo 原生 UI，SQLite 存储。v1.0 聚焦项目、项目组、文档三件事。&lt;/div&gt;
+          &lt;div class=&#34;dist&#34;&gt;
+            &lt;div class=&#34;micro&#34;&gt;文档分布 · 05&lt;/div&gt;
+            &lt;div class=&#34;distrow&#34;&gt;&lt;div class=&#34;nm&#34;&gt;需求&lt;/div&gt;&lt;div class=&#34;tr&#34;&gt;&lt;i class=&#34;fl&#34; style=&#34;width:20%&#34;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;ct&#34;&gt;1&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;distrow&#34;&gt;&lt;div class=&#34;nm&#34;&gt;设计&lt;/div&gt;&lt;div class=&#34;tr&#34;&gt;&lt;i class=&#34;fl&#34; style=&#34;width:20%&#34;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;ct&#34;&gt;1&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;distrow&#34;&gt;&lt;div class=&#34;nm&#34;&gt;开发计划&lt;/div&gt;&lt;div class=&#34;tr&#34;&gt;&lt;i class=&#34;fl&#34; style=&#34;width:20%&#34;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;ct&#34;&gt;1&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;distrow&#34;&gt;&lt;div class=&#34;nm&#34;&gt;接口&lt;/div&gt;&lt;div class=&#34;tr&#34;&gt;&lt;i class=&#34;fl&#34; style=&#34;width:20%&#34;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;ct&#34;&gt;1&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;distrow&#34;&gt;&lt;div class=&#34;nm&#34;&gt;其他&lt;/div&gt;&lt;div class=&#34;tr&#34;&gt;&lt;i class=&#34;fl&#34; style=&#34;width:20%&#34;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&#34;ct&#34;&gt;1&lt;/div&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&#34;stats&#34;&gt;&lt;div class=&#34;stat&#34;&gt;&lt;div class=&#34;v&#34;&gt;5&lt;/div&gt;&lt;div class=&#34;l&#34;&gt;项目文档&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;stat&#34;&gt;&lt;div class=&#34;v&#34;&gt;0.7k&lt;/div&gt;&lt;div class=&#34;l&#34;&gt;文档总字数&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/aside&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;statusbar&#34;&gt;&lt;div class=&#34;left&#34;&gt;&lt;i class=&#34;dot&#34;&gt;&lt;/i&gt;PROJECT 0001 · 路径已校验 · 本地 SQLite&lt;/div&gt;&lt;div class=&#34;right mono&#34;&gt;CTRL N 新建文档 · CTRL F 搜索&lt;/div&gt;&lt;/div&gt;
+    &lt;/main&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" scrolling="auto"></iframe></div>
+<div class="frame" style="left:3016px;top:1024px;width:1440px;height:936px"><div class="cap"><span class="cap-title">06 弹层 · 新建项目表单</span><span class="cap-meta">ant · screen · web-1440</span></div><iframe sandbox="allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;zh-CN&#34;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Content-Security-Policy&#34; content=&#34;default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src data:; font-src data:&#34;&gt;
+&lt;meta charset=&#34;utf-8&#34;&gt;
+&lt;style&gt;
+:root{--paper:#F0EBE0;--sheet:#FCFAF5;--sheet2:#F6F1E6;--ink:#1B1913;--ink2:#4B463C;--ink3:#7B7464;--ink4:#A79F8D;--line:#D6CFBE;--line2:#E7E1D3;--seal:#AE4229;--seal-deep:#8E3220;--seal-soft:#EFDFD7;--moss:#4E6444;--amber:#8C6227;--danger:#9B2E20}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{background:var(--paper);color:var(--ink);font-family:Inter,&#34;Noto Sans SC&#34;,&#34;PingFang SC&#34;,&#34;Microsoft YaHei&#34;,sans-serif;font-size:12.5px;-webkit-font-smoothing:antialiased}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ico12{width:12px;height:12px}.ico14{width:14px;height:14px}
+.mono{font-family:&#34;JetBrains Mono&#34;,Consolas,&#34;SFMono-Regular&#34;,monospace}
+.micro{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4)}
+.stage{position:relative;width:1440px;height:900px;background:var(--paper)}
+.faux{position:absolute;inset:0;display:flex;flex-direction:column;filter:blur(1.5px);opacity:.92}
+.fbar{height:38px;background:#17150F;display:flex;align-items:center;gap:10px;padding:0 14px}
+.fmark{width:20px;height:20px;background:var(--seal)}
+.fname{width:56px;height:8px;background:#4A4438}
+.fbody{display:flex;flex:1;min-height:0}
+.frail{width:68px;background:#17150F;display:flex;flex-direction:column;align-items:center;padding-top:22px;gap:14px}
+.frail i{width:18px;height:18px;background:#3C372C}
+.fpanel{width:252px;background:var(--sheet2);border-right:1px solid var(--line);padding:20px 16px}
+.fpanel .fh{width:70px;height:9px;background:#C9C1AE;margin-bottom:16px}
+.fsearch{height:32px;border:1px solid var(--line);background:var(--sheet);margin-bottom:18px}
+.frow{height:44px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:10px}
+.frow i{width:8px;height:8px;background:#B9B09C}
+.frow span{height:8px;background:#CFC6B2;flex:1;max-width:120px}
+.fmain{flex:1;background:var(--sheet);padding:26px 34px}
+.fmast{display:flex;align-items:flex-end;gap:14px;padding-bottom:18px;border-bottom:1px solid var(--line2)}
+.fmast .t{width:220px;height:20px;background:#B9AF99}
+.fmast .a{margin-left:auto;width:90px;height:30px;background:var(--seal)}
+.fledger{display:grid;grid-template-columns:repeat(4,1fr);height:92px;border-bottom:1px solid var(--line2)}
+.fledger div{padding:16px 22px;border-right:1px solid var(--line2)}
+.fledger b{display:block;width:46px;height:22px;background:#C6BCA6;margin-top:10px}
+.ftable{margin-top:20px}
+.fth{height:28px;border-bottom:1px solid var(--line)}
+.ftr{height:56px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:12px}
+.ftr i{width:14px;height:14px;background:#D8D0BC}
+.ftr span{height:9px;background:#D8D0BC}
+.ftr span:nth-child(2){width:32%}
+.ftr span:nth-child(3){width:8%}
+.ftr span:nth-child(4){width:12%}
+.ftr span:nth-child(5){width:8%;margin-left:auto}
+.fright{width:358px;padding-left:32px;border-left:1px solid var(--line2)}
+.overlay{position:absolute;inset:0;background:rgba(23,21,15,.56);display:grid;place-items:center}
+.dialog{width:660px;background:var(--sheet);border:1px solid #2B261C;box-shadow:0 24px 60px rgba(15,13,9,.35);position:relative}
+.dialog:before{content:&#34;&#34;;position:absolute;left:0;right:0;top:0;height:3px;background:var(--seal)}
+.dhead{padding:22px 26px 16px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:14px}
+.dhead .txt{flex:1}
+.dhead .micro{color:var(--seal);letter-spacing:.18em}
+.dtitle{font-size:22px;font-weight:700;letter-spacing:-.01em;margin-top:7px}
+.dsub{font-size:10.5px;color:var(--ink3);margin-top:5px}
+.close{width:28px;height:28px;border:1px solid var(--line);border-radius:2px;display:grid;place-items:center;color:var(--ink3)}
+.form{padding:18px 26px 6px}
+.row{display:flex;gap:16px}
+.fld{margin-bottom:14px;min-width:0}
+.fld.full{width:100%}.fld.half{width:50%}
+.flabel{display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.08em;color:var(--ink3);margin-bottom:6px}
+.flabel .req{color:var(--seal);font-size:10px}
+.input{height:36px;border:1px solid var(--line);background:#FFFDF8;border-radius:2px;display:flex;align-items:center;padding:0 10px;font-size:12px;color:var(--ink)}
+.input .ph{color:var(--ink4)}
+.input.focus{border-color:var(--seal);box-shadow:0 0 0 3px rgba(174,66,41,.10)}
+.select{display:flex;align-items:center;gap:7px}
+.select .sq{width:7px;height:7px;background:#5B5B8A}
+.select .ico{margin-left:auto;width:11px;height:11px;color:var(--ink4)}
+.pathrow{display:flex;gap:8px}
+.pathrow .input{flex:1}
+.browse{height:36px;padding:0 11px;border:1px solid var(--line);background:var(--sheet2);border-radius:2px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2)}
+.browse .ico{width:12px;height:12px;color:var(--ink3)}
+.tokens{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.token{height:24px;display:flex;align-items:center;gap:6px;padding:0 7px;border:1px solid var(--line);background:var(--sheet2);border-radius:2px;font-size:10.5px;color:var(--ink2)}
+.token .x{color:var(--ink4);font-size:9px}
+.token.add{border-style:dashed;color:var(--ink4)}
+.area{height:74px;border:1px solid var(--line);background:#FFFDF8;border-radius:2px;padding:8px 10px;font-size:11px;line-height:1.7;color:var(--ink3)}
+.hint{display:flex;align-items:center;gap:6px;font-size:9.5px;color:var(--amber);margin-top:5px}
+.hint .ico{width:11px;height:11px}
+.foot{padding:14px 26px 18px;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.foot .keys{font-size:9.5px;color:var(--ink4);letter-spacing:.06em}
+.foot .btns{margin-left:auto;display:flex;gap:8px}
+.btn{height:34px;padding:0 14px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2)}
+.btn .ico{width:13px;height:13px;color:var(--ink3)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:#FCFAF5;padding:0 18px}
+.btn.primary .ico{color:#FCFAF5}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width=&#34;0&#34; height=&#34;0&#34; style=&#34;position:absolute&#34; aria-hidden=&#34;true&#34;&gt;
+  &lt;symbol id=&#34;i-plus&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 5v14M5 12h14&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-close&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M6 6l12 12M18 6L6 18&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-chevron-down&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M5 9l7 7 7-7&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-folder-open&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 8V6.5A1.5 1.5 0 015.5 5h3.2c.4 0 .8.2 1 .5L11 7h6.5A1.5 1.5 0 0119 8.5V10&#34;/&gt;&lt;path d=&#34;M4 10h15.2a1 1 0 01.96 1.28l-1.6 5.4A1.5 1.5 0 0117.1 18H5.5A1.5 1.5 0 014 16.5z&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-warning&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 4l8.5 15h-17z&#34;/&gt;&lt;path d=&#34;M12 10v4&#34;/&gt;&lt;path d=&#34;M12 16.6v.9&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-check&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 12.5l5 5L20 6.5&#34;/&gt;&lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;div class=&#34;stage&#34;&gt;
+  &lt;div class=&#34;faux&#34;&gt;
+    &lt;div class=&#34;fbar&#34;&gt;&lt;div class=&#34;fmark&#34;&gt;&lt;/div&gt;&lt;div class=&#34;fname&#34;&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div class=&#34;fbody&#34;&gt;
+      &lt;div class=&#34;frail&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+      &lt;div class=&#34;fpanel&#34;&gt;&lt;div class=&#34;fh&#34;&gt;&lt;/div&gt;&lt;div class=&#34;fsearch&#34;&gt;&lt;/div&gt;&lt;div class=&#34;frow&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;frow&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;frow&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;frow&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;frow&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;frow&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span style=&#34;max-width:80px&#34;&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;fmain&#34;&gt;&lt;div class=&#34;fmast&#34;&gt;&lt;div class=&#34;t&#34;&gt;&lt;/div&gt;&lt;div class=&#34;a&#34;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;fledger&#34;&gt;&lt;div&gt;&lt;b&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;ftable&#34;&gt;&lt;div class=&#34;fth&#34;&gt;&lt;/div&gt;&lt;div class=&#34;ftr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;ftr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;ftr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;ftr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;ftr&#34;&gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;fright&#34;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;overlay&#34;&gt;
+    &lt;div class=&#34;dialog&#34;&gt;
+      &lt;div class=&#34;dhead&#34;&gt;
+        &lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;micro&#34;&gt;NEW RECORD · 项目&lt;/div&gt;&lt;div class=&#34;dtitle&#34;&gt;新建项目&lt;/div&gt;&lt;div class=&#34;dsub&#34;&gt;登记一个本地项目。路径可稍后补，名称与所属组决定它在索引中的位置。&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;close&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-close&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;form&#34;&gt;
+        &lt;div class=&#34;fld full&#34;&gt;&lt;div class=&#34;flabel&#34;&gt;项目名称&lt;span class=&#34;req&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;margin-left:auto;color:var(--ink4);letter-spacing:.02em&#34;&gt;最多 80 字符&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;input focus&#34;&gt;Mana Console&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;row&#34;&gt;
+          &lt;div class=&#34;fld half&#34;&gt;&lt;div class=&#34;flabel&#34;&gt;所属项目组&lt;/div&gt;&lt;div class=&#34;input select&#34;&gt;&lt;i class=&#34;sq&#34;&gt;&lt;/i&gt;客户端应用&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-down&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&#34;fld half&#34;&gt;&lt;div class=&#34;flabel&#34;&gt;版本&lt;/div&gt;&lt;div class=&#34;input&#34;&gt;&lt;span class=&#34;ph&#34;&gt;例如 v1.0.0&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&#34;fld full&#34;&gt;&lt;div class=&#34;flabel&#34;&gt;标签&lt;/div&gt;&lt;div class=&#34;tokens&#34;&gt;&lt;div class=&#34;token&#34;&gt;Go&lt;span class=&#34;x&#34;&gt;·&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;token&#34;&gt;MyGo&lt;span class=&#34;x&#34;&gt;·&lt;/span&gt;&lt;/div&gt;&lt;div class=&#34;token add&#34;&gt;+ 添加标签&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;fld full&#34;&gt;&lt;div class=&#34;flabel&#34;&gt;项目路径&lt;/div&gt;&lt;div class=&#34;pathrow&#34;&gt;&lt;div class=&#34;input mono&#34; style=&#34;font-size:10.5px&#34;&gt;E:\codes\go_projects\mana_console&lt;/div&gt;&lt;div class=&#34;browse&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-folder-open&#34;/&gt;&lt;/svg&gt;浏览&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hint&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-warning&#34;/&gt;&lt;/svg&gt;该路径不存在，保存时仅登记，不会创建目录。&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;fld full&#34; style=&#34;margin-bottom:10px&#34;&gt;&lt;div class=&#34;flabel&#34;&gt;备注&lt;/div&gt;&lt;div class=&#34;area&#34;&gt;目标、范围、注意事项…&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;foot&#34;&gt;&lt;div class=&#34;keys mono&#34;&gt;CTRL ENTER 创建 · ESC 取消&lt;/div&gt;&lt;div class=&#34;btns&#34;&gt;&lt;div class=&#34;btn&#34;&gt;取消&lt;/div&gt;&lt;div class=&#34;btn primary&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-check&#34;/&gt;&lt;/svg&gt;创建项目&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" scrolling="auto"></iframe></div>
+<div class="frame" style="left:4504px;top:1024px;width:1440px;height:936px"><div class="cap"><span class="cap-title">05 文档编辑 · 写作纸页</span><span class="cap-meta">ant · screen · web-1440</span></div><iframe sandbox="allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;zh-CN&#34;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Content-Security-Policy&#34; content=&#34;default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src data:; font-src data:&#34;&gt;
+&lt;meta charset=&#34;utf-8&#34;&gt;
+&lt;style&gt;
+:root{--paper:#F0EBE0;--sheet:#FCFAF5;--sheet2:#F6F1E6;--ink:#1B1913;--ink2:#4B463C;--ink3:#7B7464;--ink4:#A79F8D;--line:#D6CFBE;--line2:#E7E1D3;--seal:#AE4229;--seal-deep:#8E3220;--seal-soft:#EFDFD7;--moss:#4E6444;--amber:#8C6227}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{background:var(--paper);color:var(--ink);font-family:Inter,&#34;Noto Sans SC&#34;,&#34;PingFang SC&#34;,&#34;Microsoft YaHei&#34;,sans-serif;font-size:12.5px;-webkit-font-smoothing:antialiased}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ico12{width:12px;height:12px}.ico14{width:14px;height:14px}.ico18{width:18px;height:18px}
+.mono{font-family:&#34;JetBrains Mono&#34;,Consolas,&#34;SFMono-Regular&#34;,monospace}
+.micro{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4)}
+.wrap{display:flex;flex-direction:column;height:900px}
+.titlebar{height:38px;background:#17150F;color:#EDE7DA;border-bottom:1px solid #2A261D;display:flex;align-items:center;padding:0 14px;gap:12px}
+.mark{width:20px;height:20px;background:var(--seal);display:grid;place-items:center;color:#FCFAF5;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:11px;font-weight:700}
+.wordmark{font-size:11.5px;font-weight:600;letter-spacing:.14em}
+.divider{width:1px;height:14px;background:#3A3428}
+.tb-note{font-size:9.5px;letter-spacing:.13em;color:#8F8877;text-transform:uppercase}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.status-dot{width:6px;height:6px;background:#7C9060;border-radius:1px}
+.tb-status{font-size:9.5px;letter-spacing:.12em;color:#B7AE9B;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.key{height:18px;padding:0 6px;border:1px solid #443C2E;color:#B7AE9B;font-size:9px;display:flex;align-items:center;letter-spacing:.08em;border-radius:2px}
+.avatar{width:24px;height:24px;border-radius:2px;border:1px solid #4B4231;background:#2A2519;color:#EDE7DA;display:grid;place-items:center;font-size:10px;font-weight:600}
+.body{display:flex;flex:1;min-height:0}
+.rail{width:68px;background:#17150F;display:flex;flex-direction:column;align-items:center;padding:16px 0 14px;gap:6px}
+.navbtn{width:46px;height:44px;display:grid;place-items:center;border-radius:2px;color:#9C9482}
+.navbtn.active{background:rgba(174,66,41,.26);color:#F3E8E1;box-shadow:inset 2px 0 0 var(--seal)}
+.spacer{flex:1}
+.rail .dot{width:5px;height:5px;background:#7C9060;border-radius:1px;margin-bottom:4px}
+.rail-avatar{width:26px;height:26px;border-radius:2px;border:1px solid #4B4231;background:#2A2519;display:grid;place-items:center;color:#EDE7DA;font-size:10.5px;font-weight:600;margin-top:6px}
+.panel{width:252px;background:var(--sheet2);border-right:1px solid var(--line);padding:18px 16px 12px;display:flex;flex-direction:column;min-height:0}
+.panel-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.panel-title{font-size:12px;font-weight:600}
+.panel-title .mono{font-size:9px;color:var(--ink4);margin-left:6px;letter-spacing:.1em}
+.search{height:32px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:7px;padding:0 8px}
+.search span{font-size:10.5px;color:var(--ink4);flex:1}
+.section{margin-top:15px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:baseline}
+.grow{flex:1}
+.drow{height:44px;display:flex;align-items:center;gap:9px;padding:0 6px;border-radius:2px;border-bottom:1px solid var(--line2)}
+.drow .idx{font-size:9px;color:var(--ink4);width:14px}
+.drow .txt{min-width:0;flex:1}
+.drow .name{font-size:11.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drow .meta{font-size:9px;color:var(--ink4);margin-top:1px}
+.drow.active{background:var(--seal-soft);box-shadow:inset 2px 0 0 var(--seal)}
+.drow.active .name{color:var(--seal-deep);font-weight:600}
+.drow.active .meta{color:var(--seal-deep);opacity:.8}
+.backbtn{height:34px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--ink2);margin-top:10px}
+.panel-foot{padding-top:9px;border-top:1px solid var(--line2);margin-top:8px;font-size:9.5px;color:var(--ink4);display:flex;align-items:center;gap:7px}
+.sqdot{width:5px;height:5px;background:#7C9060;flex:none}
+.main{flex:1;background:var(--sheet);display:flex;flex-direction:column;min-width:0}
+.crumbrow{height:34px;display:flex;align-items:center;gap:7px;padding:0 34px;border-bottom:1px solid var(--line2);font-size:9.5px;letter-spacing:.14em;color:var(--ink4);text-transform:uppercase}
+.crumbrow .sep{color:var(--line)}.crumbrow .cur{color:var(--seal)}
+.titleblock{padding:12px 34px;border-bottom:1px solid var(--line2)}
+.h1row{display:flex;align-items:flex-end;gap:10px}
+h1{font-size:26px;line-height:1.2;font-weight:700;letter-spacing:-.015em}
+.kindsel{display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--ink2);border:1px solid var(--line);padding:2px 7px;border-radius:2px;background:var(--sheet2);margin-bottom:3px}
+.kindsel .ico{width:10px;height:10px;color:var(--ink4)}
+.actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.seg{display:flex;border:1px solid var(--line);border-radius:2px;overflow:hidden;background:var(--sheet)}
+.seg div{height:28px;display:flex;align-items:center;padding:0 11px;font-size:11px;color:var(--ink3);border-right:1px solid var(--line)}
+.seg div:last-child{border-right:0}
+.seg div.on{background:var(--seal-soft);color:var(--seal-deep);font-weight:600}
+.btn{height:30px;padding:0 11px;border:1px solid var(--line);background:var(--sheet);border-radius:2px;display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2)}
+.btn .ico{width:13px;height:13px;color:var(--ink3)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:#FCFAF5}
+.btn.primary .ico{color:#FCFAF5}
+.iconbtn{width:30px;height:30px;border:1px solid var(--line);border-radius:2px;display:grid;place-items:center;color:var(--ink3);background:var(--sheet)}
+.metarow{display:flex;align-items:center;gap:14px;margin-top:6px}
+.mi{font-size:10px;color:var(--ink4)}
+.mi b{font-weight:500;color:var(--ink3)}
+.linkrow{display:flex;align-items:center;gap:7px;margin-top:8px}
+.linkrow .ico{width:12px;height:12px;color:var(--ink4)}
+.linkfield{height:28px;flex:1;max-width:520px;border:1px solid var(--line2);background:var(--sheet2);border-radius:2px;display:flex;align-items:center;padding:0 8px;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:9.5px;color:var(--ink3)}
+.sheet{flex:1;min-height:0;margin:0 34px;border:1px solid var(--line);border-top:0;display:flex;flex-direction:column;background:var(--sheet)}
+.shead{height:32px;border-bottom:1px solid var(--line2);display:flex;align-items:center;padding:0 12px;gap:12px;background:var(--sheet2)}
+.shead .lbl{font-size:9px;letter-spacing:.14em;color:var(--ink4)}
+.shead .sep{width:1px;height:12px;background:var(--line2)}
+.shead .r{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:9.5px;color:var(--ink4)}
+.split{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr}
+.source{border-right:1px solid var(--line);display:flex;min-height:0;background:#FAF6ED}
+.gutter{width:42px;padding:12px 0;border-right:1px solid var(--line2);text-align:right;color:var(--ink4);font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:9px;line-height:21px}
+.gutter div{padding-right:9px}
+.code{padding:12px 16px;font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:10.5px;line-height:21px;color:var(--ink2);white-space:pre;overflow:hidden}
+.code .h{color:var(--seal-deep);font-weight:600}
+.preview{padding:20px 28px;overflow:hidden;background:var(--sheet);min-height:0}
+.preview h2{font-size:24px;line-height:1.3;font-weight:700;letter-spacing:-.01em;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.preview h3{font-size:15px;font-weight:600;margin:15px 0 5px;display:flex;align-items:center;gap:8px}
+.preview h3 .n{font-family:&#34;JetBrains Mono&#34;,Consolas,monospace;font-size:9px;color:var(--seal);letter-spacing:.08em}
+.preview p{font-size:11.5px;line-height:1.9;color:var(--ink2);margin-top:3px}
+.preview ul{margin:5px 0 0 16px}
+.preview li{font-size:11.5px;line-height:1.85;color:var(--ink2)}
+.preview li::marker{color:var(--seal)}
+.preview blockquote{margin-top:9px;border-left:2px solid var(--seal);padding:2px 0 2px 10px;font-size:11px;line-height:1.8;color:var(--ink3)}
+.preview table{border-collapse:collapse;margin-top:7px;font-size:10.5px}
+.preview th{text-align:left;font-weight:600;color:var(--ink3);border-bottom:1px solid var(--line);padding:4px 12px 4px 0;font-size:9.5px;letter-spacing:.06em}
+.preview td{border-bottom:1px solid var(--line2);padding:5px 12px 5px 0;color:var(--ink2)}
+.statusbar{height:30px;border-top:1px solid var(--line2);background:var(--sheet2);display:flex;align-items:center;padding:0 34px;gap:16px;font-size:9.5px;color:var(--ink4);letter-spacing:.06em}
+.statusbar .left{display:flex;align-items:center;gap:7px}
+.statusbar .right{margin-left:auto;display:flex;gap:16px}
+.statusbar .dot{width:5px;height:5px;background:#7C9060;border-radius:1px}
+.saved{color:var(--moss)}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;svg width=&#34;0&#34; height=&#34;0&#34; style=&#34;position:absolute&#34; aria-hidden=&#34;true&#34;&gt;
+  &lt;symbol id=&#34;i-home&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 11l8-7 8 7&#34;/&gt;&lt;path d=&#34;M6.5 9.5V20h11V9.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-folder&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 7.5A1.5 1.5 0 015.5 6h3.2c.4 0 .8.2 1 .5L11 8h7.5A1.5 1.5 0 0120 9.5v8A1.5 1.5 0 0118.5 19h-13A1.5 1.5 0 014 17.5z&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-grid&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;rect x=&#34;4&#34; y=&#34;4&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;13&#34; y=&#34;4&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;4&#34; y=&#34;13&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;rect x=&#34;13&#34; y=&#34;13&#34; width=&#34;7&#34; height=&#34;7&#34; rx=&#34;1.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-layers&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 4l8 4.5-8 4.5-8-4.5z&#34;/&gt;&lt;path d=&#34;M4 13l8 4.5 8-4.5&#34;/&gt;&lt;path d=&#34;M4 17.5l8 4.5 8-4.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-search&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;circle cx=&#34;11&#34; cy=&#34;11&#34; r=&#34;6&#34;/&gt;&lt;path d=&#34;M20 20l-3.6-3.6&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-settings&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 8h9&#34;/&gt;&lt;path d=&#34;M17 8h3&#34;/&gt;&lt;path d=&#34;M4 16h3&#34;/&gt;&lt;path d=&#34;M11 16h9&#34;/&gt;&lt;circle cx=&#34;15&#34; cy=&#34;8&#34; r=&#34;2&#34;/&gt;&lt;circle cx=&#34;9&#34; cy=&#34;16&#34; r=&#34;2&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-database&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;ellipse cx=&#34;12&#34; cy=&#34;6&#34; rx=&#34;7&#34; ry=&#34;2.8&#34;/&gt;&lt;path d=&#34;M5 6v12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6&#34;/&gt;&lt;path d=&#34;M5 12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-plus&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M12 5v14M5 12h14&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-check&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 12.5l5 5L20 6.5&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-trash&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M4 7h16&#34;/&gt;&lt;path d=&#34;M9.5 7V5h5v2&#34;/&gt;&lt;path d=&#34;M6.5 7l1 13h9l1-13&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-chevron-down&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M5 9l7 7 7-7&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-arrow-left&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M19 12H5&#34;/&gt;&lt;path d=&#34;M11 6l-6 6 6 6&#34;/&gt;&lt;/symbol&gt;
+  &lt;symbol id=&#34;i-link&#34; viewBox=&#34;0 0 24 24&#34;&gt;&lt;path d=&#34;M10.5 13.5a3.5 3.5 0 005 0l2.5-2.5a3.5 3.5 0 00-5-5l-1 1&#34;/&gt;&lt;path d=&#34;M13.5 10.5a3.5 3.5 0 00-5 0L6 13a3.5 3.5 0 005 5l1-1&#34;/&gt;&lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;div class=&#34;wrap&#34;&gt;
+  &lt;div class=&#34;titlebar&#34;&gt;&lt;div class=&#34;mark&#34;&gt;M&lt;/div&gt;&lt;div class=&#34;wordmark&#34;&gt;MANA&lt;/div&gt;&lt;div class=&#34;divider&#34;&gt;&lt;/div&gt;&lt;div class=&#34;tb-note&#34;&gt;Project index · local&lt;/div&gt;&lt;div class=&#34;tb-right&#34;&gt;&lt;div class=&#34;tb-status&#34;&gt;&lt;i class=&#34;status-dot&#34;&gt;&lt;/i&gt;SQLite · 已连接&lt;/div&gt;&lt;div class=&#34;divider&#34;&gt;&lt;/div&gt;&lt;div class=&#34;key mono&#34;&gt;CTRL K&lt;/div&gt;&lt;svg class=&#34;ico ico14&#34; style=&#34;color:#9C9482&#34;&gt;&lt;use href=&#34;#i-settings&#34;/&gt;&lt;/svg&gt;&lt;div class=&#34;avatar&#34;&gt;L&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&#34;body&#34;&gt;
+    &lt;aside class=&#34;rail&#34;&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-home&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn active&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-folder&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-grid&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-layers&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;spacer&#34;&gt;&lt;/div&gt;&lt;i class=&#34;dot&#34;&gt;&lt;/i&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-database&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;navbtn&#34;&gt;&lt;svg class=&#34;ico ico18&#34;&gt;&lt;use href=&#34;#i-settings&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&#34;rail-avatar&#34;&gt;L&lt;/div&gt;
+    &lt;/aside&gt;
+
+    &lt;aside class=&#34;panel&#34;&gt;
+      &lt;div class=&#34;panel-head&#34;&gt;&lt;div class=&#34;panel-title&#34;&gt;项目文档&lt;span class=&#34;mono&#34;&gt;05&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;search&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-search&#34;/&gt;&lt;/svg&gt;&lt;span&gt;搜索当前项目&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;section&#34;&gt;&lt;div class=&#34;micro&#34;&gt;Mana Desktop&lt;/div&gt;&lt;div class=&#34;micro mono&#34;&gt;DOCS&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;drow active&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;01&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;需求文档 v1.0&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;需求 · 385 字&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;drow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;02&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;技术方案&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;设计 · 073 字&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;drow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;03&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;接口设计&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;接口 · 073 字&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;drow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;04&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;迭代计划&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;计划 · 073 字&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;drow&#34;&gt;&lt;div class=&#34;idx mono&#34;&gt;05&lt;/div&gt;&lt;div class=&#34;txt&#34;&gt;&lt;div class=&#34;name&#34;&gt;发布检查清单&lt;/div&gt;&lt;div class=&#34;meta mono&#34;&gt;其他 · 075 字&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&#34;grow&#34;&gt;&lt;/div&gt;
+      &lt;div class=&#34;backbtn&#34;&gt;&lt;svg class=&#34;ico ico12&#34;&gt;&lt;use href=&#34;#i-arrow-left&#34;/&gt;&lt;/svg&gt;返回项目&lt;/div&gt;
+      &lt;div class=&#34;panel-foot&#34;&gt;&lt;i class=&#34;sqdot&#34;&gt;&lt;/i&gt;Markdown · UTF-8 · 本地保存&lt;/div&gt;
+    &lt;/aside&gt;
+
+    &lt;main class=&#34;main&#34;&gt;
+      &lt;div class=&#34;crumbrow&#34;&gt;&lt;span&gt;索引&lt;/span&gt;&lt;span class=&#34;sep&#34;&gt;/&lt;/span&gt;&lt;span&gt;客户端应用&lt;/span&gt;&lt;span class=&#34;sep&#34;&gt;/&lt;/span&gt;&lt;span&gt;Mana Desktop&lt;/span&gt;&lt;span class=&#34;sep&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;cur&#34;&gt;文档 01&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&#34;titleblock&#34;&gt;
+        &lt;div class=&#34;h1row&#34;&gt;&lt;h1&gt;需求文档 v1.0&lt;/h1&gt;&lt;div class=&#34;kindsel&#34;&gt;需求&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-chevron-down&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&#34;actions&#34;&gt;&lt;div class=&#34;seg&#34;&gt;&lt;div class=&#34;on&#34;&gt;源码&lt;/div&gt;&lt;div&gt;预览&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;btn primary&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-check&#34;/&gt;&lt;/svg&gt;保存&lt;/div&gt;&lt;div class=&#34;iconbtn&#34;&gt;&lt;svg class=&#34;ico ico14&#34;&gt;&lt;use href=&#34;#i-trash&#34;/&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&#34;metarow&#34;&gt;&lt;div class=&#34;mi&#34;&gt;归属 &lt;b&gt;Mana Desktop&lt;/b&gt;&lt;/div&gt;&lt;div class=&#34;mi&#34;&gt;·&lt;/div&gt;&lt;div class=&#34;mi&#34;&gt;最后保存 &lt;b&gt;2 小时前&lt;/b&gt;&lt;/div&gt;&lt;div class=&#34;mi&#34;&gt;·&lt;/div&gt;&lt;div class=&#34;mi saved&#34;&gt;已保存&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;linkrow&#34;&gt;&lt;svg class=&#34;ico&#34;&gt;&lt;use href=&#34;#i-link&#34;/&gt;&lt;/svg&gt;&lt;div class=&#34;linkfield&#34;&gt;关联链接（可选）· https://…&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;sheet&#34;&gt;
+        &lt;div class=&#34;shead&#34;&gt;&lt;div class=&#34;lbl&#34;&gt;MARKDOWN&lt;/div&gt;&lt;div class=&#34;sep&#34;&gt;&lt;/div&gt;&lt;div class=&#34;lbl&#34;&gt;UTF-8&lt;/div&gt;&lt;div class=&#34;r&#34;&gt;&lt;span&gt;385 字&lt;/span&gt;&lt;span class=&#34;mono&#34;&gt;CTRL S 保存&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&#34;split&#34;&gt;
+          &lt;div class=&#34;source&#34;&gt;
+            &lt;div class=&#34;gutter&#34;&gt;&lt;div&gt;01&lt;/div&gt;&lt;div&gt;02&lt;/div&gt;&lt;div&gt;03&lt;/div&gt;&lt;div&gt;04&lt;/div&gt;&lt;div&gt;05&lt;/div&gt;&lt;div&gt;06&lt;/div&gt;&lt;div&gt;07&lt;/div&gt;&lt;div&gt;08&lt;/div&gt;&lt;div&gt;09&lt;/div&gt;&lt;div&gt;10&lt;/div&gt;&lt;div&gt;11&lt;/div&gt;&lt;div&gt;12&lt;/div&gt;&lt;div&gt;13&lt;/div&gt;&lt;div&gt;14&lt;/div&gt;&lt;div&gt;15&lt;/div&gt;&lt;div&gt;16&lt;/div&gt;&lt;div&gt;17&lt;/div&gt;&lt;div&gt;18&lt;/div&gt;&lt;div&gt;19&lt;/div&gt;&lt;div&gt;20&lt;/div&gt;&lt;div&gt;21&lt;/div&gt;&lt;div&gt;22&lt;/div&gt;&lt;div&gt;23&lt;/div&gt;&lt;div&gt;24&lt;/div&gt;&lt;div&gt;25&lt;/div&gt;&lt;div&gt;26&lt;/div&gt;&lt;div&gt;27&lt;/div&gt;&lt;div&gt;28&lt;/div&gt;&lt;div&gt;29&lt;/div&gt;&lt;div&gt;30&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&#34;code&#34;&gt;&lt;span class=&#34;h&#34;&gt;# 需求文档 v1.0&lt;/span&gt;
+
+## 1. 背景
+Mana 是本地优先的开发项目管理桌面端，
+把项目、项目组与文档收拢到同一个窗口。
+数据仅存本机 SQLite，不依赖账号与网络。
+
+## 2. 目标
+- 项目信息一处登记，路径与版本可查
+- 用项目组表达归属，支持组内文档
+- 常用操作三步内完成
+
+## 3. 范围
+| 模块 | v1.0 | 说明 |
+| --- | --- | --- |
+| 项目 | 支持 | 增删改查、标签、路径 |
+| 项目组 | 支持 | 左右布局、组内项目 |
+| 文档 | 支持 | Markdown 编辑与预览 |
+
+### 3.1 非目标
+移动端同步、多人协作与云端备份不在 v1.0。
+
+## 4. 关键约束
+删除项目会级联删除其文档；删除项目组时，
+组内项目移至「未分组」，组文档一并删除。
+
+&gt; 所有数据仅保存在本机，退出前请确认已保存。
+
+## 5. 验收
+新建项目后重启仍存在；组内计数一致；
+未保存离开时二次确认。&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&#34;preview&#34;&gt;
+            &lt;h2&gt;需求文档 v1.0&lt;/h2&gt;
+            &lt;h3&gt;&lt;span class=&#34;n&#34;&gt;01&lt;/span&gt;背景&lt;/h3&gt;
+            &lt;p&gt;Mana 是本地优先的开发项目管理桌面端，把项目、项目组与文档收拢到同一个窗口。数据仅存本机 SQLite，不依赖账号与网络。&lt;/p&gt;
+            &lt;h3&gt;&lt;span class=&#34;n&#34;&gt;02&lt;/span&gt;目标&lt;/h3&gt;
+            &lt;ul&gt;&lt;li&gt;项目信息一处登记，路径与版本可查&lt;/li&gt;&lt;li&gt;用项目组表达归属，支持组内文档&lt;/li&gt;&lt;li&gt;常用操作三步内完成&lt;/li&gt;&lt;/ul&gt;
+            &lt;h3&gt;&lt;span class=&#34;n&#34;&gt;03&lt;/span&gt;范围&lt;/h3&gt;
+            &lt;table&gt;&lt;tr&gt;&lt;th&gt;模块&lt;/th&gt;&lt;th&gt;v1.0&lt;/th&gt;&lt;th&gt;说明&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;项目&lt;/td&gt;&lt;td&gt;支持&lt;/td&gt;&lt;td&gt;增删改查、标签、路径&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;项目组&lt;/td&gt;&lt;td&gt;支持&lt;/td&gt;&lt;td&gt;左右布局、组内项目&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;文档&lt;/td&gt;&lt;td&gt;支持&lt;/td&gt;&lt;td&gt;Markdown 编辑与预览&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+            &lt;h3&gt;&lt;span class=&#34;n&#34;&gt;04&lt;/span&gt;关键约束&lt;/h3&gt;
+            &lt;p&gt;删除项目会级联删除其文档；删除项目组时，组内项目移至「未分组」，组文档一并删除。&lt;/p&gt;
+            &lt;blockquote&gt;所有数据仅保存在本机，退出前请确认已保存。&lt;/blockquote&gt;
+            &lt;h3&gt;&lt;span class=&#34;n&#34;&gt;05&lt;/span&gt;验收&lt;/h3&gt;
+            &lt;p&gt;新建项目后重启仍存在；组内项目计数与列表一致；未保存离开时二次确认。&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&#34;statusbar&#34;&gt;&lt;div class=&#34;left&#34;&gt;&lt;i class=&#34;dot&#34;&gt;&lt;/i&gt;Markdown · UTF-8 · 385 字 · 已保存 2 小时前&lt;/div&gt;&lt;div class=&#34;right mono&#34;&gt;CTRL S 保存 · CTRL F 搜索 · ESC 返回&lt;/div&gt;&lt;/div&gt;
+    &lt;/main&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" scrolling="auto"></iframe></div>
+</div>
+</body>
+</html>

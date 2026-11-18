@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 	"unicode/utf8"
 
+	"mana/internal/extract"
 	"mana/internal/model"
 	"mana/internal/store"
 )
@@ -153,14 +155,131 @@ func (s *Service) SaveDocument(ctx context.Context, id int64, in model.DocumentI
 	return d, err
 }
 
-// DeleteDocument removes a document.
+// DeleteDocument removes a document and, for attachments, the copied
+// file tree.
 func (s *Service) DeleteDocument(ctx context.Context, id int64) error {
-	return s.store.DeleteDocument(ctx, id)
+	if err := s.store.DeleteDocument(ctx, id); err != nil {
+		return err
+	}
+	s.store.RemoveAttachment(id)
+	return nil
+}
+
+// MaxUpload is the largest accepted attachment.
+const MaxUpload = 100 << 20 // 100 MB
+
+// SaveDocumentFile registers an uploaded file as a document: it copies
+// the file into the attachments tree and stores an extracted text
+// preview. Extraction failures keep the document usable; only a failed
+// copy or an oversized file is an error.
+func (s *Service) SaveDocumentFile(ctx context.Context, ownerType string, ownerID int64, srcPath string) (model.Document, error) {
+	if s.store.FilesDir() == "" {
+		return model.Document{}, fmt.Errorf("附件目录未配置")
+	}
+	info, err := os.Stat(srcPath)
+	if err != nil {
+		return model.Document{}, fmt.Errorf("读取文件失败：%v", err)
+	}
+	if info.IsDir() {
+		return model.Document{}, fmt.Errorf("请选择一个文件而不是文件夹")
+	}
+	if info.Size() > MaxUpload {
+		return model.Document{}, fmt.Errorf("文件超过 100 MB，请先压缩或拆分")
+	}
+	base := filepath.Base(srcPath)
+	if n := utf8.RuneCountInString(base); n > 200 {
+		return model.Document{}, &FieldError{Field: "title", Message: "文件名过长"}
+	}
+	in := model.DocumentInput{
+		OwnerType: ownerType, OwnerID: ownerID,
+		Title: strings.TrimSuffix(base, filepath.Ext(base)),
+		Kind:  "other", Link: "",
+	}
+	if err := s.validateDocumentOwner(in); err != nil {
+		return model.Document{}, err
+	}
+	// The title must be unique per owner; deconflict it like "报告 (2)".
+	title, err := s.availableDocTitle(ctx, in.OwnerType, in.OwnerID, in.Title)
+	if err != nil {
+		return model.Document{}, err
+	}
+	in.Title = title
+	if content, err := extract.Text(srcPath); err == nil && content != "" {
+		in.Content = content
+	}
+	return s.store.SaveFile(ctx, in, srcPath, base)
+}
+
+// DocumentFilePath returns where an attachment lives on disk.
+func (s *Service) DocumentFilePath(d model.Document) (string, error) {
+	return s.store.AttachmentFile(d.ID, d.FileName)
+}
+
+// validateDocumentOwner checks just the owner, for file uploads whose
+// other fields come from the file itself.
+func (s *Service) validateDocumentOwner(in model.DocumentInput) error {
+	if in.OwnerType != model.OwnerProject && in.OwnerType != model.OwnerGroup {
+		return &FieldError{Field: "owner", Message: "文档归属无效"}
+	}
+	if in.OwnerType == model.OwnerProject {
+		if _, err := s.store.GetProject(context.Background(), in.OwnerID); err != nil {
+			return &FieldError{Field: "owner", Message: "所属项目不存在"}
+		}
+	} else if _, err := s.store.GetGroup(context.Background(), in.OwnerID); err != nil {
+		return &FieldError{Field: "owner", Message: "所属项目组不存在"}
+	}
+	return nil
+}
+
+// availableDocTitle appends " (2)", " (3)"… while the title is taken.
+func (s *Service) availableDocTitle(ctx context.Context, ownerType string, ownerID int64, title string) (string, error) {
+	existing := map[string]bool{}
+	docs, err := s.store.ListDocuments(ctx, ownerType, ownerID)
+	if err != nil {
+		return "", fmt.Errorf("列出文档失败：%v", err)
+	}
+	for _, d := range docs {
+		existing[strings.ToLower(d.Title)] = true
+	}
+	if !existing[strings.ToLower(title)] {
+		return title, nil
+	}
+	for i := 2; i < 1000; i++ {
+		candidate := fmt.Sprintf("%s (%d)", title, i)
+		if !existing[strings.ToLower(candidate)] {
+			return candidate, nil
+		}
+	}
+	return "", fmt.Errorf("同名文档过多")
 }
 
 // CountDocuments counts an owner's documents.
 func (s *Service) CountDocuments(ctx context.Context, ownerType string, ownerID int64) (int, error) {
 	return s.store.CountDocuments(ctx, ownerType, ownerID)
+}
+
+// Search matches projects, documents and groups for the command palette.
+func (s *Service) Search(ctx context.Context, q string) (model.SearchResult, error) {
+	q = strings.TrimSpace(q)
+	if q == "" {
+		return model.SearchResult{}, nil
+	}
+	if n := utf8.RuneCountInString(q); n > 80 {
+		return model.SearchResult{}, &FieldError{Field: "query", Message: "搜索词最多 80 个字符"}
+	}
+	return s.store.Search(ctx, q)
+}
+
+// Backup writes a consistent copy of the database to dest.
+func (s *Service) Backup(ctx context.Context, dest string) error {
+	dest = strings.TrimSpace(dest)
+	if dest == "" {
+		return fmt.Errorf("备份目录无效")
+	}
+	if err := s.store.Backup(ctx, dest); err != nil {
+		return fmt.Errorf("备份失败：%v", err)
+	}
+	return nil
 }
 
 func validateGroup(in model.GroupInput) (model.GroupInput, error) {
