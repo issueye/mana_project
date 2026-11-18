@@ -37,6 +37,7 @@ func run(ctx context.Context, dir string, timeout time.Duration, args ...string)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, "git", args...)
 	cmd.Dir = dir
+	cmd.SysProcAttr = sysProcAttr()
 	var out, errOut bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Stderr = &errOut
