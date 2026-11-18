@@ -1,0 +1,10 @@
+{
+  "name": "Mana",
+  "slug": "mana",
+  "identifier": "com.example.mana",
+  "version": "1.0.0",
+  "copyright": "© 2026 Mana",
+  "publisher": "Mana",
+  "license": "MIT",
+  "main": "."
+}

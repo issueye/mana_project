@@ -1,0 +1,7 @@
+/build/
+/.mygo/
+/*.db
+*.db-shm
+*.db-wal
+coverage.out
+/internal/app/testdata/screens/

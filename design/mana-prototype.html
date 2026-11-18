@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440, initial-scale=1">
+<title>Mana · 开发项目管理系统</title>
+<style>
+:root{
+  --primary:#7c5cff;
+  --primary-hover:#9478ff;
+  --primary-bg:#f3f0ff;
+  --primary-border:#ded6fe;
+  --text:#1d2129;
+  --text-2:#4e5969;
+  --text-3:#86909c;
+  --text-4:#a9aeb8;
+  --border:#e3e5e8;
+  --border-2:#eef0f2;
+  --border-strong:#d0d3d8;
+  --bg:#f4f5f7;
+  --surface:#ffffff;
+  --surface-2:#fafbfc;
+  --success:#00b42a;
+  --success-bg:#e8ffea;
+  --warning:#ff7d00;
+  --warning-bg:#fff7e8;
+  --danger:#f53f3f;
+  --danger-bg:#ffece8;
+  --purple:#7c5cff;
+  --purple-bg:#f3f0ff;
+  --cyan:#0fc6c2;
+  --cyan-bg:#e8fffb;
+  --radius:6px;
+  --radius-sm:4px;
+  --shadow-card:none;
+  --shadow-pop:none;
+  --font:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono","SFMono-Regular","Consolas","Cascadia Code",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{
+  font-family:var(--font);font-size:13px;line-height:1.5;color:var(--text);
+  background:var(--bg);-webkit-font-smoothing:antialiased;
+}
+button,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--primary);text-decoration:none}
+svg{display:block}
+.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic-18{width:18px;height:18px}
+.ic-20{width:20px;height:20px}
+.ic-dots{fill:currentColor;stroke:none}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--text-3)}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+
+.app{width:1440px;height:900px;display:flex;background:var(--bg)}
+
+/* ---------------- Sidebar ---------------- */
+.sidebar{
+  width:228px;flex:0 0 228px;height:100%;background:var(--surface);
+  border-right:1px solid var(--border-2);padding:18px 14px 14px 14px;
+  display:flex;flex-direction:column;
+}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 6px 18px 6px}
+.logo{
+  width:34px;height:34px;border-radius:10px;flex:none;
+  background:linear-gradient(140deg,#7c5cff 0%,#9b7bff 55%,#c4a7ff 100%);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  box-shadow:0 7px 16px rgba(22,119,255,.28);
+}
+.brand-name{font-size:16px;font-weight:700;letter-spacing:.2px;line-height:1.1}
+.brand-sub{font-size:10.5px;color:var(--text-3);margin-top:4px;letter-spacing:.04em}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--text-4);padding:0 10px;margin:10px 0 6px}
+.nav-item{
+  height:38px;border:0;background:transparent;width:100%;
+  display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:8px;
+  color:var(--text-2);font-size:13px;text-align:left;position:relative;transition:background .15s,color .15s;
+}
+.nav-item .ic{width:17px;height:17px;color:var(--text-3)}
+.nav-item:hover{background:#f5f7fa;color:var(--text)}
+.nav-item.active{background:var(--primary-bg);color:var(--primary);font-weight:600}
+.nav-item.active .ic{color:var(--primary)}
+.nav-item.active::before{
+  content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--primary);
+}
+.nav-item .nav-count{margin-left:auto;font-size:11px;color:var(--text-3);font-weight:500}
+.nav-item.active .nav-count{color:var(--primary)}
+.side-sep{height:1px;background:var(--border-2);margin:14px 6px}
+.side-note{
+  margin-top:auto;background:var(--surface-2);border:1px solid var(--border-2);
+  border-radius:10px;padding:12px 12px 11px;
+}
+.side-note-top{display:flex;align-items:center;gap:8px;color:var(--text-2);font-size:12px;font-weight:600}
+.side-note-top .ic{color:var(--primary)}
+.side-note-meta{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:11px;color:var(--text-3)}
+.dot-on{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px rgba(82,196,26,.12)}
+.side-note-bar{height:4px;border-radius:2px;background:#e9edf2;margin-top:10px;overflow:hidden}
+.side-note-bar span{display:block;height:100%;width:42%;border-radius:2px;background:linear-gradient(90deg,#7c5cff,#b69cff)}
+.side-note-foot{display:flex;justify-content:space-between;margin-top:6px;font-size:10.5px;color:var(--text-4)}
+.user-row{display:flex;align-items:center;gap:9px;padding:14px 4px 2px;margin-top:6px}
+.avatar{
+  width:28px;height:28px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#ffd6a5,#ff9f68);color:#7c3a0b;font-size:11px;font-weight:700;
+}
+.user-name{font-size:12.5px;font-weight:600;line-height:1.2}
+.user-meta{font-size:10.5px;color:var(--text-3);margin-top:2px}
+
+/* ---------------- Topbar ---------------- */
+.main{flex:1;min-width:0;height:100%;display:flex;flex-direction:column}
+.topbar{
+  height:56px;flex:0 0 56px;background:var(--surface);border-bottom:1px solid var(--border-2);
+  display:flex;align-items:center;gap:18px;padding:0 24px 0 26px;
+}
+.topbar-left{display:flex;align-items:center;gap:10px;min-width:190px}
+.topbar-title{font-size:15px;font-weight:650;letter-spacing:.01em}
+.crumb{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-3);white-space:nowrap}
+.crumb .sep{color:var(--text-4)}
+.crumb .cur{color:var(--text);font-weight:550}
+.searchbar{
+  margin-left:auto;width:340px;height:34px;border:1px solid var(--border);border-radius:7px;
+  background:var(--surface-2);display:flex;align-items:center;gap:8px;padding:0 10px;
+  color:var(--text-3);font-size:12.5px;
+}
+.searchbar .ic{width:15px;height:15px;color:var(--text-3)}
+.searchbar .kbd{
+  margin-left:auto;display:flex;align-items:center;gap:3px;font-size:10px;color:var(--text-3);
+  background:#fff;border:1px solid var(--border);border-radius:4px;padding:1px 5px;
+}
+.top-actions{display:flex;align-items:center;gap:8px}
+.btn{
+  height:32px;border-radius:6px;border:1px solid transparent;background:#fff;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;
+  font-size:13px;font-weight:550;color:var(--text);white-space:nowrap;transition:all .15s;
+}
+.btn:hover{border-color:var(--border-strong);color:var(--primary)}
+.btn .ic{width:15px;height:15px}
+.btn-primary{
+  background:var(--primary);border-color:var(--primary);color:#fff;
+  box-shadow:0 2px 5px rgba(22,119,255,.2);
+}
+.btn-primary:hover{background:var(--primary-hover);border-color:var(--primary-hover);color:#fff}
+.btn-default{border-color:var(--border-strong);background:#fff}
+.btn-text{background:transparent;color:var(--text-2);padding:0 6px}
+.btn-text:hover{background:#f5f7fa;border-color:transparent;color:var(--primary)}
+.btn-danger{background:#fff;border-color:#ffccc7;color:var(--danger)}
+.btn-danger:hover{background:var(--danger-bg);border-color:#ffa39e;color:var(--danger)}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--text-3);width:32px;padding:0}
+.btn-ghost:hover{background:#f3f5f8;color:var(--text);border-color:transparent}
+.btn-sm{height:28px;padding:0 10px;font-size:12px;border-radius:5px}
+.btn-icon{width:32px;padding:0}
+.avatar-sm{width:30px;height:30px;font-size:11px}
+
+/* ---------------- Content ---------------- */
+.content{flex:1;min-height:0;padding:22px 26px 24px;overflow:hidden}
+.view{display:none;height:100%;min-height:0}
+.view.active{display:block}
+
+.page-head{height:74px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:12px}
+.eyebrow{font-size:11px;color:var(--text-3);letter-spacing:.03em;margin-bottom:3px}
+.page-head h1{font-size:25px;line-height:1.2;font-weight:680;letter-spacing:-.015em}
+.page-head h1 .wave{color:var(--primary)}
+.page-sub{font-size:12.5px;color:var(--text-3);margin-top:5px}
+.page-sub strong{color:var(--text-2);font-weight:600}
+.head-chips{display:flex;align-items:center;gap:8px;padding-top:8px}
+.chip{
+  height:30px;display:inline-flex;align-items:center;gap:6px;padding:0 10px;border-radius:7px;
+  background:#fff;border:1px solid var(--border);font-size:12px;color:var(--text-2);
+}
+.chip .ic{width:14px;height:14px;color:var(--text-3)}
+
+.card{
+  background:var(--surface);border:1px solid var(--border-2);border-radius:var(--radius);
+  box-shadow:var(--shadow-card);overflow:hidden;
+}
+.card-head{
+  height:50px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 18px;border-bottom:1px solid var(--border-2);
+}
+.card-title{font-size:14px;font-weight:650;letter-spacing:.005em;display:flex;align-items:center;gap:8px}
+.card-title .count{
+  min-width:20px;height:19px;padding:0 6px;border-radius:10px;background:#f2f4f7;
+  color:var(--text-3);font-size:10.5px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;
+}
+.card-sub{font-size:11.5px;color:var(--text-3);margin-top:1px}
+.link-more{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--text-2);border:0;background:none;padding:0}
+.link-more:hover{color:var(--primary)}
+.link-more .ic{width:13px;height:13px}
+
+/* stats */
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;height:96px;margin-bottom:12px}
+.stat{
+  background:#fff;border:1px solid var(--border-2);border-radius:var(--radius);box-shadow:var(--shadow-card);
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+.stat-icon .ic{width:19px;height:19px}
+.stat-icon.blue{background:var(--primary-bg);color:var(--primary)}
+.stat-icon.purple{background:var(--purple-bg);color:var(--purple)}
+.stat-icon.cyan{background:var(--cyan-bg);color:var(--cyan)}
+.stat-icon.green{background:var(--success-bg);color:#389e0d}
+.stat-body{min-width:0;flex:1}
+.stat-label{font-size:11.5px;color:var(--text-3);line-height:1.2}
+.stat-value{font-size:24px;font-weight:680;line-height:1.25;letter-spacing:-.02em;margin-top:2px}
+.stat-meta{font-size:10.5px;color:var(--text-3);margin-top:2px;display:flex;align-items:center;gap:4px}
+.trend-up{color:#389e0d;font-weight:600}
+.trend-flat{color:var(--text-3)}
+
+/* dashboard */
+.dash-grid{display:grid;grid-template-columns:minmax(0,1.82fr) minmax(0,1fr);gap:14px;height:400px;margin-bottom:12px}
+.recent-card{display:flex;flex-direction:column;min-height:0}
+.p-head,.p-row{display:grid;grid-template-columns:minmax(0,1fr) 74px 132px 92px 24px;gap:14px;align-items:center;padding:0 18px}
+.p-head{height:30px;font-size:10.5px;color:var(--text-3);background:var(--surface-2);border-bottom:1px solid var(--border-2);letter-spacing:.03em}
+.p-row{height:44px;border-bottom:1px solid #f2f4f7;cursor:pointer}
+.p-row:last-child{border-bottom:0}
+.p-row:hover{background:#fafcff}
+.p-main{display:flex;align-items:center;gap:10px;min-width:0}
+.p-ico{
+  width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;
+  background:var(--primary-bg);color:var(--primary);
+}
+.p-ico .ic{width:16px;height:16px}
+.p-ico.green{background:var(--success-bg);color:#389e0d}
+.p-ico.purple{background:var(--purple-bg);color:var(--purple)}
+.p-ico.orange{background:#fff7e6;color:#d46b08}
+.p-ico.cyan{background:var(--cyan-bg);color:var(--cyan)}
+.p-name{font-size:12.8px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p-group{font-size:10.5px;color:var(--text-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ver{
+  display:inline-flex;align-items:center;height:21px;padding:0 7px;border-radius:5px;
+  border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);
+  font-family:var(--mono);font-size:10.5px;white-space:nowrap;
+}
+.tag{
+  display:inline-flex;align-items:center;height:21px;padding:0 7px;border-radius:4px;
+  font-size:10.5px;line-height:1;white-space:nowrap;background:#f2f3f5;color:#5c6670;
+  border:1px solid transparent;
+}
+.tag-blue{background:var(--primary-bg);color:#0b63c7;border-color:#d6ebff}
+.tag-purple{background:var(--purple-bg);color:#5b21b6;border-color:#efdcff}
+.tag-green{background:var(--success-bg);color:#2f8a12;border-color:#dff5cf}
+.tag-orange{background:#fff7e6;color:#b45a06;border-color:#ffe8bf}
+.tag-red{background:var(--danger-bg);color:#cf1322;border-color:#ffd8d6}
+.tag-gray{background:#f4f5f7;color:#5c6670;border-color:#eceef2}
+.tag-cell{display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden}
+.tag-cell .tag:last-child{flex:none}
+.p-time{font-size:11px;color:var(--text-3);white-space:nowrap}
+.p-more{color:var(--text-3);width:24px;height:24px;border:0;background:transparent;border-radius:5px;display:flex;align-items:center;justify-content:center}
+.p-more:hover{background:#eef1f5;color:var(--text)}
+.p-foot{height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-top:1px solid var(--border-2);font-size:11px;color:var(--text-3);margin-top:auto}
+
+/* right column */
+.side-col{display:flex;flex-direction:column;gap:14px;min-height:0}
+.groups-card{flex:1;display:flex;flex-direction:column;min-height:0}
+.group-overview{padding:8px 10px 4px;overflow:hidden}
+.go-row{
+  height:41px;border-radius:7px;display:flex;align-items:center;gap:9px;padding:0 10px;cursor:pointer;
+}
+.go-row:hover{background:#f7f9fc}
+.go-dot{width:7px;height:7px;border-radius:50%;flex:none}
+.go-name{font-size:12.5px;font-weight:550;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.go-count{font-size:10.5px;color:var(--text-3);margin-left:auto;white-space:nowrap}
+.go-arrow{color:var(--text-4);width:13px;height:13px}
+.go-foot{padding:8px 18px 14px;margin-top:auto}
+.new-group-dash{
+  width:100%;height:32px;border:1px dashed var(--border-strong);border-radius:7px;background:transparent;
+  color:var(--text-3);font-size:11.5px;display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.new-group-dash:hover{border-color:var(--primary);color:var(--primary);background:#f8fbff}
+.new-group-dash .ic{width:13px;height:13px}
+
+.recent-docs{height:176px;display:flex;flex-direction:column}
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;padding:8px 18px 10px;flex:1;align-content:start}
+.doc-item{display:flex;align-items:center;gap:10px;height:52px;border-bottom:1px solid #f3f4f7;cursor:pointer;min-width:0}
+.doc-item:hover .doc-title{color:var(--primary)}
+.doc-ico{width:30px;height:30px;border-radius:7px;background:var(--surface-2);border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;color:var(--text-3);flex:none}
+.doc-ico .ic{width:15px;height:15px}
+.doc-main{min-width:0}
+.doc-title{font-size:12.5px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.doc-meta{font-size:10.5px;color:var(--text-3);margin-top:2px;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.doc-meta .tag{height:18px;font-size:9.5px;padding:0 5px;border-radius:3px}
+.doc-time{margin-left:auto;font-size:10.5px;color:var(--text-4);white-space:nowrap}
+
+/* ---------------- Group workbench ---------------- */
+.workbench{display:flex;gap:14px;height:100%;min-height:0}
+.group-panel{
+  width:280px;flex:0 0 280px;background:#fff;border:1px solid var(--border-2);border-radius:var(--radius);
+  box-shadow:var(--shadow-card);display:flex;flex-direction:column;min-height:0;
+}
+.gp-head{height:54px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border-2)}
+.gp-title{font-size:14px;font-weight:650;display:flex;align-items:center;gap:7px}
+.gp-title .count{height:19px;padding:0 6px;border-radius:10px;background:#f2f4f7;color:var(--text-3);font-size:10.5px;display:inline-flex;align-items:center}
+.gp-search{margin:12px 14px 6px;height:32px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;gap:7px;padding:0 9px;color:var(--text-3);font-size:11.5px}
+.gp-search .ic{width:14px;height:14px}
+.group-list{padding:4px 10px 8px;overflow:hidden;flex:1}
+.group-section{font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--text-4);padding:10px 9px 5px}
+.g-row{
+  height:42px;border-radius:7px;display:flex;align-items:center;gap:9px;padding:0 9px;cursor:pointer;position:relative;
+}
+.g-row:hover{background:#f7f9fc}
+.g-row.active{background:var(--primary-bg);color:var(--primary);font-weight:600}
+.g-row.active .g-count{background:#fff;color:var(--primary)}
+.g-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:none;background:#f2f4f7;color:var(--text-3)}
+.g-icon .ic{width:14px;height:14px}
+.g-row.active .g-icon{background:#fff;color:var(--primary)}
+.g-name{font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-count{
+  margin-left:auto;min-width:21px;height:19px;padding:0 6px;border-radius:10px;background:#f2f4f7;
+  color:var(--text-3);font-size:10px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;
+}
+.g-dot{width:7px;height:7px;border-radius:50%;flex:none}
+.g-dash{border-top:1px dashed var(--border-strong);margin:9px 8px 7px}
+.gp-foot{padding:10px 14px 14px;border-top:1px solid var(--border-2);flex:none}
+.gp-foot .new-group-dash{height:34px;font-size:12px}
+
+.group-main{
+  flex:1;min-width:0;background:#fff;border:1px solid var(--border-2);border-radius:var(--radius);
+  box-shadow:var(--shadow-card);display:flex;flex-direction:column;min-height:0;overflow:hidden;
+}
+.gm-head{padding:18px 20px 15px;display:flex;align-items:flex-start;gap:14px;border-bottom:1px solid var(--border-2);flex:none}
+.gm-mark{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--primary-bg);color:var(--primary)}
+.gm-mark .ic{width:22px;height:22px}
+.gm-info{min-width:0;flex:1}
+.gm-title-row{display:flex;align-items:center;gap:9px}
+.gm-title{font-size:19px;font-weight:680;letter-spacing:-.01em;line-height:1.2}
+.gm-desc{font-size:12px;color:var(--text-3);margin-top:5px;max-width:560px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gm-meta{display:flex;align-items:center;gap:12px;margin-top:7px;font-size:11px;color:var(--text-3)}
+.gm-meta span{display:flex;align-items:center;gap:4px}
+.gm-meta .ic{width:12px;height:12px}
+.gm-actions{display:flex;align-items:center;gap:7px;padding-top:6px;flex:none}
+.tabs-row{height:44px;flex:none;display:flex;align-items:center;border-bottom:1px solid var(--border-2);padding:0 16px;gap:6px}
+.tab{
+  height:44px;border:0;background:transparent;padding:0 10px;font-size:12.5px;color:var(--text-3);
+  display:flex;align-items:center;gap:6px;position:relative;
+}
+.tab .count{height:18px;min-width:18px;padding:0 5px;border-radius:9px;background:#f2f4f7;font-size:9.5px;color:var(--text-3);display:inline-flex;align-items:center;justify-content:center}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--primary);font-weight:600}
+.tab.active::after{content:"";position:absolute;left:8px;right:8px;bottom:-1px;height:2px;background:var(--primary);border-radius:2px 2px 0 0}
+.tab.active .count{background:var(--primary-bg);color:var(--primary)}
+.tabs-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.mini-search{width:210px;height:30px;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);display:flex;align-items:center;gap:6px;padding:0 8px;color:var(--text-3);font-size:11.5px}
+.mini-search .ic{width:13px;height:13px}
+.sort-btn{height:30px;border:1px solid var(--border);border-radius:6px;background:#fff;padding:0 8px;font-size:11.5px;color:var(--text-2);display:flex;align-items:center;gap:5px}
+.sort-btn .ic{width:12px;height:12px;color:var(--text-3)}
+
+.ptable-wrap{display:flex;flex-direction:column;min-height:0;flex:1}
+.g-table-head,.g-rowx{display:grid;grid-template-columns:minmax(0,1fr) 78px 142px 84px 26px;gap:14px;align-items:center;padding:0 20px}
+.g-table-head{height:32px;background:var(--surface-2);border-bottom:1px solid var(--border-2);font-size:10.5px;color:var(--text-3);letter-spacing:.02em}
+.g-rowx{height:62px;border-bottom:1px solid #f2f4f7;cursor:pointer;min-height:0}
+.g-rowx:hover{background:#fafcff}
+.g-rowx:last-child{border-bottom:0}
+.p-title-line{display:flex;align-items:center;gap:7px;min-width:0}
+.p-title-line .p-name{font-size:13px;font-weight:620}
+.path{font-family:var(--mono);font-size:10px;color:var(--text-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin-top:3px}
+.g-foot{height:34px;flex:none;border-top:1px solid var(--border-2);display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:10.5px;color:var(--text-3)}
+.grp-docs{flex:none;border-top:1px solid var(--border-2);padding:10px 20px 12px;background:#fcfdff}
+.grp-docs-head{display:flex;align-items:center;gap:7px;height:24px;margin-bottom:2px}
+.grp-docs-head h3{font-size:12px;font-weight:650}
+.grp-docs-head .count{font-size:10px;color:var(--text-3);font-weight:500}
+.grp-docs-head .link-more{margin-left:auto;font-size:11px}
+.mini-doc{display:flex;align-items:center;gap:9px;height:34px;cursor:pointer;min-width:0}
+.mini-doc:hover .doc-title{color:var(--primary)}
+.mini-doc .doc-ico{width:24px;height:24px;border-radius:6px}
+.mini-doc .doc-ico .ic{width:13px;height:13px}
+.mini-doc .doc-title{font-size:12px}
+.mini-doc .doc-meta{font-size:10px;margin-top:0}
+.mini-doc .doc-time{font-size:10px}
+.mini-doc .tag{height:17px;font-size:9px;padding:0 4px}
+.empty-block{padding:44px 20px;text-align:center;color:var(--text-3)}
+.empty-ico{width:48px;height:48px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;color:var(--text-3)}
+.empty-title{font-size:13px;font-weight:600;color:var(--text-2)}
+.empty-sub{font-size:11.5px;margin-top:4px}
+
+/* docs tab */
+.dtable-wrap{display:flex;flex-direction:column;min-height:0;flex:1}
+.d-table-head,.d-rowx{display:grid;grid-template-columns:minmax(0,1fr) 108px 82px 104px 26px;gap:14px;align-items:center;padding:0 20px}
+.d-table-head{height:32px;background:var(--surface-2);border-bottom:1px solid var(--border-2);font-size:10.5px;color:var(--text-3)}
+.d-rowx{height:56px;border-bottom:1px solid #f2f4f7;cursor:pointer}
+.d-rowx:hover{background:#fafcff}
+.d-rowx:last-child{border-bottom:0}
+.d-title-line{display:flex;align-items:center;gap:8px;min-width:0}
+.d-title-line .ic{color:var(--text-3);width:15px;height:15px}
+.d-title-line .doc-title{font-size:12.5px}
+.d-words{font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.d-actions{display:flex;align-items:center;justify-content:flex-end}
+.docs-hint{
+  margin:auto 20px 18px;padding:12px 14px;border:1px solid var(--border-2);border-radius:9px;
+  background:var(--surface-2);display:flex;align-items:center;gap:11px;
+}
+.docs-hint-icon{width:34px;height:34px;border-radius:8px;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:none}
+.docs-hint-icon .ic{width:16px;height:16px}
+.docs-hint-main{min-width:0;flex:1}
+.docs-hint-title{font-size:12px;font-weight:650}
+.docs-hint-sub{font-size:11px;color:var(--text-3);margin-top:3px;line-height:1.55}
+
+/* ---------------- Project detail ---------------- */
+.detail-page{height:100%;display:flex;flex-direction:column;min-height:0}
+.detail-crumb{height:24px;display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-3);flex:none}
+.detail-crumb button{width:22px;height:22px;border:0;background:transparent;border-radius:5px;color:var(--text-2);display:flex;align-items:center;justify-content:center;margin-right:2px}
+.detail-crumb button:hover{background:#e9edf3}
+.detail-crumb .ic{width:13px;height:13px}
+.detail-crumb .cur{color:var(--text);font-weight:550}
+.detail-head{flex:none;display:flex;align-items:flex-start;gap:15px;padding:14px 0 18px;border-bottom:1px solid var(--border-2);margin-bottom:16px}
+.detail-mark{width:52px;height:52px;border-radius:13px;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:none}
+.detail-mark .ic{width:25px;height:25px}
+.detail-info{flex:1;min-width:0}
+.detail-title-row{display:flex;align-items:center;gap:9px}
+.detail-title{font-size:22px;font-weight:680;letter-spacing:-.015em;line-height:1.15}
+.detail-desc{font-size:12px;color:var(--text-3);margin-top:6px}
+.detail-tags{display:flex;align-items:center;gap:5px;margin-top:8px}
+.detail-actions{display:flex;align-items:center;gap:7px;padding-top:8px;flex:none}
+.detail-body{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:14px;min-height:0}
+.docs-card{min-width:0;display:flex;flex-direction:column;min-height:0}
+.docs-toolbar{height:44px;flex:none;display:flex;align-items:center;gap:8px;padding:0 16px;border-bottom:1px solid var(--border-2)}
+.docs-toolbar .mini-search{width:220px}
+.docs-toolbar .btn{margin-left:auto}
+.detail-docs-head,.detail-doc-row{display:grid;grid-template-columns:minmax(0,1fr) 100px 78px 86px 26px;gap:12px;align-items:center;padding:0 18px}
+.detail-docs-head{height:30px;background:var(--surface-2);font-size:10.5px;color:var(--text-3);border-bottom:1px solid var(--border-2)}
+.detail-doc-row{height:54px;border-bottom:1px solid #f2f4f7;cursor:pointer}
+.detail-doc-row:hover{background:#fafcff}
+.detail-doc-row:last-child{border-bottom:0}
+.detail-doc-title{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:550;min-width:0}
+.detail-doc-title .ic{color:var(--text-3);width:15px;height:15px}
+.detail-doc-title span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.detail-foot{height:36px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-top:1px solid var(--border-2);font-size:10.5px;color:var(--text-3);margin-top:auto}
+
+.info-card{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.info-body{padding:14px 16px;overflow:hidden;flex:1}
+.info-section{font-size:10px;font-weight:600;letter-spacing:.12em;color:var(--text-4);margin:2px 0 9px}
+.info-section + .info-row{margin-top:0}
+.info-row{display:grid;grid-template-columns:78px minmax(0,1fr);gap:8px;align-items:start;padding:6px 0;font-size:11.5px}
+.info-label{color:var(--text-3);padding-top:1px}
+.info-value{color:var(--text-2);min-width:0;line-height:1.45}
+.info-value.strong{color:var(--text);font-weight:550}
+.path-box{display:flex;align-items:flex-start;gap:6px;min-width:0;background:var(--surface-2);border:1px solid var(--border-2);border-radius:6px;padding:5px 7px}
+.path-box .path-text{font-family:var(--mono);font-size:9.6px;color:var(--text-2);white-space:normal;overflow-wrap:break-word;line-height:1.45;text-align:left;padding-top:1px}
+.copy-btn{width:20px;height:20px;border:0;background:transparent;border-radius:4px;color:var(--text-3);display:flex;align-items:center;justify-content:center;flex:none}
+.copy-btn:hover{background:#e9edf3;color:var(--primary)}
+.copy-btn .ic{width:12px;height:12px}
+.info-divider{height:1px;background:var(--border-2);margin:12px 0}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.note-text{font-size:11.5px;color:var(--text-2);line-height:1.65;background:var(--surface-2);border-radius:7px;padding:9px 10px;border:1px solid var(--border-2)}
+.info-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.info-stat{background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;padding:10px 11px}
+.info-stat .n{font-size:19px;font-weight:680;line-height:1.2;letter-spacing:-.01em}
+.info-stat .l{font-size:10.5px;color:var(--text-3);margin-top:2px}
+
+/* ---------------- Editor ---------------- */
+.editor-page{height:100%;display:flex;flex-direction:column;min-height:0}
+.editor-top{height:32px;flex:none;display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text-3)}
+.editor-top button{width:24px;height:24px;border:0;background:transparent;border-radius:5px;display:flex;align-items:center;justify-content:center;color:var(--text-2)}
+.editor-top button:hover{background:#e9edf3}
+.editor-top .ic{width:13px;height:13px}
+.editor-titlebar{flex:none;display:flex;align-items:flex-start;gap:12px;padding:8px 0 14px}
+.editor-title-box{flex:1;min-width:0}
+.editor-title-input{
+  width:100%;border:0;outline:0;background:transparent;font-size:23px;font-weight:680;letter-spacing:-.015em;
+  color:var(--text);padding:0;line-height:1.25;
+}
+.editor-subline{display:flex;align-items:center;gap:9px;margin-top:7px;font-size:11.5px;color:var(--text-3)}
+.editor-subline .tag{height:20px;font-size:10px}
+.editor-subline .sep{width:1px;height:11px;background:var(--border-strong)}
+.editor-actions{display:flex;align-items:center;gap:8px;padding-top:6px;flex:none}
+.segmented{height:32px;border:1px solid var(--border);border-radius:7px;background:var(--surface-2);padding:3px;display:flex;align-items:center;gap:2px}
+.segmented button{height:24px;border:0;background:transparent;border-radius:5px;padding:0 9px;font-size:11.5px;color:var(--text-3);display:flex;align-items:center;gap:4px}
+.segmented button.active{background:#fff;color:var(--text);font-weight:600;box-shadow:0 1px 2px rgba(16,24,40,.1)}
+.segmented .ic{width:12px;height:12px}
+.editor-card{
+  flex:1;min-height:0;background:#fff;border:1px solid var(--border-2);border-radius:var(--radius);box-shadow:var(--shadow-card);
+  overflow:hidden;display:flex;flex-direction:column;
+}
+.editor-toolbar{height:38px;flex:none;border-bottom:1px solid var(--border-2);display:flex;align-items:center;gap:2px;padding:0 10px;background:#fcfdff}
+.tool-btn{height:26px;min-width:26px;padding:0 6px;border:0;background:transparent;border-radius:4px;color:var(--text-3);font-size:11px;display:flex;align-items:center;justify-content:center}
+.tool-btn:hover{background:#eef1f6;color:var(--text)}
+.tool-btn.mono{font-family:var(--mono);font-size:10px}
+.tool-sep{width:1px;height:16px;background:var(--border-2);margin:0 5px}
+.toolbar-right{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--text-3)}
+.editor-split{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:0}
+.source-pane{min-width:0;overflow:hidden;padding:16px 0 16px 14px;position:relative;background:#fff}
+.code{font-family:var(--mono);font-size:11.7px;line-height:1.78;color:#344054;white-space:pre;overflow:hidden;display:flex;flex-direction:column}
+.cl{display:flex}
+.ln{width:30px;flex:none;text-align:right;padding-right:12px;color:#c3c9d2;user-select:none;font-size:10px;line-height:1.95}
+.code-text{min-width:0}
+.md-h{color:#0b63c7;font-weight:600}
+.md-h2{color:#0b63c7;font-weight:600}
+.md-b{font-weight:700;color:#1f2329}
+.md-i{font-style:italic}
+.md-link{color:#0b63c7;text-decoration:underline;text-underline-offset:2px}
+.md-code{background:#f2f4f8;border-radius:3px;padding:0 3px;color:#9a3412}
+.md-bullet{color:#98a2b3}
+.preview-pane{border-left:1px solid var(--border-2);padding:24px 30px;overflow:hidden;background:#fff}
+.md-view{font-size:12.2px;line-height:1.66;color:#344054}
+.md-view h1{font-size:21px;line-height:1.35;font-weight:700;color:#1f2329;letter-spacing:-.01em;margin:0 0 12px;padding-bottom:9px;border-bottom:1px solid var(--border-2)}
+.md-view h2{font-size:14.5px;font-weight:650;color:#1f2329;margin:14px 0 5px}
+.md-view p{margin:0 0 7px}
+.md-view ul{margin:0 0 7px;padding-left:17px}
+.md-view li{margin:1px 0}
+.md-view li::marker{color:#98a2b3}
+.md-view table{width:100%;border-collapse:collapse;margin:6px 0 10px;font-size:10.8px}
+.md-view th{text-align:left;background:#fafbfc;color:#667085;font-weight:600;padding:4px 7px;border:1px solid var(--border-2)}
+.md-view td{padding:4px 7px;border:1px solid var(--border-2);color:#344054}
+.callout{background:#f6faff;border:1px solid #d8e9ff;border-left:3px solid var(--primary);border-radius:6px;padding:7px 9px;margin:8px 0;font-size:11.2px;color:#23507d}
+.editor-status{height:30px;flex:none;border-top:1px solid var(--border-2);display:flex;align-items:center;gap:14px;padding:0 14px;font-size:10px;color:var(--text-3);background:var(--surface-2)}
+.editor-status .right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.editor-status .sep{width:1px;height:10px;background:var(--border-strong)}
+.editor-status .ok{display:flex;align-items:center;gap:4px;color:#389e0d}
+.editor-status .ok .ic{width:11px;height:11px}
+
+/* ---------------- Overlay / dialogs ---------------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(15,23,42,.46);backdrop-filter:blur(2px);
+  display:none;align-items:center;justify-content:center;z-index:50;
+}
+.overlay.show{display:flex}
+.modal{
+  display:none;background:#fff;border-radius:6px;box-shadow:var(--shadow-pop);overflow:hidden;
+  border:1px solid rgba(255,255,255,.5);
+}
+.modal.show{display:block}
+.modal-project{width:640px}
+.modal-group{width:520px}
+.modal-delete{width:448px}
+.modal-head{padding:16px 20px 12px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--border-2)}
+.modal-head-main{flex:1;min-width:0}
+.modal-title{font-size:16px;font-weight:680;letter-spacing:-.01em;line-height:1.25}
+.modal-sub{font-size:11.5px;color:var(--text-3);margin-top:4px}
+.modal-close{width:28px;height:28px;border:0;background:transparent;border-radius:6px;color:var(--text-3);display:flex;align-items:center;justify-content:center;margin-top:-2px}
+.modal-close:hover{background:#f3f5f8;color:var(--text)}
+.modal-close .ic{width:15px;height:15px}
+.modal-body{padding:14px 20px 2px;max-height:640px;overflow:hidden}
+.field{margin-bottom:14px}
+.field-label{font-size:11.5px;font-weight:600;color:var(--text-2);display:flex;align-items:center;gap:5px;margin-bottom:6px}
+.req{color:var(--danger);font-size:11px}
+.field-hint{margin-left:auto;font-size:10px;color:var(--text-4);font-weight:400}
+.input,.textarea,.select-box{
+  width:100%;border:1px solid var(--border-strong);border-radius:7px;background:#fff;
+  font-size:12.5px;color:var(--text);outline:none;transition:border .15s,box-shadow .15s;
+}
+.input{height:34px;padding:0 10px}
+.textarea{height:74px;padding:8px 10px;resize:none;line-height:1.55}
+.input:focus,.textarea:focus,.select-box.focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(22,119,255,.1)}
+.input::placeholder,.textarea::placeholder{color:var(--text-4)}
+.input-group{display:flex;align-items:center;gap:8px}
+.input-group .input{flex:1;min-width:0}
+.select-box{height:34px;padding:0 10px;display:flex;align-items:center;gap:8px;cursor:pointer;background:#fff}
+.select-box .ic{margin-left:auto;width:13px;height:13px;color:var(--text-3)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.token-box{
+  min-height:36px;border:1px solid var(--border-strong);border-radius:7px;background:#fff;
+  display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding:4px 7px;
+}
+.token-box .tag{height:22px;font-size:10.5px}
+.token-input{border:0;outline:0;height:24px;flex:1;min-width:90px;font-size:11.5px;background:transparent;color:var(--text)}
+.token-input::placeholder{color:var(--text-4)}
+.token-hint{font-size:10px;color:var(--text-4);margin-top:4px;display:flex;align-items:center;gap:4px}
+.token-hint .ic{width:11px;height:11px}
+.helper{font-size:10.5px;color:var(--text-3);margin-top:5px;display:flex;align-items:center;gap:4px}
+.helper .ic{width:12px;height:12px;color:var(--warning)}
+.char-count{font-size:10px;color:var(--text-4);text-align:right;margin-top:3px}
+.modal-foot{padding:10px 20px 12px;display:flex;align-items:center;justify-content:flex-end;gap:8px;border-top:1px solid var(--border-2);margin-top:12px;background:#fcfdff}
+.modal-foot .left-note{font-size:10.5px;color:var(--text-3);margin-right:auto;display:flex;align-items:center;gap:5px}
+.modal-foot .left-note .ic{width:12px;height:12px;color:var(--text-3)}
+.swatches{display:flex;align-items:center;gap:10px;padding-top:3px}
+.swatch{width:28px;height:28px;border-radius:50%;border:0;position:relative;display:flex;align-items:center;justify-content:center}
+.swatch.active::after{content:"";position:absolute;inset:-4px;border:2px solid currentColor;border-radius:50%;opacity:.55}
+.swatch .ic{width:13px;height:13px;color:#fff}
+.del-body{padding:22px 24px 10px;display:flex;gap:14px;align-items:flex-start}
+.del-icon{width:42px;height:42px;border-radius:50%;background:var(--danger-bg);color:var(--danger);display:flex;align-items:center;justify-content:center;flex:none}
+.del-icon .ic{width:21px;height:21px}
+.del-main{min-width:0}
+.del-title{font-size:15.5px;font-weight:680;line-height:1.4}
+.del-text{font-size:11.5px;color:var(--text-2);line-height:1.65;margin-top:6px}
+.del-text strong{color:var(--text);font-weight:650}
+.del-list{margin-top:10px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:7px;padding:8px 10px;font-size:11px;color:var(--text-2);line-height:1.7}
+.del-list span{color:var(--text);font-weight:600}
+.del-foot{padding:16px 24px 20px;display:flex;justify-content:flex-end;gap:8px}
+
+/* toast */
+.toast{
+  position:fixed;left:50%;bottom:34px;transform:translate(-50%,14px);opacity:0;pointer-events:none;
+  height:38px;padding:0 14px;border-radius:8px;background:#1f2937;color:#fff;font-size:12px;
+  display:flex;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(15,23,42,.25);transition:.2s;z-index:60;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast .ic{width:15px;height:15px;color:#86efac}
+
+/* scrollbars */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#dfe3ea;border-radius:4px;border:2px solid #fff}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6.5 9.5V20h11V9.5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M4 7.5A1.5 1.5 0 015.5 6h3.2c.4 0 .8.2 1 .5L11 8h7.5A1.5 1.5 0 0120 9.5v8A1.5 1.5 0 0118.5 19h-13A1.5 1.5 0 014 17.5z"/></symbol>
+  <symbol id="i-folder-open" viewBox="0 0 24 24"><path d="M4 8V6.5A1.5 1.5 0 015.5 5h3.2c.4 0 .8.2 1 .5L11 7h6.5A1.5 1.5 0 0119 8.5V10"/><path d="M4 10h15.2a1 1 0 01.96 1.28l-1.6 5.4A1.5 1.5 0 0117.1 18H5.5A1.5 1.5 0 014 16.5z"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l8 4.5-8 4.5-8-4.5z"/><path d="M4 13l8 4.5 8-4.5"/><path d="M4 17.5l8 4.5 8-4.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-3.6-3.6"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 8h9"/><path d="M17 8h3"/><path d="M4 16h3"/><path d="M11 16h9"/><circle cx="15" cy="8" r="2"/><circle cx="9" cy="16" r="2"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 4h8l4 4v12H6z"/><path d="M14 4v4h4"/><path d="M9 13h6"/><path d="M9 16h4"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M5 5h14v9l-5 5H5z"/><path d="M19 14h-5v5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9.5 7V5h5v2"/><path d="M6.5 7l1 13h9l1-13"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="M5 9l7 7 7-7"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M3 12c1.8-3.6 4.9-6 9-6s7.2 2.4 9 6c-1.8 3.6-4.9 6-9 6s-7.2-2.4-9-6z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M4 10h9a5 5 0 010 10H8"/><path d="M8 6l-4 4 4 4"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10.5 13.5a3.5 3.5 0 005 0l2.5-2.5a3.5 3.5 0 00-5-5l-1 1"/><path d="M13.5 10.5a3.5 3.5 0 00-5 0L6 13a3.5 3.5 0 005 5l1-1"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2.8"/><path d="M5 6v12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6"/><path d="M5 12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="M9 7l-4 5 4 5"/><path d="M15 7l4 5-4 5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M8 12.2l2.8 2.8L16 9.5"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 3v5"/><path d="M16 3v5"/><path d="M4 11h16"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M20 4H4l6 7v6l4 2v-8z"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 5h12v15l-6-4-6 4z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.5"/><path d="M5 20c1.2-3.4 3.9-5 7-5s5.8 1.6 7 5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M8 9.5a4 4 0 018 0c0 3.6 1.4 5.2 1.4 5.2H6.6S8 13.1 8 9.5z"/><path d="M10.4 17.6a1.7 1.7 0 003.2 0"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 4l8.5 15h-17z"/><path d="M12 10v4"/><path d="M12 16.6v.9"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v6"/><path d="M12 7.4v.9"/></symbol>
+  <symbol id="i-git-branch" viewBox="0 0 24 24"><circle cx="8" cy="6" r="2.4"/><circle cx="8" cy="18" r="2.4"/><circle cx="16" cy="10.5" r="2.4"/><line x1="8" y1="8.4" x2="8" y2="15.6"/><path d="M16 12.9v1.4c0 1.9-1.6 3.3-3.7 3.3H10.4"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14"/><path d="M7.5 10.4l2.8 2.4-2.8 2.4"/><line x1="13" y1="15" x2="16.8" y2="15"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 10-2.6 5.9"/><path d="M20 6.5V12h-5.5"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M10 8.8l5 3.2-5 3.2z"/></symbol>
+</svg>
+
+<div class="app">
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo"><svg class="ic ic-18"><use href="#i-layers"/></svg></div>
+      <div>
+        <div class="brand-name">Mana</div>
+        <div class="brand-sub">开发项目管理</div>
+      </div>
+    </div>
+
+    <div class="nav-label">工作台</div>
+    <button class="nav-item active" id="nav-home" data-view="home">
+      <svg class="ic"><use href="#i-home"/></svg><span>首页</span>
+    </button>
+    <button class="nav-item" id="nav-groups" data-view="groups">
+      <svg class="ic"><use href="#i-folder"/></svg><span>项目组管理</span>
+      <span class="nav-count">5</span>
+    </button>
+
+    <div class="side-sep"></div>
+    <div class="nav-label">最近访问</div>
+    <button class="nav-item" onclick="openDetailByProject('Mana Desktop')">
+      <svg class="ic"><use href="#i-code"/></svg><span>Mana Desktop</span>
+    </button>
+    <button class="nav-item" onclick="openDetailByProject('Atlas API')">
+      <svg class="ic"><use href="#i-database"/></svg><span>Atlas API</span>
+    </button>
+    <button class="nav-item" onclick="openDetailByProject('Orbit Mobile')">
+      <svg class="ic"><use href="#i-grid"/></svg><span>Orbit Mobile</span>
+    </button>
+
+    <div class="side-note">
+      <div class="side-note-top"><svg class="ic"><use href="#i-database"/></svg>本地数据库</div>
+      <div class="side-note-meta"><span class="dot-on"></span>SQLite · 已连接</div>
+      <div class="side-note-bar"><span></span></div>
+      <div class="side-note-foot"><span>2.4 MB</span><span>42 篇文档</span></div>
+    </div>
+
+    <div class="user-row">
+      <div class="avatar">L</div>
+      <div><div class="user-name">Lin</div><div class="user-meta">本地工作区</div></div>
+      <button class="btn btn-ghost" style="margin-left:auto;width:26px;height:26px" aria-label="设置" onclick="showToast('设置面板将在后续版本开放')">
+        <svg class="ic" style="width:15px;height:15px;color:var(--text-3)"><use href="#i-settings"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left" id="topbar-left">
+        <div class="topbar-title">首页</div>
+      </div>
+      <div class="searchbar" id="global-search">
+        <svg class="ic"><use href="#i-search"/></svg>
+        <span>搜索项目、文档或标签…</span>
+        <span class="kbd">Ctrl F</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-ghost" aria-label="通知" onclick="showToast('暂无新通知')">
+          <svg class="ic"><use href="#i-bell"/></svg>
+        </button>
+        <button class="btn btn-primary" onclick="openProjectModal()">
+          <svg class="ic"><use href="#i-plus"/></svg>新建项目
+        </button>
+        <div class="avatar avatar-sm">L</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ================= HOME ================= -->
+      <section class="view active" id="view-home">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">2026 年 11 月 18 日 · 周三</div>
+            <h1>下午好，Lin</h1>
+            <div class="page-sub">今天有 <strong>3 个项目</strong> 更新，<strong>2 篇文档</strong> 新增。</div>
+          </div>
+          <div class="head-chips">
+            <div class="chip"><svg class="ic"><use href="#i-calendar"/></svg>本周</div>
+            <div class="chip"><svg class="ic"><use href="#i-clock"/></svg>更新于 1 分钟前</div>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="stat-icon blue"><svg class="ic"><use href="#i-grid"/></svg></div>
+            <div class="stat-body">
+              <div class="stat-label">项目总数</div>
+              <div class="stat-value num">16</div>
+              <div class="stat-meta"><span class="trend-up">+2</span> 本周新增</div>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon purple"><svg class="ic"><use href="#i-folder"/></svg></div>
+            <div class="stat-body">
+              <div class="stat-label">项目组</div>
+              <div class="stat-value num">5</div>
+              <div class="stat-meta"><span class="trend-flat">4 个组有项目更新</span></div>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon cyan"><svg class="ic"><use href="#i-file"/></svg></div>
+            <div class="stat-body">
+              <div class="stat-label">文档总数</div>
+              <div class="stat-value num">42</div>
+              <div class="stat-meta"><span class="trend-up">+6</span> 本周新增</div>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon green"><svg class="ic"><use href="#i-refresh"/></svg></div>
+            <div class="stat-body">
+              <div class="stat-label">本周更新</div>
+              <div class="stat-value num">9</div>
+              <div class="stat-meta"><span class="trend-up">+3</span> 较上周</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <section class="card recent-card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">最近更新项目</div>
+                <div class="card-sub">按更新时间排序，点击进入项目详情</div>
+              </div>
+              <button class="link-more" onclick="showView('groups')">全部项目<svg class="ic"><use href="#i-arrow-right"/></svg></button>
+            </div>
+            <div class="p-head"><span>项目</span><span>版本</span><span>标签</span><span>更新时间</span><span></span></div>
+            <div class="p-row" onclick="openDetailByProject('Mana Desktop')">
+              <div class="p-main"><div class="p-ico"><svg class="ic"><use href="#i-code"/></svg></div><div style="min-width:0"><div class="p-name">Mana Desktop</div><div class="p-group">客户端应用</div></div></div>
+              <div><span class="ver">v0.9.2</span></div>
+              <div class="tag-cell"><span class="tag tag-blue">Go</span><span class="tag tag-purple">MyGo</span><span class="tag tag-gray">+1</span></div>
+              <div class="p-time">2 小时前</div>
+              <button class="p-more" aria-label="更多"><svg class="ic ic-dots"><use href="#i-more"/></svg></button>
+            </div>
+            <div class="p-row" onclick="openDetailByProject('Atlas API')">
+              <div class="p-main"><div class="p-ico green"><svg class="ic"><use href="#i-database"/></svg></div><div style="min-width:0"><div class="p-name">Atlas API</div><div class="p-group">后端服务</div></div></div>
+              <div><span class="ver">v3.1.0</span></div>
+              <div class="tag-cell"><span class="tag tag-blue">Go</span><span class="tag tag-gray">SQLite</span><span class="tag tag-gray">+1</span></div>
+              <div class="p-time">4 小时前</div>
+              <button class="p-more" aria-label="更多"><svg class="ic ic-dots"><use href="#i-more"/></svg></button>
+            </div>
+            <div class="p-row" onclick="openDetailByProject('Orbit Mobile')">
+              <div class="p-main"><div class="p-ico cyan"><svg class="ic"><use href="#i-grid"/></svg></div><div style="min-width:0"><div class="p-name">Orbit Mobile</div><div class="p-group">客户端应用</div></div></div>
+              <div><span class="ver">v2.3.1</span></div>
+              <div class="tag-cell"><span class="tag tag-blue">Flutter</span><span class="tag tag-gray">iOS</span><span class="tag tag-gray">+1</span></div>
+              <div class="p-time">昨天</div>
+              <button class="p-more" aria-label="更多"><svg class="ic ic-dots"><use href="#i-more"/></svg></button>
+            </div>
+            <div class="p-row" onclick="openDetailByProject('Forge CI')">
+              <div class="p-main"><div class="p-ico purple"><svg class="ic"><use href="#i-terminal"/></svg></div><div style="min-width:0"><div class="p-name">Forge CI</div><div class="p-group">基础架构</div></div></div>
+              <div><span class="ver">v1.9.0</span></div>
+              <div class="tag-cell"><span class="tag tag-blue">Go</span><span class="tag tag-gray">Docker</span></div>
+              <div class="p-time">昨天</div>
+              <button class="p-more" aria-label="更多"><svg class="ic ic-dots"><use href="#i-more"/></svg></button>
+            </div>
+            <div class="p-row" onclick="openDetailByProject('Echo Lab')">
+              <div class="p-main"><div class="p-ico orange"><svg class="ic"><use href="#i-git-branch"/></svg></div><div style="min-width:0"><div class="p-name">Echo Lab</div><div class="p-group">实验项目</div></div></div>
+              <div><span class="ver">v0.0.3</span></div>
+              <div class="tag-cell"><span class="tag tag-blue">Python</span><span class="tag tag-gray">ML</span></div>
+              <div class="p-time">2 天前</div>
+              <button class="p-more" aria-label="更多"><svg class="ic ic-dots"><use href="#i-more"/></svg></button>
+            </div>
+            <div class="p-row" onclick="openDetailByProject('Relic Worker')">
+              <div class="p-main"><div class="p-ico green"><svg class="ic"><use href="#i-terminal"/></svg></div><div style="min-width:0"><div class="p-name">Relic Worker</div><div class="p-group">后端服务</div></div></div>
+              <div><span class="ver">v1.8.2</span></div>
+              <div class="tag-cell"><span class="tag tag-blue">Go</span><span class="tag tag-gray">Queue</span></div>
+              <div class="p-time">昨天</div>
+              <button class="p-more" aria-label="更多"><svg class="ic ic-dots"><use href="#i-more"/></svg></button>
+            </div>
+            <div class="p-foot"><span>共 16 个项目</span><span>最近同步 13:35</span></div>
+          </section>
+
+          <div class="side-col">
+            <section class="card groups-card">
+              <div class="card-head" style="height:48px">
+                <div class="card-title">项目组 <span class="count">5</span></div>
+                <button class="link-more" onclick="showView('groups')">管理<svg class="ic"><use href="#i-chevron-right"/></svg></button>
+              </div>
+              <div class="group-overview">
+                <div class="go-row" onclick="openGroup('client')"><span class="go-dot" style="background:#7C5CFF"></span><span class="go-name">客户端应用</span><span class="go-count">5 项目 · 5 文档</span><svg class="ic go-arrow"><use href="#i-chevron-right"/></svg></div>
+                <div class="go-row" onclick="openGroup('backend')"><span class="go-dot" style="background:#52C41A"></span><span class="go-name">后端服务</span><span class="go-count">4 项目 · 4 文档</span><svg class="ic go-arrow"><use href="#i-chevron-right"/></svg></div>
+                <div class="go-row" onclick="openGroup('infra')"><span class="go-dot" style="background:#722ED1"></span><span class="go-name">基础架构</span><span class="go-count">3 项目 · 3 文档</span><svg class="ic go-arrow"><use href="#i-chevron-right"/></svg></div>
+                <div class="go-row" onclick="openGroup('lab')"><span class="go-dot" style="background:#FA8C16"></span><span class="go-name">实验项目</span><span class="go-count">2 项目 · 2 文档</span><svg class="ic go-arrow"><use href="#i-chevron-right"/></svg></div>
+                <div class="go-row" onclick="openGroup('tools')"><span class="go-dot" style="background:#13C2C2"></span><span class="go-name">文档与工具</span><span class="go-count">2 项目 · 1 文档</span><svg class="ic go-arrow"><use href="#i-chevron-right"/></svg></div>
+                <div class="go-row" onclick="openGroup('ungrouped')"><span class="go-dot" style="background:#C9CDD4"></span><span class="go-name">未分组</span><span class="go-count">2 项目</span><svg class="ic go-arrow"><use href="#i-chevron-right"/></svg></div>
+              </div>
+              <div class="go-foot">
+                <button class="new-group-dash" onclick="openGroupModal()"><svg class="ic"><use href="#i-plus"/></svg>新建项目组</button>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <section class="card recent-docs">
+          <div class="card-head" style="height:44px">
+            <div class="card-title">最近文档</div>
+            <button class="link-more" onclick="showToast('文档中心将在 v1.1 开放')">全部文档<svg class="ic"><use href="#i-arrow-right"/></svg></button>
+          </div>
+          <div class="doc-grid">
+            <div class="doc-item" onclick="openEditorByTitle('需求文档 v1.0')">
+              <div class="doc-ico"><svg class="ic"><use href="#i-note"/></svg></div>
+              <div class="doc-main"><div class="doc-title">需求文档 v1.0</div><div class="doc-meta"><span class="tag tag-orange">需求</span><span>Mana Desktop</span></div></div>
+              <div class="doc-time">2 小时前</div>
+            </div>
+            <div class="doc-item" onclick="openEditorByTitle('Atlas API 接口规范')">
+              <div class="doc-ico"><svg class="ic"><use href="#i-file"/></svg></div>
+              <div class="doc-main"><div class="doc-title">Atlas API 接口规范</div><div class="doc-meta"><span class="tag tag-blue">接口</span><span>Atlas API</span></div></div>
+              <div class="doc-time">4 小时前</div>
+            </div>
+            <div class="doc-item" onclick="openEditorByTitle('客户端发布检查清单')">
+              <div class="doc-ico"><svg class="ic"><use href="#i-check-circle"/></svg></div>
+              <div class="doc-main"><div class="doc-title">客户端发布检查清单</div><div class="doc-meta"><span class="tag tag-gray">其他</span><span>客户端应用组</span></div></div>
+              <div class="doc-time">昨天</div>
+            </div>
+            <div class="doc-item" onclick="openEditorByTitle('Forge CI 迁移计划')">
+              <div class="doc-ico"><svg class="ic"><use href="#i-calendar"/></svg></div>
+              <div class="doc-main"><div class="doc-title">Forge CI 迁移计划</div><div class="doc-meta"><span class="tag tag-green">开发计划</span><span>Forge CI</span></div></div>
+              <div class="doc-time">2 天前</div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ================= GROUPS ================= -->
+      <section class="view" id="view-groups">
+        <div class="workbench">
+          <aside class="group-panel">
+            <div class="gp-head">
+              <div class="gp-title">项目组 <span class="count" id="group-total">5</span></div>
+              <button class="btn btn-ghost" style="width:28px;height:28px" aria-label="新建项目组" onclick="openGroupModal()"><svg class="ic"><use href="#i-plus"/></svg></button>
+            </div>
+            <div class="gp-search"><svg class="ic"><use href="#i-search"/></svg><span>搜索项目组…</span></div>
+            <div class="group-list" id="group-list"></div>
+            <div class="gp-foot">
+              <button class="new-group-dash" onclick="openGroupModal()"><svg class="ic"><use href="#i-plus"/></svg>新建项目组</button>
+            </div>
+          </aside>
+
+          <section class="group-main">
+            <div class="gm-head">
+              <div class="gm-mark" id="gm-mark"><svg class="ic"><use href="#i-folder"/></svg></div>
+              <div class="gm-info">
+                <div class="gm-title-row"><div class="gm-title" id="gm-title">客户端应用</div></div>
+                <div class="gm-desc" id="gm-desc">面向桌面与移动端的产品线，覆盖 macOS、iOS 与 Web。</div>
+                <div class="gm-meta" id="gm-meta"><span><svg class="ic"><use href="#i-grid"/></svg>5 个项目</span><span><svg class="ic"><use href="#i-file"/></svg>5 篇文档</span><span><svg class="ic"><use href="#i-clock"/></svg>2 小时前更新</span></div>
+              </div>
+              <div class="gm-actions">
+                <button class="btn btn-default btn-sm" onclick="openGroupModal(true)"><svg class="ic"><use href="#i-edit"/></svg>编辑</button>
+                <button class="btn btn-ghost" aria-label="更多" onclick="openDeleteModal('group')"><svg class="ic ic-dots"><use href="#i-more"/></svg></button>
+                <button class="btn btn-primary btn-sm" onclick="openProjectModal()"><svg class="ic"><use href="#i-plus"/></svg>新建项目</button>
+              </div>
+            </div>
+
+            <div class="tabs-row">
+              <button class="tab active" id="tab-projects" onclick="setTab('projects')">项目 <span class="count" id="tab-project-count">5</span></button>
+              <button class="tab" id="tab-docs" onclick="setTab('docs')">文档 <span class="count" id="tab-doc-count">5</span></button>
+              <div class="tabs-right">
+                <div class="mini-search"><svg class="ic"><use href="#i-search"/></svg><span>搜索当前组…</span></div>
+                <button class="sort-btn"><svg class="ic"><use href="#i-filter"/></svg>更新时间<svg class="ic"><use href="#i-chevron-down"/></svg></button>
+                <button class="btn btn-primary btn-sm" id="new-doc-btn" style="display:none" onclick="openEditorByTitle('未命名文档', currentGroup().name)"><svg class="ic"><use href="#i-plus"/></svg>新建文档</button>
+              </div>
+            </div>
+
+            <div class="ptable-wrap" id="projects-pane">
+              <div class="g-table-head"><span>项目</span><span>版本</span><span>标签</span><span>更新时间</span><span></span></div>
+              <div id="project-rows"></div>
+              <div class="g-foot"><span id="project-foot">共 5 个项目</span><span>按更新时间排序</span></div>
+              <div class="grp-docs" id="group-docs-preview">
+                <div class="grp-docs-head"><h3>组文档</h3><span class="count" id="grp-doc-count">5</span><button class="link-more" onclick="setTab('docs')">查看全部<svg class="ic"><use href="#i-arrow-right"/></svg></button></div>
+                <div id="group-doc-preview-rows"></div>
+              </div>
+            </div>
+
+            <div class="dtable-wrap" id="docs-pane" style="display:none">
+              <div class="d-table-head"><span>文档</span><span>类型</span><span>字数</span><span>更新时间</span><span></span></div>
+              <div id="doc-rows"></div>
+              <div class="g-foot"><span id="doc-foot">共 5 篇文档</span><span>组内文档独立于项目文档</span></div>
+              <div class="docs-hint">
+                <div class="docs-hint-icon"><svg class="ic"><use href="#i-bookmark"/></svg></div>
+                <div class="docs-hint-main">
+                  <div class="docs-hint-title">组文档是组级知识库</div>
+                  <div class="docs-hint-sub">适合存放组规范、发布流程与评审记录；项目移出组时，组文档不会跟随项目。</div>
+                </div>
+                <button class="btn btn-default btn-sm" onclick="showToast('组文档规则：随组删除而删除，不随项目移动')">查看规则</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ================= DETAIL ================= -->
+      <section class="view" id="view-detail">
+        <div class="detail-page">
+          <div class="detail-crumb">
+            <button onclick="backToGroups()" aria-label="返回项目组"><svg class="ic"><use href="#i-arrow-left"/></svg></button>
+            <span>项目组管理</span><span>/</span><span id="crumb-group">客户端应用</span><span>/</span><span class="cur" id="crumb-project">Mana Desktop</span>
+          </div>
+          <div class="detail-head">
+            <div class="detail-mark"><svg class="ic"><use href="#i-code"/></svg></div>
+            <div class="detail-info">
+              <div class="detail-title-row"><div class="detail-title" id="detail-title">Mana Desktop</div><span class="ver" id="detail-version">v0.9.2</span></div>
+              <div class="detail-desc" id="detail-desc">本地优先的项目管理桌面端，Go + MyGo 原生 UI，SQLite 存储。</div>
+              <div class="detail-tags" id="detail-tags"></div>
+            </div>
+            <div class="detail-actions">
+              <button class="btn btn-default btn-sm" onclick="showToast('已在系统文件管理器中打开项目目录')"><svg class="ic"><use href="#i-folder-open"/></svg>打开目录</button>
+              <button class="btn btn-default btn-sm" onclick="openProjectModal()"><svg class="ic"><use href="#i-edit"/></svg>编辑项目</button>
+              <button class="btn btn-ghost" aria-label="更多"><svg class="ic ic-dots"><use href="#i-more"/></svg></button>
+            </div>
+          </div>
+          <div class="detail-body">
+            <section class="card docs-card">
+              <div class="card-head" style="height:52px">
+                <div class="card-title">项目文档 <span class="count" id="detail-doc-count">5</span></div>
+                <button class="link-more" onclick="openEditorByTitle('需求文档 v1.0')">管理排序<svg class="ic"><use href="#i-chevron-down"/></svg></button>
+              </div>
+              <div class="docs-toolbar">
+                <div class="mini-search" style="width:230px"><svg class="ic"><use href="#i-search"/></svg><span>搜索文档标题或正文…</span></div>
+                <button class="btn btn-primary btn-sm" onclick="openEditorByTitle('未命名文档')"><svg class="ic"><use href="#i-plus"/></svg>新建文档</button>
+              </div>
+              <div class="detail-docs-head"><span>标题</span><span>类型</span><span>字数</span><span>更新时间</span><span></span></div>
+              <div id="detail-doc-rows"></div>
+              <div class="detail-foot"><span>共 5 篇 · 合计 22,316 字</span><span>最后更新于 2 小时前</span></div>
+            </section>
+
+            <aside class="card info-card">
+              <div class="card-head" style="height:46px"><div class="card-title">项目信息</div><button class="btn btn-ghost" style="width:26px;height:26px" aria-label="编辑"><svg class="ic" style="width:14px;height:14px"><use href="#i-edit"/></svg></button></div>
+              <div class="info-body">
+                <div class="info-section">基本信息</div>
+                <div class="info-row"><span class="info-label">所属项目组</span><span class="info-value strong" id="info-group"><span class="go-dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#7C5CFF;margin-right:5px"></span>客户端应用</span></div>
+                <div class="info-row"><span class="info-label">版本</span><span class="info-value"><span class="ver" id="info-version">v0.9.2</span></span></div>
+                <div class="info-row"><span class="info-label">项目路径</span><span class="info-value"><span class="path-box"><span class="path-text" id="info-path">E:\codes\go_projects\mana_project</span><button class="copy-btn" aria-label="复制路径" onclick="showToast('路径已复制到剪贴板')"><svg class="ic"><use href="#i-copy"/></svg></button></span></span></div>
+                <div class="info-row"><span class="info-label">创建时间</span><span class="info-value">2026-09-12 10:24</span></div>
+                <div class="info-row"><span class="info-label">更新时间</span><span class="info-value">2 小时前 · 13:22</span></div>
+
+                <div class="info-divider"></div>
+                <div class="info-section">标签</div>
+                <div class="tag-wrap" id="info-tags"></div>
+
+                <div class="info-divider"></div>
+                <div class="info-section">备注</div>
+                <div class="note-text" id="info-note">本地优先的项目管理桌面端。当前迭代聚焦项目组与文档工作流，目标是让项目、组、文档在一个窗口内完成登记与查阅。</div>
+
+                <div class="info-stats">
+                  <div class="info-stat"><div class="n num">5</div><div class="l">项目文档</div></div>
+                  <div class="info-stat"><div class="n num">22.3k</div><div class="l">文档总字数</div></div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= EDITOR ================= -->
+      <section class="view" id="view-editor">
+        <div class="editor-page">
+          <div class="editor-top">
+            <button onclick="backFromEditor()" aria-label="返回项目"><svg class="ic"><use href="#i-arrow-left"/></svg></button>
+            <span id="editor-crumb">项目组管理 / 客户端应用 / Mana Desktop</span><span>/</span><span class="cur" style="color:var(--text);font-weight:550">文档</span>
+          </div>
+          <div class="editor-titlebar">
+            <div class="editor-title-box">
+              <input class="editor-title-input" id="editor-title" value="需求文档 v1.0" aria-label="文档标题">
+              <div class="editor-subline">
+                <span class="tag tag-orange" id="editor-kind">需求</span>
+                <span class="sep"></span>
+                <span id="editor-owner">Mana Desktop</span>
+                <span class="sep"></span>
+                <span>最后保存 2 小时前</span>
+              </div>
+            </div>
+            <div class="editor-actions">
+              <div class="segmented">
+                <button class="active"><svg class="ic"><use href="#i-edit"/></svg>编辑</button>
+                <button onclick="showToast('已切换到预览模式')"><svg class="ic"><use href="#i-eye"/></svg>预览</button>
+              </div>
+              <button class="btn btn-primary" onclick="saveDocument()"><svg class="ic"><use href="#i-check"/></svg>保存</button>
+              <button class="btn btn-ghost" aria-label="更多"><svg class="ic ic-dots"><use href="#i-more"/></svg></button>
+            </div>
+          </div>
+
+          <div class="editor-card">
+            <div class="editor-toolbar">
+              <button class="tool-btn mono">H1</button>
+              <button class="tool-btn mono">H2</button>
+              <span class="tool-sep"></span>
+              <button class="tool-btn" style="font-weight:700">B</button>
+              <button class="tool-btn" style="font-style:italic">I</button>
+              <button class="tool-btn mono">&lt;/&gt;</button>
+              <span class="tool-sep"></span>
+              <button class="tool-btn"><svg class="ic" style="width:13px;height:13px"><use href="#i-link"/></svg></button>
+              <button class="tool-btn"><svg class="ic" style="width:13px;height:13px"><use href="#i-list"/></svg></button>
+              <span class="tool-sep"></span>
+              <button class="tool-btn"><svg class="ic" style="width:13px;height:13px"><use href="#i-undo"/></svg></button>
+              <button class="tool-btn"><svg class="ic" style="width:13px;height:13px"><use href="#i-refresh"/></svg></button>
+              <div class="toolbar-right"><svg class="ic" style="width:12px;height:12px"><use href="#i-info"/></svg>Markdown 实时预览</div>
+            </div>
+            <div class="editor-split">
+              <div class="source-pane">
+                <div class="code" id="editor-source">
+<div class="cl"><span class="ln">1</span><span class="code-text md-h"># 需求文档 v1.0</span></div>
+<div class="cl"><span class="ln">2</span><span class="code-text"></span></div>
+<div class="cl"><span class="ln">3</span><span class="code-text md-h2">## 1. 背景</span></div>
+<div class="cl"><span class="ln">4</span><span class="code-text">Mana 是本地优先的开发项目管理桌面端，</span></div>
+<div class="cl"><span class="ln">5</span><span class="code-text">把项目、项目组与文档收拢到同一个窗口。</span></div>
+<div class="cl"><span class="ln">6</span><span class="code-text">数据仅存本机 SQLite，不依赖账号与网络。</span></div>
+<div class="cl"><span class="ln">7</span><span class="code-text"></span></div>
+<div class="cl"><span class="ln">8</span><span class="code-text md-h2">## 2. 目标</span></div>
+<div class="cl"><span class="ln">9</span><span class="code-text"><span class="md-bullet">-</span> 项目信息一处登记，路径与版本可查</span></div>
+<div class="cl"><span class="ln">10</span><span class="code-text"><span class="md-bullet">-</span> 用项目组表达归属，支持组内文档</span></div>
+<div class="cl"><span class="ln">11</span><span class="code-text"><span class="md-bullet">-</span> 常用操作三步内完成</span></div>
+<div class="cl"><span class="ln">12</span><span class="code-text"></span></div>
+<div class="cl"><span class="ln">13</span><span class="code-text md-h2">## 3. 范围</span></div>
+<div class="cl"><span class="ln">14</span><span class="code-text">| 模块 | v1.0 | 说明 |</span></div>
+<div class="cl"><span class="ln">15</span><span class="code-text">| --- | --- | --- |</span></div>
+<div class="cl"><span class="ln">16</span><span class="code-text">| 项目 | 支持 | 增删改查、标签、路径、版本 |</span></div>
+<div class="cl"><span class="ln">17</span><span class="code-text">| 项目组 | 支持 | 左右布局、组内项目与文档 |</span></div>
+<div class="cl"><span class="ln">18</span><span class="code-text">| 文档 | 支持 | Markdown 编辑与实时预览 |</span></div>
+<div class="cl"><span class="ln">19</span><span class="code-text"></span></div>
+<div class="cl"><span class="ln">20</span><span class="code-text md-h2">## 4. 关键约束</span></div>
+<div class="cl"><span class="ln">21</span><span class="code-text"><span class="md-bullet">&gt;</span> 删除项目会级联删除其文档；删除项目组时，</span></div>
+<div class="cl"><span class="ln">22</span><span class="code-text"><span class="md-bullet">&gt;</span> 组内项目移至「未分组」，组文档一并删除。</span></div>
+<div class="cl"><span class="ln">23</span><span class="code-text"></span></div>
+<div class="cl"><span class="ln">24</span><span class="code-text md-h2">## 5. 验收</span></div>
+<div class="cl"><span class="ln">25</span><span class="code-text"><span class="md-bullet">-</span> 新建项目后重启仍存在</span></div>
+<div class="cl"><span class="ln">26</span><span class="code-text"><span class="md-bullet">-</span> 组内项目计数与列表一致</span></div>
+<div class="cl"><span class="ln">27</span><span class="code-text"><span class="md-bullet">-</span> 未保存离开时二次确认</span></div>
+                </div>
+              </div>
+              <div class="preview-pane">
+                <div class="md-view">
+                  <h1>需求文档 v1.0</h1>
+                  <h2>1. 背景</h2>
+                  <p>Mana 是本地优先的开发项目管理桌面端，把项目、项目组与文档收拢到同一个窗口。数据仅存本机 SQLite，不依赖账号与网络。</p>
+                  <h2>2. 目标</h2>
+                  <ul>
+                    <li>项目信息一处登记，路径与版本可查</li>
+                    <li>用项目组表达归属，支持组内文档</li>
+                    <li>常用操作三步内完成</li>
+                  </ul>
+                  <h2>3. 范围</h2>
+                  <table>
+                    <tr><th>模块</th><th>v1.0</th><th>说明</th></tr>
+                    <tr><td>项目</td><td>支持</td><td>增删改查、标签、路径、版本</td></tr>
+                    <tr><td>项目组</td><td>支持</td><td>左右布局、组内项目与文档</td></tr>
+                    <tr><td>文档</td><td>支持</td><td>Markdown 编辑与实时预览</td></tr>
+                  </table>
+                  <h2>4. 关键约束</h2>
+                  <div class="callout">删除项目会级联删除其文档；删除项目组时，组内项目移至「未分组」，组文档一并删除。</div>
+                  <h2>5. 验收</h2>
+                  <ul>
+                    <li>新建项目后重启仍存在</li>
+                    <li>组内项目计数与列表一致</li>
+                    <li>未保存离开时二次确认</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="editor-status">
+              <span>Markdown</span><span class="sep"></span><span>UTF-8</span>
+              <div class="right">
+                <span>1,284 字</span><span class="sep"></span>
+                <span class="ok"><svg class="ic"><use href="#i-check-circle"/></svg>已保存 2 小时前</span>
+                <span class="sep"></span><span>Ctrl S 保存</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ================= OVERLAY ================= -->
+<div class="overlay" id="overlay">
+  <!-- project modal -->
+  <div class="modal modal-project" id="modal-project">
+    <div class="modal-head">
+      <div class="modal-head-main">
+        <div class="modal-title">新建项目</div>
+      </div>
+      <button class="modal-close" aria-label="关闭" onclick="closeModals()"><svg class="ic"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <div class="field-label">项目名称 <span class="req">*</span><span class="field-hint">1–80 字符</span></div>
+        <input class="input" value="Aster Web" aria-label="项目名称">
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <div class="field-label">所属项目组</div>
+          <div class="select-box"><span>客户端应用</span><svg class="ic"><use href="#i-chevron-down"/></svg></div>
+        </div>
+        <div class="field">
+          <div class="field-label">版本</div>
+          <input class="input" value="v0.1.0" placeholder="如 v1.0.0" aria-label="版本">
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">标签<span class="field-hint">最多 5 个</span></div>
+        <div class="token-box">
+          <span class="tag tag-blue">TypeScript</span>
+          <span class="tag tag-purple">Next.js</span>
+          <input class="token-input" placeholder="输入后按 Enter 添加…" aria-label="添加标签">
+        </div>
+        <div class="token-hint"><svg class="ic"><use href="#i-info"/></svg>标签用于筛选与快速识别，同屏最多展示 3 种颜色。</div>
+      </div>
+      <div class="field">
+        <div class="field-label">项目路径</div>
+        <div class="input-group">
+          <input class="input mono" value="E:\codes\web\aster-web" style="font-size:11.5px" aria-label="项目路径">
+          <button class="btn btn-default" onclick="showToast('已打开目录选择器（原型）')"><svg class="ic"><use href="#i-folder-open"/></svg>浏览</button>
+        </div>
+        <div class="helper"><svg class="ic"><use href="#i-info"/></svg>路径不存在也可先登记，保存后会提示；路径仅保存在本机。</div>
+      </div>
+      <div class="field" style="margin-bottom:6px">
+        <div class="field-label">备注<span class="field-hint">0–1000 字符</span></div>
+        <textarea class="textarea" aria-label="备注">面向 Web 的轻量项目门户，使用 Next.js 与 TypeScript；当前处于原型阶段。</textarea>
+        <div class="char-count">0 / 1000</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="left-note"><svg class="ic"><use href="#i-database"/></svg>保存后写入本地 SQLite</div>
+      <button class="btn btn-default" onclick="closeModals()">取消</button>
+      <button class="btn btn-primary" onclick="submitProject()">创建项目</button>
+    </div>
+  </div>
+
+  <!-- group modal -->
+  <div class="modal modal-group" id="modal-group">
+    <div class="modal-head">
+      <div class="modal-head-main">
+        <div class="modal-title" id="group-modal-title">新建项目组</div>
+      </div>
+      <button class="modal-close" aria-label="关闭" onclick="closeModals()"><svg class="ic"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <div class="field-label">项目组名称 <span class="req">*</span><span class="field-hint">1–60 字符</span></div>
+        <input class="input" id="group-name-input" value="AI 实验室" aria-label="项目组名称">
+      </div>
+      <div class="field">
+        <div class="field-label">描述<span class="field-hint">0–300 字符</span></div>
+        <textarea class="textarea" style="height:82px" aria-label="项目组描述">探索型项目与原型验证，允许快速试错；文档归档到组级知识库。</textarea>
+      </div>
+      <div class="field" style="margin-bottom:4px">
+        <div class="field-label">标识色</div>
+        <div class="swatches">
+          <button class="swatch active" style="background:#7C5CFF" aria-label="蓝色"><svg class="ic"><use href="#i-check"/></svg></button>
+          <button class="swatch" style="background:#52C41A;color:#52C41A" aria-label="绿色"></button>
+          <button class="swatch" style="background:#722ED1;color:#722ED1" aria-label="紫色"></button>
+          <button class="swatch" style="background:#FA8C16;color:#FA8C16" aria-label="橙色"></button>
+          <button class="swatch" style="background:#13C2C2;color:#13C2C2" aria-label="青色"></button>
+          <button class="swatch" style="background:#EB2F96;color:#EB2F96" aria-label="粉色"></button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="left-note"><svg class="ic"><use href="#i-folder"/></svg>创建后自动选中该组</div>
+      <button class="btn btn-default" onclick="closeModals()">取消</button>
+      <button class="btn btn-primary" onclick="submitGroup()">创建项目组</button>
+    </div>
+  </div>
+
+  <!-- delete modal -->
+  <div class="modal modal-delete" id="modal-delete">
+    <div class="del-body">
+      <div class="del-icon"><svg class="ic"><use href="#i-warning"/></svg></div>
+      <div class="del-main">
+        <div class="del-title">删除项目组 “客户端应用”？</div>
+        <div class="del-text">删除后不可恢复。组内的项目不会被删除，但会失去分组归属。</div>
+        <div class="del-list"><span>5 个项目</span> 将移至「未分组」<br><span>5 篇组文档</span> 将一并删除，项目文档不受影响。</div>
+      </div>
+    </div>
+    <div class="del-foot">
+      <button class="btn btn-default" onclick="closeModals()">取消</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">删除项目组</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg class="ic"><use href="#i-check-circle"/></svg><span id="toast-text">已保存</span></div>
+
+<script>
+/* ---------------- data ---------------- */
+const groups = [
+  {
+    id:'client', name:'客户端应用', color:'#7C5CFF', updated:'2 小时前',
+    desc:'面向桌面与移动端的产品线，覆盖 macOS、iOS 与 Web。',
+    docs:[
+      {title:'客户端设计规范', kind:'设计', words:3420, updated:'昨天'},
+      {title:'双端发布流程', kind:'其他', words:1860, updated:'3 天前'},
+      {title:'Q4 迭代目标', kind:'开发计划', words:2240, updated:'上周'},
+      {title:'移动端埋点方案', kind:'设计', words:1580, updated:'2 周前'},
+      {title:'组内技术评审记录', kind:'会议纪要', words:1240, updated:'上月'}
+    ],
+    projects:[
+      {name:'Mana Desktop', version:'v0.9.2', tags:['Go','MyGo','桌面端'], path:'E:\\codes\\go_projects\\mana_project', updated:'2 小时前', docs:5, desc:'本地优先的项目管理桌面端，Go + MyGo 原生 UI，SQLite 存储。', note:'本地优先的项目管理桌面端。当前迭代聚焦项目组与文档工作流，目标是让项目、组、文档在一个窗口内完成登记与查阅。'},
+      {name:'Orbit Mobile', version:'v2.3.1', tags:['Flutter','iOS','Android'], path:'E:\\codes\\mobile\\orbit', updated:'昨天', docs:3, desc:'跨端移动应用，Flutter 渲染与原生能力桥接。'},
+      {name:'Pulse CLI', version:'v1.4.0', tags:['Go','CLI'], path:'E:\\codes\\go_projects\\pulse', updated:'3 天前', docs:2, desc:'面向服务端开发者的命令行工具集。'},
+      {name:'Nova Player', version:'v0.6.0', tags:['Swift','macOS'], path:'E:\\codes\\mac\\nova-player', updated:'5 天前', docs:1, desc:'macOS 原生音频播放器，实验性项目。'},
+      {name:'Ember Notes', version:'v1.2.3', tags:['TypeScript','Tauri'], path:'E:\\codes\\desktop\\ember-notes', updated:'上周', docs:1, desc:'轻量本地笔记应用，Tauri + React。'}
+    ]
+  },
+  {
+    id:'backend', name:'后端服务', color:'#52C41A', updated:'4 小时前',
+    desc:'对内对外的 HTTP、任务与数据服务；统一部署在自建集群。',
+    docs:[
+      {title:'服务分层约定', kind:'设计', words:2680, updated:'上周'},
+      {title:'API 错误码规范', kind:'接口', words:1720, updated:'2 周前'},
+      {title:'发布回滚手册', kind:'其他', words:980, updated:'上月'},
+      {title:'数据库变更流程', kind:'开发计划', words:1460, updated:'上月'}
+    ],
+    projects:[
+      {name:'Atlas API', version:'v3.1.0', tags:['Go','SQLite','HTTP'], path:'E:\\codes\\go_projects\\atlas', updated:'4 小时前', docs:3, desc:'核心业务 API，REST + JSON，本地缓存与审计日志。'},
+      {name:'Relic Worker', version:'v1.8.2', tags:['Go','Queue'], path:'E:\\codes\\go_projects\\relic', updated:'昨天', docs:2, desc:'异步任务与定时作业的执行器。'},
+      {name:'Sable Auth', version:'v2.0.4', tags:['Go','JWT'], path:'E:\\codes\\go_projects\\sable', updated:'3 天前', docs:1, desc:'统一认证与令牌签发服务。'},
+      {name:'Kite Search', version:'v0.4.7', tags:['Rust','Tantivy'], path:'E:\\codes\\rust\\kite', updated:'上周', docs:1, desc:'站内全文检索服务，增量索引。'}
+    ]
+  },
+  {
+    id:'infra', name:'基础架构', color:'#722ED1', updated:'昨天',
+    desc:'构建、发布、网关与密钥等基础设施，支撑各产品线。',
+    docs:[
+      {title:'CI 基线', kind:'设计', words:2140, updated:'昨天'},
+      {title:'镜像与制品规范', kind:'设计', words:1520, updated:'2 周前'},
+      {title:'密钥轮换手册', kind:'其他', words:1120, updated:'上月'}
+    ],
+    projects:[
+      {name:'Forge CI', version:'v1.9.0', tags:['Go','Docker'], path:'E:\\codes\\infra\\forge-ci', updated:'昨天', docs:2, desc:'自建持续集成流水线，支持多平台构建。'},
+      {name:'Lumen Proxy', version:'v0.8.5', tags:['Rust','Proxy'], path:'E:\\codes\\infra\\lumen', updated:'2 天前', docs:1, desc:'边缘代理与流量治理。'},
+      {name:'Terraform Modules', version:'v1.2.0', tags:['HCL','IaC'], path:'E:\\codes\\infra\\tf-modules', updated:'上周', docs:1, desc:'可复用的基础设施模块集合。'}
+    ]
+  },
+  {
+    id:'lab', name:'实验项目', color:'#FA8C16', updated:'2 天前',
+    desc:'探索型项目与原型验证，允许快速试错；文档归档到组级知识库。',
+    docs:[
+      {title:'实验记录 2026-11', kind:'其他', words:1860, updated:'2 天前'},
+      {title:'沙箱使用说明', kind:'其他', words:940, updated:'上月'}
+    ],
+    projects:[
+      {name:'Echo Lab', version:'v0.0.3', tags:['Python','ML'], path:'E:\\codes\\lab\\echo', updated:'2 天前', docs:1, desc:'语音克隆与降噪的实验管线。'},
+      {name:'Drift Sandbox', version:'v0.1.0', tags:['Go','WASM'], path:'E:\\codes\\lab\\drift', updated:'上周', docs:1, desc:'浏览器内 WASM 沙箱运行时。'}
+    ]
+  },
+  {
+    id:'tools', name:'文档与工具', color:'#13C2C2', updated:'上周',
+    desc:'面向内部效率的文档工具与状态页。',
+    docs:[
+      {title:'文档模板', kind:'其他', words:760, updated:'上周'}
+    ],
+    projects:[
+      {name:'Quill Docs', version:'v1.0.0', tags:['Markdown','Docs'], path:'E:\\codes\\tools\\quill', updated:'上周', docs:1, desc:'团队文档站生成器。'},
+      {name:'Beacon Status', version:'v0.5.2', tags:['Go','Status'], path:'E:\\codes\\tools\\beacon', updated:'2 周前', docs:1, desc:'内部服务状态页与事件记录。'}
+    ]
+  }
+];
+
+const ungrouped = [
+  {name:'Sandbox Kit', version:'v0.2.0', tags:['Go','CLI'], path:'E:\\codes\\lab\\sandbox-kit', updated:'上周', docs:0, desc:'本地沙箱工具集。'},
+  {name:'Pixel Probe', version:'v0.1.0', tags:['Rust','Graphics'], path:'E:\\codes\\lab\\pixel-probe', updated:'2 周前', docs:0, desc:'像素采样与色彩分析。'}
+];
+
+const allProjects = groups.flatMap(g => g.projects.map(p => ({...p, group:g.name, groupId:g.id}))).concat(ungrouped.map(p => ({...p, group:'未分组', groupId:'ungrouped'})));
+
+const manaDocs = [
+  {title:'需求文档 v1.0', kind:'需求', words:8642, updated:'2 小时前'},
+  {title:'技术方案', kind:'设计', words:6120, updated:'昨天'},
+  {title:'接口设计', kind:'接口', words:4380, updated:'3 天前'},
+  {title:'迭代计划 v0.9', kind:'开发计划', words:2150, updated:'5 天前'},
+  {title:'发布检查清单', kind:'其他', words:1024, updated:'上周'}
+];
+
+const state = { view:'home', groupId:'client', tab:'projects', detailProject:null, returnView:'groups' };
+const projectById = name => allProjects.find(p => p.name === name);
+
+/* ---------------- helpers ---------------- */
+function tagClass(kind){
+  return {'需求':'tag-orange','设计':'tag-purple','接口':'tag-blue','开发计划':'tag-green','会议纪要':'tag-gray','其他':'tag-gray'}[kind] || 'tag-gray';
+}
+function techTagClass(i){
+  return ['tag-blue','tag-purple','tag-gray'][i % 3];
+}
+function projectIcon(p){
+  const t = p.tags[0];
+  if(/SQLite|数据库|Data/i.test(t)) return ['i-database','green'];
+  if(/Flutter|Mobile|iOS/i.test(t)) return ['i-grid','cyan'];
+  if(/Swift|macOS|桌面/i.test(t)) return ['i-code','purple'];
+  if(/Python|ML/i.test(t)) return ['i-git-branch','orange'];
+  if(/Docker|CI/i.test(t)) return ['i-terminal','purple'];
+  if(/Markdown|Docs/i.test(t)) return ['i-file','cyan'];
+  if(/Proxy|Rust/i.test(t)) return ['i-refresh','green'];
+  return ['i-code','blue'];
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+/* ---------------- topbar ---------------- */
+function setTopbar(html, isCrumb){
+  const el = document.getElementById('topbar-left');
+  el.innerHTML = isCrumb ? html : `<div class="topbar-title">${html}</div>`;
+}
+function setNav(view){
+  document.querySelectorAll('.nav-item[data-view]').forEach(n => n.classList.toggle('active', n.dataset.view === view));
+}
+
+/* ---------------- views ---------------- */
+function showView(name){
+  state.view = name;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const v = document.getElementById('view-' + name);
+  if(v) v.classList.add('active');
+  if(name === 'home'){
+    setTopbar('首页');
+    setNav('home');
+  } else if(name === 'groups'){
+    setTopbar('项目组管理');
+    setNav('groups');
+    renderGroupPage();
+  } else if(name === 'detail'){
+    setTopbar('<span class="crumb"><span>项目组管理</span><span class="sep">/</span><span>'+esc(state.detailProject.group)+'</span><span class="sep">/</span><span class="cur">'+esc(state.detailProject.name)+'</span></span>', true);
+    setNav('groups');
+  } else if(name === 'editor'){
+    setTopbar('文档编辑');
+    setNav('groups');
+  }
+}
+
+/* ---------------- group page ---------------- */
+function renderGroupList(){
+  const total = allProjects.length;
+  document.getElementById('group-total').textContent = groups.length;
+  let h = '';
+  h += `<div class="g-row ${state.groupId==='all'?'active':''}" onclick="openGroup('all')">
+    <div class="g-icon"><svg class="ic"><use href="#i-layers"/></svg></div>
+    <span class="g-name">全部项目</span><span class="g-count">${total}</span></div>`;
+  h += `<div class="group-section">项目组</div>`;
+  groups.forEach(g => {
+    h += `<div class="g-row ${state.groupId===g.id?'active':''}" onclick="openGroup('${g.id}')">
+      <span class="g-icon" style="background:${g.color}18;color:${g.color}"><svg class="ic"><use href="#i-folder"/></svg></span>
+      <span class="g-name">${esc(g.name)}</span><span class="g-count">${g.projects.length}</span></div>`;
+  });
+  h += `<div class="g-dash"></div>`;
+  h += `<div class="g-row ${state.groupId==='ungrouped'?'active':''}" onclick="openGroup('ungrouped')">
+    <div class="g-icon"><svg class="ic"><use href="#i-folder-open"/></svg></div>
+    <span class="g-name">未分组</span><span class="g-count">${ungrouped.length}</span></div>`;
+  document.getElementById('group-list').innerHTML = h;
+}
+
+function currentGroup(){
+  if(state.groupId === 'all'){
+    return {id:'all', name:'全部项目', color:'#7C5CFF', desc:'汇总所有项目组与未分组中的项目，用于全局浏览。', updated:'1 分钟前',
+      projects:allProjects, docs:groups.flatMap(g=>g.docs).concat([{title:'未分组项目索引',kind:'其他',words:320,updated:'上周'}])};
+  }
+  if(state.groupId === 'ungrouped'){
+    return {id:'ungrouped', name:'未分组', color:'#86909C', desc:'尚未归入项目组的项目；可随时移动到任意项目组。', updated:'上周',
+      projects:ungrouped, docs:[]};
+  }
+  return groups.find(g => g.id === state.groupId);
+}
+
+function renderGroupPage(){
+  renderGroupList();
+  const g = currentGroup();
+  document.getElementById('gm-title').textContent = g.name;
+  document.getElementById('gm-desc').textContent = g.desc;
+  document.getElementById('gm-mark').style.background = g.color + '16';
+  document.getElementById('gm-mark').style.color = g.color;
+  const projectCount = g.projects.length;
+  const docCount = g.docs.length;
+  document.getElementById('gm-meta').innerHTML =
+    `<span><svg class="ic"><use href="#i-grid"/></svg>${projectCount} 个项目</span>
+     <span><svg class="ic"><use href="#i-file"/></svg>${docCount} 篇文档</span>
+     <span><svg class="ic"><use href="#i-clock"/></svg>${g.updated}更新</span>`;
+  document.getElementById('tab-project-count').textContent = projectCount;
+  document.getElementById('tab-doc-count').textContent = docCount;
+  document.getElementById('project-foot').textContent = `共 ${projectCount} 个项目`;
+  document.getElementById('doc-foot').textContent = `共 ${docCount} 篇文档`;
+  document.getElementById('grp-doc-count').textContent = docCount;
+  document.getElementById('project-rows').innerHTML = g.projects.map((p,i) => {
+    const [ico, tone] = projectIcon(p);
+    const tags = p.tags.slice(0,2).map((t,j)=>`<span class="tag ${techTagClass(j)}">${esc(t)}</span>`).join('') + (p.tags.length>2?`<span class="tag tag-gray">+${p.tags.length-2}</span>`:'');
+    return `<div class="g-rowx" onclick="openDetailByProject('${esc(p.name)}')">
+      <div style="min-width:0">
+        <div class="p-title-line"><div class="p-ico ${tone}" style="width:28px;height:28px;border-radius:7px"><svg class="ic" style="width:15px;height:15px"><use href="#${ico}"/></svg></div><span class="p-name">${esc(p.name)}</span></div>
+        <div class="path">${esc(p.path)}</div>
+      </div>
+      <div><span class="ver">${esc(p.version)}</span></div>
+      <div class="tag-cell">${tags}</div>
+      <div class="p-time">${p.updated}</div>
+      <button class="p-more" aria-label="更多" onclick="event.stopPropagation();showToast('项目操作菜单（原型）')"><svg class="ic ic-dots"><use href="#i-more"/></svg></button>
+    </div>`;
+  }).join('');
+  document.getElementById('doc-rows').innerHTML = g.docs.map(d => `
+    <div class="d-rowx" onclick="openEditorByTitle('${esc(d.title)}', '${esc(g.name)}')">
+      <div class="d-title-line"><svg class="ic"><use href="#i-note"/></svg><span class="doc-title">${esc(d.title)}</span></div>
+      <div><span class="tag ${tagClass(d.kind)}">${esc(d.kind)}</span></div>
+      <div class="d-words">${d.words.toLocaleString()} 字</div>
+      <div class="p-time">${d.updated}</div>
+      <div class="d-actions"><button class="p-more" aria-label="更多" onclick="event.stopPropagation();showToast('文档操作菜单（原型）')"><svg class="ic ic-dots"><use href="#i-more"/></svg></button></div>
+    </div>`).join('');
+  document.getElementById('group-doc-preview-rows').innerHTML = g.docs.slice(0,3).map(d => `
+    <div class="mini-doc" onclick="openEditorByTitle('${esc(d.title)}', '${esc(g.name)}')">
+      <div class="doc-ico"><svg class="ic"><use href="#i-note"/></svg></div>
+      <div class="doc-main"><div class="doc-title">${esc(d.title)}</div><div class="doc-meta"><span class="tag ${tagClass(d.kind)}">${esc(d.kind)}</span></div></div>
+      <div class="doc-time">${d.updated}</div>
+    </div>`).join('');
+  const docsPane = document.getElementById('docs-pane');
+  const projPane = document.getElementById('projects-pane');
+  const showDocs = state.tab === 'docs';
+  docsPane.style.display = showDocs ? 'flex' : 'none';
+  projPane.style.display = showDocs ? 'none' : 'flex';
+  document.getElementById('new-doc-btn').style.display = showDocs ? 'inline-flex' : 'none';
+  document.getElementById('tab-projects').classList.toggle('active', !showDocs);
+  document.getElementById('tab-docs').classList.toggle('active', showDocs);
+}
+
+function openGroup(id){
+  state.groupId = id;
+  state.tab = 'projects';
+  showView('groups');
+}
+function setTab(tab){
+  state.tab = tab;
+  renderGroupPage();
+}
+
+/* ---------------- detail ---------------- */
+function openDetailByProject(name){
+  const p = projectById(name);
+  if(!p){ showToast('未找到项目'); return; }
+  state.detailProject = p;
+  const docs = p.name === 'Mana Desktop' ? manaDocs : [
+    {title:'需求与范围', kind:'需求', words:3200, updated:'3 天前'},
+    {title:'技术方案', kind:'设计', words:2800, updated:'上周'},
+    {title:'接口设计', kind:'接口', words:1900, updated:'2 周前'}
+  ].slice(0, Math.max(1, p.docs));
+  state.detailDocs = docs;
+  document.getElementById('breadcrumb');
+  document.getElementById('crumb-group').textContent = p.group;
+  document.getElementById('crumb-project').textContent = p.name;
+  document.getElementById('detail-title').textContent = p.name;
+  document.getElementById('detail-version').textContent = p.version;
+  document.getElementById('detail-desc').textContent = p.desc;
+  document.getElementById('detail-tags').innerHTML = p.tags.map((t,i)=>`<span class="tag ${techTagClass(i)}">${esc(t)}</span>`).join('');
+  document.getElementById('detail-doc-count').textContent = docs.length;
+  document.getElementById('detail-doc-rows').innerHTML = docs.map(d => `
+    <div class="detail-doc-row" onclick="openEditorByTitle('${esc(d.title)}')">
+      <div class="detail-doc-title"><svg class="ic"><use href="#i-note"/></svg><span>${esc(d.title)}</span></div>
+      <div><span class="tag ${tagClass(d.kind)}">${esc(d.kind)}</span></div>
+      <div class="d-words">${d.words.toLocaleString()} 字</div>
+      <div class="p-time">${d.updated}</div>
+      <div><button class="p-more" aria-label="更多" onclick="event.stopPropagation();openDeleteModal('doc')"><svg class="ic ic-dots"><use href="#i-more"/></svg></button></div>
+    </div>`).join('');
+  const totalWords = docs.reduce((s,d)=>s+d.words,0);
+  document.querySelector('.detail-foot span').textContent = `共 ${docs.length} 篇 · 合计 ${totalWords.toLocaleString()} 字`;
+  document.getElementById('info-group').innerHTML = `<span class="go-dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${p.groupId==='ungrouped'?'#C9CDD4':(groups.find(g=>g.id===p.groupId)||{}).color||'#7C5CFF'};margin-right:5px"></span>${esc(p.group)}`;
+  document.getElementById('info-version').textContent = p.version;
+  document.getElementById('info-path').innerHTML = esc(p.path).split('\\').join('\\<wbr>');
+  document.getElementById('info-tags').innerHTML = p.tags.map((t,i)=>`<span class="tag ${techTagClass(i)}">${esc(t)}</span>`).join('');
+  document.getElementById('info-note').textContent = p.note || p.desc;
+  state.returnView = 'detail';
+  showView('detail');
+  window.scrollTo(0,0);
+}
+function backToGroups(){
+  state.groupId = state.detailProject ? state.detailProject.groupId : state.groupId;
+  if(state.groupId === 'ungrouped') state.groupId = 'client';
+  showView('groups');
+}
+
+/* ---------------- editor ---------------- */
+function openEditorByTitle(title, ownerGroup){
+  if(ownerGroup){
+    state.returnView = 'groups';
+    state.editorOwner = { name: ownerGroup + ' · 组文档', group: ownerGroup, crumb: ownerGroup + ' / 组文档' };
+  } else {
+    const p = state.detailProject || projectById('Mana Desktop');
+    state.returnView = state.view === 'detail' ? 'detail' : 'groups';
+    state.editorOwner = { name: p.name, group: p.group, crumb: p.group + ' / ' + p.name };
+  }
+  document.getElementById('editor-title').value = title;
+  document.getElementById('editor-owner').textContent = state.editorOwner.name;
+  document.getElementById('editor-crumb').textContent = '项目组管理 / ' + state.editorOwner.crumb;
+  const kind = title.includes('需求')?'需求':title.includes('接口')?'接口':title.includes('计划')?'开发计划':title.includes('设计')?'设计':'其他';
+  const kindEl = document.getElementById('editor-kind');
+  kindEl.textContent = kind;
+  kindEl.className = 'tag ' + tagClass(kind);
+  showView('editor');
+  window.scrollTo(0,0);
+}
+function backFromEditor(){
+  if(state.returnView === 'detail' && state.detailProject) showView('detail');
+  else showView('groups');
+}
+function saveDocument(){
+  showToast('文档已保存到本地数据库');
+  setTimeout(() => { if(state.returnView === 'detail' && state.detailProject) showView('detail'); else showView('groups'); }, 500);
+}
+
+/* ---------------- modals ---------------- */
+function openProjectModal(){
+  closeModals();
+  document.getElementById('modal-project').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+}
+function openGroupModal(edit){
+  closeModals();
+  const title = document.getElementById('group-modal-title');
+  title.textContent = edit ? '编辑项目组' : '新建项目组';
+  document.getElementById('group-name-input').value = edit ? (currentGroup().name || '客户端应用') : 'AI 实验室';
+  document.getElementById('modal-group').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+}
+function openDeleteModal(type){
+  closeModals();
+  document.getElementById('modal-delete').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModals(){
+  document.getElementById('overlay').classList.remove('show');
+  document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
+}
+function submitProject(){ closeModals(); showToast('已创建项目 “Aster Web”'); }
+function submitGroup(){ closeModals(); showToast('已创建项目组 “AI 实验室”'); }
+function confirmDelete(){ closeModals(); showToast('已删除项目组 “客户端应用”'); }
+
+/* ---------------- toast ---------------- */
+let toastTimer = null;
+function showToast(text){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = text;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ---------------- misc ---------------- */
+document.getElementById('global-search').addEventListener('click', () => showToast('全局搜索将在 v1.1 开放（原型）'));
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeModals();
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n'){ e.preventDefault(); openProjectModal(); }
+});
+document.getElementById('nav-home').addEventListener('click', () => showView('home'));
+document.getElementById('nav-groups').addEventListener('click', () => showView('groups'));
+
+/* deep links for screenshots */
+(function init(){
+  const screen = new URLSearchParams(location.search).get('screen') || 'home';
+  if(screen === 'groups'){
+    showView('groups');
+  } else if(screen === 'groups-docs'){
+    state.groupId = 'client'; state.tab = 'docs'; showView('groups');
+  } else if(screen === 'detail'){
+    state.detailProject = projectById('Mana Desktop');
+    openDetailByProject('Mana Desktop');
+  } else if(screen === 'editor'){
+    state.detailProject = projectById('Mana Desktop');
+    openEditorByTitle('需求文档 v1.0');
+  } else if(screen === 'project-modal'){
+    showView('groups');
+    openProjectModal();
+  } else if(screen === 'group-modal'){
+    showView('groups');
+    openGroupModal();
+  } else if(screen === 'delete-modal'){
+    showView('groups');
+    openDeleteModal('group');
+  } else {
+    showView('home');
+  }
+})();
+</script>
+</body>
+</html>
